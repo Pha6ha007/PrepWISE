@@ -6,7 +6,8 @@ import { openai, getModel } from '@/lib/openai/client'
 import { buildAnxietyPrompt } from '@/agents/prompts/anxiety'
 import { detectCrisis, getCrisisResponse, logCrisisEvent } from '@/agents/crisis/protocol'
 import { checkRateLimit, recordRequest } from '@/lib/utils/rate-limit'
-import { sendWelcomeEmail } from '@/lib/resend/client'
+import { retrieveContext, formatContextForPrompt } from '@/lib/pinecone/retrieval'
+import { NAMESPACES } from '@/lib/pinecone/client'
 import { ChatResponse, ErrorResponse } from '@/types'
 
 const prisma = new PrismaClient()
@@ -154,7 +155,19 @@ export async function POST(request: NextRequest) {
     })
 
     // ============================================
-    // 8. ЗАГРУЗИТЬ КОНТЕКСТ
+    // 8. RAG RETRIEVAL (получить релевантный контекст из книг)
+    // ============================================
+    // Определяем namespace по типу агента (пока только anxiety_cbt)
+    const agentNamespace = session.agentType === 'anxiety' ? NAMESPACES.ANXIETY_CBT : NAMESPACES.GENERAL
+
+    // Получить top-5 релевантных чанков из Pinecone
+    const retrievedChunks = await retrieveContext(userMessage, agentNamespace, 5)
+
+    // Форматировать для system prompt
+    const ragContext = formatContextForPrompt(retrievedChunks)
+
+    // ============================================
+    // 9. ЗАГРУЗИТЬ КОНТЕКСТ ИЗ ИСТОРИИ
     // ============================================
     // Последние 30 сообщений из этой сессии
     const recentMessages = await prisma.message.findMany({
@@ -206,19 +219,20 @@ export async function POST(request: NextRequest) {
       : undefined
 
     // ============================================
-    // 9. ПОСТРОИТЬ SYSTEM PROMPT
+    // 10. ПОСТРОИТЬ SYSTEM PROMPT (с RAG контекстом)
     // ============================================
     const systemPrompt = buildAnxietyPrompt({
-      userProfile: dbUser.profile,
+      userProfile: dbUser.profile as any,
       recentHistory: recentHistory || undefined,
       pastSessions: pastSessionsContext,
+      ragContext: ragContext || undefined,
       companionName: dbUser.companionName || 'Alex', // Fallback если пустой
       preferredName: dbUser.preferredName || undefined,
       language: dbUser.language as 'en' | 'ru',
     })
 
     // ============================================
-    // 10. ВЫЗВАТЬ AI (Groq/OpenAI)
+    // 11. ВЫЗВАТЬ AI (Groq/OpenAI)
     // ============================================
     const completion = await openai.chat.completions.create({
       model: getModel(),
@@ -234,7 +248,7 @@ export async function POST(request: NextRequest) {
       'I apologize, but I had trouble generating a response. Could you try again?'
 
     // ============================================
-    // 11. СОХРАНИТЬ ASSISTANT MESSAGE
+    // 12. СОХРАНИТЬ ASSISTANT MESSAGE
     // ============================================
     const assistantMessageRecord = await prisma.message.create({
       data: {
@@ -246,13 +260,18 @@ export async function POST(request: NextRequest) {
     })
 
     // ============================================
-    // 12. ВЕРНУТЬ ОТВЕТ
+    // 13. ВЕРНУТЬ ОТВЕТ (с sources из RAG)
     // ============================================
     return NextResponse.json<ChatResponse>({
       message: assistantMessage,
       messageId: assistantMessageRecord.id,
       sessionId: session.id,
-      // TODO: sources когда подключим RAG
+      sources: retrievedChunks.map((chunk) => ({
+        title: chunk.metadata.book_title,
+        author: chunk.metadata.author,
+        excerpt: chunk.text.slice(0, 200) + (chunk.text.length > 200 ? '...' : ''),
+        score: chunk.score,
+      })),
     })
   } catch (error) {
     console.error('Chat API error:', error)

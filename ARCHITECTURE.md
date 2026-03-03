@@ -30,7 +30,8 @@
 - ✅ LangChain 1.2.28
 - ✅ @langchain/openai 1.2.11
 - ✅ @langchain/pinecone 1.0.1
-- ✅ Pinecone 5.1.2
+- ✅ @pinecone-database/pinecone 5.1.2
+- ✅ pdf-parse (для загрузки книг в RAG)
 
 **Payments:**
 - ✅ Paddle (@paddle/paddle-js 1.6.2, @paddle/paddle-node-sdk 3.6.0)
@@ -368,7 +369,290 @@ confide/
 - [ ] Paddle subscriptions (Free / Pro / Premium)
 - [ ] Paddle webhooks обработка
 - [ ] Customer portal
-- [ ] Email онбординг через Resend
+- [x] Email онбординг через Resend ✅
+
+---
+
+## 🎉 [2026-03-03] Resend Email Integration ЗАВЕРШЕНА
+
+**Email система для онбординга и коммуникации**
+
+### Установлено
+- ✅ `resend@6.9.3` — Email сервис
+
+### Структура файлов
+
+```
+lib/
+└── resend/
+    ├── client.ts              # Resend клиент
+    └── emails/
+        └── welcome.ts         # Welcome email после онбординга
+```
+
+### Реализованные функции
+
+**`lib/resend/client.ts`:**
+- Resend клиент с `RESEND_API_KEY`
+- Константа `FROM_EMAIL` (hello@confide.app)
+
+**`lib/resend/emails/welcome.ts`:**
+- `sendWelcomeEmail({ preferredName, companionName, email })`
+- Отправляется после завершения онбординга
+- Fire-and-forget (не блокирует основной поток)
+
+### Welcome Email содержание
+
+**Subject:**
+```
+"Welcome to Confide — [companionName] is ready for you"
+```
+
+**HTML Template:**
+- Кремовый фон (#FAFAF9)
+- Gradient header (#6366F1 → #818CF8)
+- Персонализированное приветствие: "Hi [preferredName]!"
+- Сообщение: "[companionName] is here whenever you need to talk. No judgment, no rush — just a safe space to share what's on your mind."
+- CTA кнопка: "Start talking with [companionName]" → `/dashboard/chat`
+- Медицинский дисклеймер в footer
+
+### Интеграция
+
+**`app/api/onboarding/route.ts`:**
+```typescript
+sendWelcomeEmail({
+  preferredName: updatedUser.preferredName || 'there',
+  companionName: updatedUser.companionName,
+  email: updatedUser.email,
+}).catch((error) => {
+  console.error('Failed to send welcome email (non-blocking):', error)
+})
+```
+
+### Environment Variables
+
+```env
+RESEND_API_KEY=re_8QV7xifz_KDW5uQdLZfKGTX8bihy3bdw8
+RESEND_FROM_EMAIL=hello@confide.app
+```
+
+### Как работает
+
+1. Пользователь завершает онбординг (`/api/onboarding`)
+2. User record обновляется в БД (preferredName, companionName, etc.)
+3. Welcome email отправляется асинхронно (fire-and-forget)
+4. Email приходит с персонализированным приветствием
+5. Кнопка ведёт на `/dashboard/chat` для первой сессии
+
+---
+
+## 🎉 [2026-03-03] RAG System (Pinecone + OpenAI) ЗАВЕРШЕНА
+
+**Retrieval-Augmented Generation — база знаний из психологических книг**
+
+### Установлено
+- ✅ `@pinecone-database/pinecone@5.1.2` — векторная БД
+- ✅ `openai@6.25.0` — для embeddings
+- ✅ `pdf-parse` — парсинг PDF книг
+
+### Структура файлов
+
+```
+lib/
+└── pinecone/
+    ├── client.ts              # Pinecone клиент + namespaces
+    └── retrieval.ts           # RAG retrieval функции
+
+scripts/
+└── ingest-knowledge.ts        # Загрузка PDF в Pinecone
+```
+
+### Реализованные компоненты
+
+#### 1. **`lib/pinecone/client.ts`**
+- Pinecone клиент инициализация
+- `getPineconeIndex()` — получить индекс
+- Константы namespaces:
+  - `anxiety_cbt` — CBT/ACT/DBT методики
+  - `family` — Gottman, Satir, семейная терапия
+  - `trauma` — van der Kolk, ПТСР
+  - `crisis` — кризисное вмешательство
+  - `general` — Rogers, Yalom, общая база
+
+#### 2. **`lib/pinecone/retrieval.ts`**
+
+**`retrieveContext(query, namespace, topK=5)`:**
+- Создаёт embedding запроса через OpenAI `text-embedding-3-small`
+- Ищет в Pinecone по namespace
+- Возвращает top-5 релевантных чанков с metadata:
+  - `book_title` — название книги
+  - `author` — автор
+  - `chapter` — глава (опционально)
+  - `text` — текст чанка
+  - `score` — релевантность (0-1)
+
+**`formatContextForPrompt(chunks)`:**
+- Форматирует retrieved chunks для system prompt
+- Формат:
+  ```
+  ## Relevant knowledge:
+
+  1. [Book Title by Author]
+  Chunk text here...
+  ```
+
+#### 3. **`scripts/ingest-knowledge.ts`**
+
+**Скрипт загрузки PDF книг в Pinecone:**
+
+**Usage:**
+```bash
+npx tsx scripts/ingest-knowledge.ts \
+  --file="path/to/book.pdf" \
+  --namespace="anxiety_cbt" \
+  --title="Feeling Good" \
+  --author="David Burns"
+```
+
+**Процесс:**
+1. Читает PDF через `pdf-parse`
+2. Разбивает текст на чанки:
+   - Размер: 500 токенов (~2000 символов)
+   - Overlap: 50 токенов для связности
+3. Создаёт embeddings через OpenAI `text-embedding-3-small`
+4. Загружает векторы в Pinecone (батчами по 100)
+5. Сохраняет метаданные в Postgres (`KnowledgeBase` модель)
+
+**Metadata каждого чанка:**
+```json
+{
+  "text": "chunk content...",
+  "book_title": "Feeling Good",
+  "author": "David Burns",
+  "namespace": "anxiety_cbt",
+  "chunk_index": 42
+}
+```
+
+### Интеграция в Chat API
+
+**`app/api/chat/route.ts` — Шаг 8: RAG Retrieval**
+
+```typescript
+// 1. Определить namespace по типу агента
+const agentNamespace = session.agentType === 'anxiety'
+  ? NAMESPACES.ANXIETY_CBT
+  : NAMESPACES.GENERAL
+
+// 2. Получить релевантные чанки из Pinecone
+const retrievedChunks = await retrieveContext(userMessage, agentNamespace, 5)
+
+// 3. Форматировать для system prompt
+const ragContext = formatContextForPrompt(retrievedChunks)
+
+// 4. Добавить в system prompt
+const systemPrompt = buildAnxietyPrompt({
+  userProfile: dbUser.profile,
+  recentHistory: recentHistory || undefined,
+  pastSessions: pastSessionsContext,
+  ragContext: ragContext || undefined, // ← RAG контекст
+  companionName: dbUser.companionName || 'Alex',
+  preferredName: dbUser.preferredName || undefined,
+  language: dbUser.language as 'en' | 'ru',
+})
+
+// 5. Вернуть sources в ответе
+return NextResponse.json({
+  message: assistantMessage,
+  messageId: assistantMessageRecord.id,
+  sessionId: session.id,
+  sources: retrievedChunks.map((chunk) => ({
+    title: chunk.metadata.book_title,
+    author: chunk.metadata.author,
+    excerpt: chunk.text.slice(0, 200) + '...',
+    score: chunk.score,
+  })),
+})
+```
+
+### Anxiety Agent Prompt обновлён
+
+**`agents/prompts/anxiety.ts`:**
+- Добавлен параметр `ragContext?: string`
+- RAG контекст вставляется в system prompt после профиля пользователя
+- AI получает знания из книг перед ответом
+
+### UI Component: SourcesPanel
+
+**`components/chat/SourcesPanel.tsx`:**
+- Collapsible панель с анимацией (Framer Motion)
+- Показывает книги и авторов как источники ответа
+- Отображает excerpt (первые 200 символов)
+- Дизайн: кремовый фон, тёплый стиль
+
+### Environment Variables
+
+```env
+# Pinecone
+PINECONE_API_KEY=pcsk_4qATF7_LQGyhYXESj8CHsYeyeeCLJMww9UcNdktj65wnXdUTqJa1DXVtSQ2oVbExPK7inj
+PINECONE_INDEX_NAME=confide-knowledge
+
+# OpenAI (для embeddings)
+OPENAI_API_KEY=sk-proj-...
+```
+
+### Как работает RAG система
+
+**Flow:**
+```
+1. User отправляет сообщение: "I'm feeling anxious about work"
+   ↓
+2. Chat API создаёт embedding через OpenAI
+   ↓
+3. Поиск в Pinecone namespace "anxiety_cbt"
+   → top-5 релевантных чанков из книг по CBT
+   ↓
+4. Форматирует контекст:
+   ## Relevant knowledge:
+   1. [Feeling Good by David Burns]
+   "Cognitive distortions like 'catastrophizing'..."
+   ↓
+5. Добавляет в system prompt перед генерацией ответа
+   ↓
+6. AI отвечает на основе знаний из книг + личного профиля
+   ↓
+7. Возвращает ответ + sources (какие книги использовались)
+   ↓
+8. UI показывает sources в collapsible панели
+```
+
+### Книги для загрузки (приоритет)
+
+**Namespace: anxiety_cbt**
+1. Aaron Beck — Cognitive Therapy
+2. David Burns — Feeling Good
+3. Steven Hayes — ACT (Acceptance and Commitment Therapy)
+
+**Namespace: trauma**
+4. Bessel van der Kolk — The Body Keeps the Score
+5. Judith Herman — Trauma and Recovery
+
+**Namespace: family**
+6. John Gottman — Seven Principles for Making Marriage Work
+7. Virginia Satir — Peoplemaking
+
+**Namespace: general**
+8. Carl Rogers — On Becoming a Person
+9. Irvin Yalom — The Gift of Therapy
+10. Viktor Frankl — Man's Search for Meaning
+
+### Следующие шаги
+
+1. ✅ RAG система готова
+2. ✅ Скрипт загрузки создан
+3. ⏳ Загрузить первые книги в Pinecone
+4. ⏳ Протестировать retrieval на реальных запросах
+5. ⏳ Добавить больше книг по мере необходимости
 
 ---
 

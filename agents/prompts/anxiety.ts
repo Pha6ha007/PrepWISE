@@ -15,6 +15,7 @@ interface AnxietyPromptContext {
   userProfile?: UserProfile | null
   recentHistory?: string
   pastSessions?: string
+  ragContext?: string
   companionName: string
   preferredName?: string
   language: 'en' | 'ru'
@@ -24,7 +25,7 @@ interface AnxietyPromptContext {
  * Строит system prompt для Anxiety Agent
  */
 export function buildAnxietyPrompt(context: AnxietyPromptContext): string {
-  const { userProfile, recentHistory, pastSessions, companionName, preferredName, language } = context
+  const { userProfile, recentHistory, pastSessions, ragContext, companionName, preferredName, language } = context
 
   // Базовая инструкция
   const basePrompt =
@@ -36,6 +37,12 @@ export function buildAnxietyPrompt(context: AnxietyPromptContext): string {
   let profileContext = ''
   if (userProfile) {
     profileContext = buildProfileContext(userProfile, language)
+  }
+
+  // Добавляем RAG контекст (знания из книг) если есть
+  let ragKnowledgeContext = ''
+  if (ragContext) {
+    ragKnowledgeContext = `\n\n${ragContext}`
   }
 
   // Добавляем прошлые сессии если есть
@@ -56,7 +63,7 @@ export function buildAnxietyPrompt(context: AnxietyPromptContext): string {
         : `\n\n## Current conversation:\n${recentHistory}`
   }
 
-  return `${basePrompt}${profileContext}${pastSessionsContext}${historyContext}`
+  return `${basePrompt}${profileContext}${ragKnowledgeContext}${pastSessionsContext}${historyContext}`
 }
 
 function buildEnglishPrompt(companionName: string, preferredName?: string): string {

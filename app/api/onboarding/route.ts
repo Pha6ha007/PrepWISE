@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { PrismaClient } from '@prisma/client'
-import { sendWelcomeEmail } from '@/lib/resend/client'
+import { sendWelcomeEmail } from '@/lib/resend/emails/welcome'
 
 const prisma = new PrismaClient()
 
@@ -72,9 +72,9 @@ export async function POST(request: NextRequest) {
     // ============================================
     // Fire-and-forget — не блокируем основной поток
     sendWelcomeEmail({
-      to: updatedUser.email,
+      preferredName: updatedUser.preferredName || 'there',
       companionName: updatedUser.companionName,
-      language: updatedUser.language as 'en' | 'ru',
+      email: updatedUser.email,
     }).catch((error) => {
       console.error('Failed to send welcome email (non-blocking):', error)
     })

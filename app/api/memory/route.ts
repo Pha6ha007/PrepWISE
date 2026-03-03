@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     // ============================================
     const memoryPrompt = buildMemoryPrompt(
       conversation,
-      session.user.profile,
+      session.user.profile as any,
       session.user.language as 'en' | 'ru'
     )
 
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
     // ============================================
     const updatedProfileData = mergeProfileWithExtraction(
       extraction,
-      session.user.profile
+      session.user.profile as any
     )
 
     // ============================================
