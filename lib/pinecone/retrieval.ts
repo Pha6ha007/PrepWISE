@@ -1,10 +1,17 @@
 import OpenAI from 'openai'
 import { getPineconeIndex, type Namespace } from './client'
 
-// OpenAI клиент для embeddings
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
-})
+// Lazy initialization - создаём клиент только при первом обращении
+let _openai: OpenAI | null = null
+
+function getOpenAIClient() {
+  if (!_openai) {
+    _openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY!,
+    })
+  }
+  return _openai
+}
 
 // Модель для embeddings
 const EMBEDDING_MODEL = 'text-embedding-3-small'
@@ -36,6 +43,7 @@ export async function retrieveContext(
 ): Promise<RetrievedChunk[]> {
   try {
     // 1. Создать embedding запроса через OpenAI
+    const openai = getOpenAIClient()
     const embeddingResponse = await openai.embeddings.create({
       model: EMBEDDING_MODEL,
       input: query,
