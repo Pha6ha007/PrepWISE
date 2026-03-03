@@ -35,3 +35,4 @@ next-env.d.ts
 
 # prisma
 # Keep migrations in git - they're part of the schema evolution
+books/
