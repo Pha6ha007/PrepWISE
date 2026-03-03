@@ -170,21 +170,94 @@ confide/
 
 ---
 
-### Следующие шаги — Phase 1
+## 🎉 [2026-03-03] Phase 1 Week 1-2 ЗАВЕРШЕНА
 
-**Week 1-2: Фундамент**
-- [ ] Auth flow (register, login, middleware)
-- [ ] Онбординг с дисклеймером
-- [ ] Базовые страницы: landing, login, dashboard
+**Week 1-2: Auth flow + базовые страницы** — 100% ✅
 
-**Phase 1 — MVP Core (следующая):**
-- [ ] Auth flow (register, login, onboarding)
-- [ ] Текстовый чат с одним агентом (anxiety)
-- [ ] RAG система (Pinecone + первые книги)
-- [ ] Система памяти (session summary + user profile)
-- [ ] Crisis Detection Layer
-- [ ] Paddle subscriptions
-- [ ] Landing page
+### Authentication & Authorization
+
+**Supabase Auth Integration:**
+- ✅ Browser client (`lib/supabase/client.ts`) for Client Components
+- ✅ Server client (`lib/supabase/server.ts`) for Server Components
+- ✅ Middleware (`middleware.ts`) protecting `/dashboard/*` routes
+- ✅ OAuth callback handler for Google Sign-in
+- ✅ Email/password + Google OAuth authentication
+
+**Auth Pages:**
+- ✅ `/login` — Sign in with email/password or Google
+- ✅ `/register` — Create account with medical disclaimer
+- ✅ Auth layout with Confide logo (indigo theme)
+- ✅ Redirects: logged-in users → `/dashboard/chat`, logged-out → `/login`
+
+### Dashboard
+
+**Protected Dashboard:**
+- ✅ Dashboard layout with sidebar navigation
+- ✅ Routes: Chat, Journal, Progress, Settings
+- ✅ User info display (email, plan status)
+- ✅ Sign out functionality
+- ✅ Chat page placeholder (Week 3-4 next)
+
+### Landing Page
+
+**Public Marketing Page:**
+- ✅ Hero: "Someone who truly listens"
+- ✅ Features grid: Always Available, Evidence-Based, Private & Secure
+- ✅ CTA buttons: "Start for free" → register
+- ✅ Medical disclaimer in footer
+- ✅ Clean indigo gradient design (#6366F1)
+
+### AI Provider Setup
+
+**Universal AI Client (`lib/openai/client.ts`):**
+- ✅ Supports Groq API (FREE for development)
+- ✅ Supports OpenAI API (fallback)
+- ✅ Auto-detection: GROQ_API_KEY → Groq, OPENAI_API_KEY → OpenAI
+- ✅ Groq model: `llama-3.3-70b-versatile`
+- ✅ Same interface (OpenAI SDK), easy to switch providers
+
+### UI Components
+
+**shadcn/ui installed:**
+- ✅ button, input, label, card
+- ✅ Tailwind CSS with indigo color scheme
+- ✅ Gradient backgrounds
+- ✅ Warm minimalist design
+
+### Как работает
+
+**Auth Flow:**
+1. User visits `/register` or `/login`
+2. Auth via Supabase (email/password or Google OAuth)
+3. Middleware checks session on `/dashboard` access
+4. Logged-in → dashboard, logged-out → redirect to `/login`
+
+**Middleware Protection:**
+- `/dashboard/*` — requires authentication
+- `/login`, `/register` — redirect if already logged in
+- OAuth callback → exchanges code for session
+
+---
+
+### Следующие шаги — Phase 1 Week 3-4
+
+**Week 3-4: AI Core**
+- [ ] Groq API integration (llama-3.3-70b-versatile)
+- [ ] Chat UI компонент (input, message bubbles, typing indicator)
+- [ ] RAG система: PDF → chunking → embeddings → Pinecone
+- [ ] Первый агент: Anxiety Agent (CBT/ACT/DBT)
+- [ ] Retrieval из RAG при каждом запросе
+- [ ] Real-time streaming responses
+
+**Week 5: Memory**
+- [ ] Session summary после разговора
+- [ ] Memory Agent — обновление user_profile
+- [ ] Загрузка профиля в system prompt
+
+**Week 6: Crisis + Security**
+- [ ] Crisis Detection Agent (hardcoded protocol)
+- [ ] Rate limiting на API
+- [ ] Input validation (Zod)
 
 ---
 
