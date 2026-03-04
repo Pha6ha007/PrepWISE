@@ -118,29 +118,45 @@ export default function OnboardingPage() {
   // Показать лоадер пока загружаем план
   if (isLoadingPlan) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-indigo-600 border-r-transparent"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
+        {/* Animated Background */}
+        <div className="mesh-gradient fixed inset-0 -z-10" />
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-[#6366F1] rounded-full blur-orb animate-float" />
+          <div className="absolute bottom-20 right-20 w-80 h-80 bg-[#EC4899] rounded-full blur-orb animate-float-delayed" />
+        </div>
+
+        <div className="text-center glass-button px-8 py-6 rounded-2xl">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+          <p className="mt-4 text-foreground font-medium">Loading...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
+      {/* Animated Mesh Gradient Background */}
+      <div className="mesh-gradient fixed inset-0 -z-10" />
+
+      {/* Floating Blur Orbs */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#6366F1] rounded-full blur-orb animate-float" />
+        <div className="absolute top-40 right-20 w-80 h-80 bg-[#EC4899] rounded-full blur-orb animate-float-delayed" />
+        <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-[#F59E0B] rounded-full blur-orb animate-float" style={{ animationDelay: '2s' }} />
+      </div>
       <div className="max-w-2xl w-full">
         {/* Progress Indicator */}
-        <div className="flex items-center justify-center mb-8 space-x-2">
+        <div className="flex items-center justify-center mb-8 space-x-3">
           {[1, 2, 3].map((s) => (
             <div
               key={s}
-              className={`h-2 rounded-full transition-all ${
+              className={`h-2.5 rounded-full transition-all duration-300 ${
                 s === step
-                  ? 'w-8 bg-indigo-600'
+                  ? 'w-12 bg-primary shadow-card'
                   : s < step
-                  ? 'w-2 bg-indigo-400'
-                  : 'w-2 bg-gray-300'
+                  ? 'w-2.5 bg-primary/60'
+                  : 'w-2.5 bg-border'
               }`}
             />
           ))}
@@ -148,20 +164,20 @@ export default function OnboardingPage() {
 
         {/* Step 1 — About You */}
         {step === 1 && (
-          <Card className="border-2 shadow-xl">
+          <Card className="glass-button border border-white/20 shadow-large rounded-2xl animate-fade-in-up hover-lift">
             <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <User className="w-8 h-8 text-indigo-600" />
+              <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <User className="w-8 h-8 text-white" />
               </div>
-              <CardTitle className="text-2xl">First, tell us about yourself</CardTitle>
-              <CardDescription className="text-base mt-2">
+              <CardTitle className="font-serif text-3xl font-semibold">First, tell us about yourself</CardTitle>
+              <CardDescription className="text-base mt-3 text-muted-foreground">
                 This helps your companion connect with you better
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Preferred Name */}
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-semibold text-foreground mb-2 block">
                   What should your companion call you?
                 </label>
                 <Input
@@ -170,7 +186,7 @@ export default function OnboardingPage() {
                   value={preferredName}
                   onChange={(e) => setPreferredName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAboutYouSubmit()}
-                  className="h-12"
+                  className="h-12 rounded-lg focus:ring-2 focus:ring-primary transition-smooth"
                   maxLength={30}
                   autoFocus
                 />
@@ -178,7 +194,7 @@ export default function OnboardingPage() {
 
               {/* Age Group */}
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-semibold text-foreground mb-2 block">
                   Your age group
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -186,10 +202,10 @@ export default function OnboardingPage() {
                     <button
                       key={age}
                       onClick={() => setAgeGroup(age)}
-                      className={`p-3 border-2 rounded-lg text-center font-medium transition-all ${
+                      className={`p-3 border-2 rounded-xl text-center font-medium transition-smooth ${
                         ageGroup === age
-                          ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                          : 'border-gray-200 hover:border-indigo-300 text-gray-700'
+                          ? 'border-primary bg-primary/10 text-primary shadow-subtle'
+                          : 'border-border hover:border-primary/50 text-foreground hover:shadow-subtle'
                       }`}
                     >
                       {age}
@@ -200,7 +216,7 @@ export default function OnboardingPage() {
 
               {/* Gender */}
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-semibold text-foreground mb-2 block">
                   I identify as
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -208,10 +224,10 @@ export default function OnboardingPage() {
                     <button
                       key={option.value}
                       onClick={() => setUserGender(option.value)}
-                      className={`p-3 border-2 rounded-lg text-center font-medium transition-all ${
+                      className={`p-3 border-2 rounded-xl text-center font-medium transition-smooth ${
                         userGender === option.value
-                          ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                          : 'border-gray-200 hover:border-indigo-300 text-gray-700'
+                          ? 'border-primary bg-primary/10 text-primary shadow-subtle'
+                          : 'border-border hover:border-primary/50 text-foreground hover:shadow-subtle'
                       }`}
                     >
                       {option.label}
@@ -223,7 +239,7 @@ export default function OnboardingPage() {
               <Button
                 onClick={handleAboutYouSubmit}
                 disabled={!preferredName.trim() || !ageGroup || !userGender}
-                className="w-full h-12 text-base"
+                className="w-full h-12 text-base rounded-xl transition-smooth hover:scale-[1.02] shadow-card hover:shadow-large"
                 size="lg"
               >
                 Continue
@@ -244,49 +260,49 @@ export default function OnboardingPage() {
               />
             ) : (
               /* FREE: Баннер с апгрейдом */
-              <Card className="border-2 shadow-xl">
+              <Card className="glass-button border border-white/20 shadow-large rounded-2xl animate-fade-in-up hover-lift">
                 <CardHeader className="text-center pb-4">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <MessageCircle className="w-8 h-8 text-gray-600" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <MessageCircle className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-2xl">Meet Alex, your companion</CardTitle>
-                  <CardDescription className="text-base mt-2">
+                  <CardTitle className="font-serif text-3xl font-semibold">Meet Alex, your companion</CardTitle>
+                  <CardDescription className="text-base mt-3 text-muted-foreground">
                     On the free plan, you'll have Alex as your default companion
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Info about Alex */}
-                  <div className="bg-gray-50 rounded-lg p-6 text-center">
-                    <p className="text-gray-700">
+                  <div className="bg-muted/50 rounded-xl p-6 text-center">
+                    <p className="text-foreground leading-relaxed">
                       Alex is a supportive, empathetic companion with a calm, reassuring voice.
                       He's here to listen and help you navigate your thoughts and feelings.
                     </p>
                   </div>
 
                   {/* Upgrade Banner */}
-                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-6 border-2 border-amber-200">
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-warm/30 shadow-card">
                     <div className="flex items-start space-x-3">
-                      <Crown className="w-6 h-6 text-amber-600 mt-1 flex-shrink-0" />
+                      <Crown className="w-6 h-6 text-warm mt-1 flex-shrink-0" />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 text-lg">
+                        <h3 className="font-serif font-semibold text-foreground text-xl">
                           Upgrade to Pro for full customization
                         </h3>
-                        <ul className="mt-3 space-y-2 text-sm text-gray-700">
+                        <ul className="mt-4 space-y-3 text-sm text-foreground">
                           <li className="flex items-center">
-                            <Sparkles className="w-4 h-4 mr-2 text-amber-600" />
+                            <Sparkles className="w-4 h-4 mr-2 text-warm" />
                             Choose your companion's gender and name
                           </li>
                           <li className="flex items-center">
-                            <Sparkles className="w-4 h-4 mr-2 text-amber-600" />
+                            <Sparkles className="w-4 h-4 mr-2 text-warm" />
                             Select from multiple unique voices
                           </li>
                           <li className="flex items-center">
-                            <Sparkles className="w-4 h-4 mr-2 text-amber-600" />
+                            <Sparkles className="w-4 h-4 mr-2 text-warm" />
                             Unlimited conversations
                           </li>
                         </ul>
                         <Button
-                          className="w-full mt-4"
+                          className="w-full mt-4 rounded-xl transition-smooth hover:scale-[1.02] shadow-card"
                           variant="default"
                           onClick={() => router.push('/pricing')}
                         >
@@ -302,7 +318,7 @@ export default function OnboardingPage() {
                     <Button
                       onClick={() => setStep(3)}
                       variant="outline"
-                      className="w-full h-12 text-base"
+                      className="w-full h-12 text-base rounded-xl transition-smooth hover:shadow-subtle"
                       size="lg"
                     >
                       Continue with Alex (Free)
@@ -311,7 +327,7 @@ export default function OnboardingPage() {
                     <Button
                       variant="ghost"
                       onClick={() => setStep(1)}
-                      className="w-full"
+                      className="w-full rounded-xl transition-smooth hover:bg-muted"
                     >
                       ← Back
                     </Button>
@@ -324,57 +340,57 @@ export default function OnboardingPage() {
 
         {/* Step 3 — Disclaimer */}
         {step === 3 && (
-          <Card className="border-2 shadow-xl">
+          <Card className="glass-button border border-white/20 shadow-large rounded-2xl animate-fade-in-up hover-lift">
             <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-purple-600" />
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Shield className="w-8 h-8 text-white" />
               </div>
-              <CardTitle className="text-2xl">Before we begin...</CardTitle>
-              <CardDescription className="text-base mt-2">
+              <CardTitle className="font-serif text-3xl font-semibold">Before we begin...</CardTitle>
+              <CardDescription className="text-base mt-3 text-muted-foreground">
                 A few important things to know
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-4 bg-gray-50 rounded-lg p-6">
+              <div className="space-y-4 bg-muted/50 rounded-xl p-6">
                 <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-semibold text-foreground">
                       {isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'} is not a therapist
                     </p>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                       This is a supportive companion, not a replacement for professional mental health care.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-gray-900">Your conversations are private</p>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="font-semibold text-foreground">Your conversations are private</p>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                       All conversations are encrypted and stored securely. We never share your data.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-gray-900">Crisis support is available</p>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="font-semibold text-foreground">Crisis support is available</p>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                       If you're in crisis, we'll immediately provide emergency resources.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-semibold text-foreground">
                       {isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'} learns about you
                     </p>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                       Every conversation helps your companion understand you better over time.
                     </p>
                   </div>
@@ -385,7 +401,7 @@ export default function OnboardingPage() {
                 <Button
                   onClick={handleFinish}
                   disabled={isSubmitting}
-                  className="w-full h-12 text-base"
+                  className="w-full h-12 text-base rounded-xl transition-smooth hover:scale-[1.02] shadow-card hover:shadow-large"
                   size="lg"
                 >
                   {isSubmitting ? 'Setting up...' : `Start talking with ${isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'}`}
@@ -395,7 +411,7 @@ export default function OnboardingPage() {
                 <Button
                   variant="ghost"
                   onClick={() => setStep(2)}
-                  className="w-full"
+                  className="w-full rounded-xl transition-smooth hover:bg-muted"
                   disabled={isSubmitting}
                 >
                   ← Back

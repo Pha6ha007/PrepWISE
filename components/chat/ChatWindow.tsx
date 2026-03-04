@@ -313,7 +313,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full relative">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.map((message) => (
@@ -338,11 +338,11 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
       )}
 
       {/* Input Area */}
-      <div className="border-t border-gray-200 bg-white p-4">
-        <div className="space-y-3">
+      <div className="glass border-t border-white/20 p-6 shadow-large">
+        <div className="space-y-4">
           {/* Voice Controls — только для PRO/PREMIUM */}
           {isVoiceAvailable && (
-            <div className="flex items-center justify-between px-2 py-2 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between px-4 py-3 glass-button border border-white/20 rounded-xl shadow-card">
               {/* Agent Voice Toggle */}
               <div className="flex items-center space-x-3">
                 <Switch
@@ -351,11 +351,11 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
                 />
                 <div className="flex items-center space-x-2">
                   {agentVoiceEnabled ? (
-                    <Volume2 className="w-4 h-4 text-indigo-600" />
+                    <Volume2 className="w-4 h-4 text-primary" />
                   ) : (
-                    <VolumeX className="w-4 h-4 text-gray-400" />
+                    <VolumeX className="w-4 h-4 text-muted-foreground" />
                   )}
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-foreground">
                     Agent replies with voice
                   </span>
                   {/* Premium Badge */}
@@ -374,7 +374,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
                 size="sm"
                 variant="ghost"
                 onClick={toggleVoiceInput}
-                className="text-xs"
+                className="text-xs transition-smooth hover:bg-white/30 backdrop-blur-sm"
               >
                 {isVoiceMode ? (
                   <>
@@ -405,7 +405,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Type your message... (Shift+Enter for new line)"
-                className="min-h-[60px] max-h-[200px] resize-none"
+                className="min-h-[60px] max-h-[200px] resize-none rounded-xl glass-button border border-white/20 focus:ring-2 focus:ring-primary transition-smooth backdrop-blur-md"
                 disabled={isLoading}
               />
               <div className="flex flex-col space-y-2">
@@ -413,12 +413,13 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
                 <Button
                   type="submit"
                   disabled={!input.trim() || isLoading}
-                  className="px-4 py-3 h-auto"
+                  className="px-4 py-3 h-auto rounded-xl transition-smooth hover:scale-105 shadow-card hover:shadow-large relative overflow-hidden group"
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] to-[#EC4899] opacity-0 group-hover:opacity-20 transition-opacity" />
                   {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin relative z-10" />
                   ) : (
-                    <Send className="w-5 h-5" />
+                    <Send className="w-5 h-5 relative z-10" />
                   )}
                 </Button>
 
@@ -430,7 +431,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
                       variant="outline"
                       size="sm"
                       disabled
-                      className="px-3 py-2 opacity-50 cursor-not-allowed"
+                      className="px-3 py-2 opacity-50 cursor-not-allowed rounded-xl"
                     >
                       <Mic className="w-4 h-4" />
                     </Button>
@@ -441,7 +442,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
           )}
         </div>
 
-        <p className="text-xs text-gray-500 mt-2 text-center">
+        <p className="text-xs text-muted-foreground mt-3 text-center">
           This is AI support, not medical advice. In crisis, contact emergency
           services.
         </p>

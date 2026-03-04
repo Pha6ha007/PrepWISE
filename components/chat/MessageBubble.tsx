@@ -16,31 +16,31 @@ export function MessageBubble({ message, enableVoice = false }: MessageBubblePro
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
       className={cn(
-        'flex w-full mb-4',
+        'flex w-full mb-4 animate-fade-in-up',
         isUser ? 'justify-end' : 'justify-start'
       )}
     >
       <div
         className={cn(
-          'max-w-[70%] rounded-2xl px-4 py-3 shadow-sm',
+          'max-w-[70%] rounded-2xl px-5 py-4 transition-smooth hover-lift relative overflow-hidden',
           isUser
-            ? 'bg-indigo-600 text-white'
-            : 'bg-white text-gray-900 border border-gray-200'
+            ? 'bg-gradient-to-br from-[#6366F1] to-[#818CF8] text-white shadow-card hover:shadow-large'
+            : 'glass-button border border-white/20 text-foreground shadow-card hover:shadow-large backdrop-blur-md'
         )}
       >
-        <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+        <p className="text-base leading-relaxed whitespace-pre-wrap break-words">
           {message.content}
         </p>
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-3 gap-3">
           {message.createdAt && (
             <p
               className={cn(
                 'text-xs',
-                isUser ? 'text-indigo-100' : 'text-gray-400'
+                isUser ? 'text-white/70' : 'text-[#6B7280]'
               )}
             >
               {new Date(message.createdAt).toLocaleTimeString('en-US', {

@@ -1,8 +1,20 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Plus_Jakarta_Sans, Fraunces } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-plus-jakarta-sans',
+  display: 'swap',
+})
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-fraunces',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Confide — Someone who truly listens',
@@ -15,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={`${plusJakartaSans.variable} ${fraunces.variable}`}>
+      <body className={plusJakartaSans.className}>{children}</body>
     </html>
   )
 }

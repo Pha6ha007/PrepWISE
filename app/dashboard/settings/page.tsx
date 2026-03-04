@@ -48,23 +48,23 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-6">
+    <div className="max-w-4xl mx-auto p-8 space-y-8 animate-fade-in-up">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-semibold text-gray-900">Settings</h1>
-        <p className="text-gray-500 mt-1">Manage your account and preferences</p>
+        <h1 className="font-serif text-4xl font-semibold text-foreground">Settings</h1>
+        <p className="text-muted-foreground mt-2 text-lg">Manage your account and preferences</p>
       </div>
 
       {/* Account Information */}
-      <Card>
+      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
         <CardHeader>
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-indigo-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center shadow-lg">
+              <User className="w-6 h-6 text-white" />
             </div>
             <div>
-              <CardTitle>Account Information</CardTitle>
-              <CardDescription>Your basic account details</CardDescription>
+              <CardTitle className="font-serif text-2xl">Account Information</CardTitle>
+              <CardDescription className="text-base mt-1">Your basic account details</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -104,15 +104,15 @@ export default async function SettingsPage() {
       </Card>
 
       {/* Companion Settings */}
-      <Card>
+      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
         <CardHeader>
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-              <MessageCircle className="w-5 h-5 text-amber-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-[#F59E0B] to-[#FBBF24] rounded-xl flex items-center justify-center shadow-lg">
+              <MessageCircle className="w-6 h-6 text-white" />
             </div>
             <div>
-              <CardTitle>Companion Settings</CardTitle>
-              <CardDescription>Your AI companion preferences</CardDescription>
+              <CardTitle className="font-serif text-2xl">Companion Settings</CardTitle>
+              <CardDescription className="text-base mt-1">Your AI companion preferences</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -138,15 +138,15 @@ export default async function SettingsPage() {
       </Card>
 
       {/* Preferences */}
-      <Card>
+      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
         <CardHeader>
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-              <Globe className="w-5 h-5 text-purple-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+              <Globe className="w-6 h-6 text-white" />
             </div>
             <div>
-              <CardTitle>Preferences</CardTitle>
-              <CardDescription>Language and regional settings</CardDescription>
+              <CardTitle className="font-serif text-2xl">Preferences</CardTitle>
+              <CardDescription className="text-base mt-1">Language and regional settings</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -161,15 +161,15 @@ export default async function SettingsPage() {
       </Card>
 
       {/* Subscription */}
-      <Card>
+      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
         <CardHeader>
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-green-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+              <CreditCard className="w-6 h-6 text-white" />
             </div>
             <div>
-              <CardTitle>Subscription</CardTitle>
-              <CardDescription>Your current plan and billing</CardDescription>
+              <CardTitle className="font-serif text-2xl">Subscription</CardTitle>
+              <CardDescription className="text-base mt-1">Your current plan and billing</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -213,21 +213,21 @@ export default async function SettingsPage() {
       </Card>
 
       {/* Sign Out */}
-      <Card>
+      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
         <CardHeader>
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-              <LogOut className="w-5 h-5 text-red-600" />
+            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+              <LogOut className="w-6 h-6 text-white" />
             </div>
             <div>
-              <CardTitle>Sign Out</CardTitle>
-              <CardDescription>End your current session</CardDescription>
+              <CardTitle className="font-serif text-2xl">Sign Out</CardTitle>
+              <CardDescription className="text-base mt-1">End your current session</CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <form action={signOut}>
-            <Button variant="outline" type="submit" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+            <Button variant="outline" type="submit" className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-smooth hover:scale-[1.02]">
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
             </Button>
