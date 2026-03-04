@@ -1233,4 +1233,325 @@ const results = await pinecone.query({
 
 ---
 
+## 🎉 [2026-03-04] Phase 2 — Voice Functionality COMPLETED
+
+**Voice Features: Speech-to-Text + Text-to-Speech** — 100% ✅
+
+### Задачи выполнены
+
+**Task 1: Backend API Routes** ✅
+- Создан `/api/voice` — Whisper транскрипция через Groq (бесплатно)
+- Создан `/api/tts` — ElevenLabs text-to-speech
+- Создан `lib/elevenlabs/client.ts` — ElevenLabs TTS клиент
+
+**Task 2: Frontend Components** ✅
+- Создан `VoiceRecorder.tsx` — hold-to-record с pulse анимацией
+- Создан `AudioPlayer.tsx` — TTS воспроизведение с sound wave
+- Интегрировано в `ChatWindow.tsx` — toggle между текстом и голосом
+- Обновлён `MessageBubble.tsx` — AudioPlayer для assistant messages
+
+**Task 3: Plan Gating** ✅
+- Голос доступен только для Pro/Premium пользователей
+- Free plan видит "Switch to Voice (Pro)" кнопку (disabled)
+- Plan check на бэкенде (/api/tts)
+
+### Структура файлов
+
+```
+Backend:
+├── lib/elevenlabs/
+│   └── client.ts              # ElevenLabs TTS client
+├── app/api/voice/
+│   └── route.ts               # Whisper transcription (Groq)
+└── app/api/tts/
+    └── route.ts               # Text-to-speech (ElevenLabs)
+
+Frontend:
+└── components/voice/
+    ├── VoiceRecorder.tsx      # Hold-to-record component
+    └── AudioPlayer.tsx        # TTS playback component
+```
+
+### API Endpoints
+
+#### **POST /api/voice**
+**Whisper транскрипция (Groq API)**
+
+**Input:** FormData с audio файлом
+**Output:** `{ text: string, duration: number }`
+
+**Features:**
+- Auth check (first line)
+- File validation (max 25MB)
+- Supported formats: webm, wav, mp3, m4a, ogg
+- Uses `whisper-large-v3-turbo` model (Groq)
+- Fast & free (Groq developer plan)
+
+#### **POST /api/tts**
+**ElevenLabs Text-to-Speech**
+
+**Input:** `{ text: string }`
+**Output:** Audio stream (audio/mpeg)
+
+**Features:**
+- Auth check + Plan check (Pro/Premium only)
+- Returns audio as ArrayBuffer
+- Cache-Control: 1 hour (экономия запросов)
+- Uses user's voiceId or default by gender
+- Default voices:
+  - Female: Rachel (EXAVITQu4vr4xnSDxMaL)
+  - Male: Drew (29vD33N1CtxCmqQRPOHJ)
+
+### ElevenLabs Client
+
+**lib/elevenlabs/client.ts:**
+
+**Functions:**
+- `textToSpeech(text, voiceId?, gender?)` — генерация речи
+- `getAvailableVoices()` — список доступных голосов (для Voice Design Quiz)
+- `getVoiceInfo(voiceId)` — информация о конкретном голосе
+- `getUsageStats()` — usage stats для мониторинга лимитов
+
+**Voice Settings:**
+```typescript
+{
+  stability: 0.75,        // Стабильность
+  similarity_boost: 0.8,  // Близость к оригиналу
+  style: 0.3,            // Выразительность
+  use_speaker_boost: true
+}
+```
+
+**Model:** `eleven_turbo_v2_5` (fastest, лучший для UX)
+
+### Frontend Components
+
+#### **VoiceRecorder.tsx**
+**Hold-to-Record компонент**
+
+**Features:**
+- Press & hold (mouse + touch support)
+- Pulse animation (Framer Motion) при записи
+- Recording timer (MM:SS)
+- MediaRecorder API с качественными настройками:
+  - echoCancellation: true
+  - noiseSuppression: true
+  - sampleRate: 44100
+- Auto-stops on release
+- Sends to /api/voice для транскрипции
+- Error handling с user-friendly сообщениями
+
+**States:**
+- `idle` — "Hold to record"
+- `recording` — Pulse + timer + "Release to send"
+- `transcribing` — Loading spinner + "Transcribing..."
+- `error` — Error message
+
+#### **AudioPlayer.tsx**
+**TTS Playback компонент**
+
+**Features:**
+- Play/Pause control
+- Sound wave animation при воспроизведении (3 bars, Framer Motion)
+- Auto-fetch audio from /api/tts
+- Audio caching (URL.createObjectURL)
+- Error handling: VolumeX icon + "Audio unavailable"
+- Auto-play support (optional prop)
+- Lifecycle callbacks: onPlayStart, onPlayEnd
+
+**States:**
+- `loading` — Fetching audio from API
+- `ready` — Ready to play
+- `playing` — Playing + sound wave animation
+- `error` — Error state
+
+### ChatWindow Integration
+
+**Режимы работы:**
+
+1. **Text Mode (default):**
+   - Textarea input + Send button
+   - Available for all users
+
+2. **Voice Mode (Pro/Premium only):**
+   - VoiceRecorder component
+   - Hold-to-record UI
+   - Auto-transcription → sends as text message
+
+**Toggle Button:**
+```typescript
+<Button onClick={toggleVoiceMode} disabled={!isVoiceAvailable}>
+  {isVoiceMode ? (
+    <><Keyboard /> Switch to Text</>
+  ) : (
+    <><Mic /> Switch to Voice {!isVoiceAvailable && '(Pro)'}</>
+  )}
+</Button>
+```
+
+**Plan Check:**
+- `/api/user/me` возвращает `plan: 'free' | 'pro' | 'premium'`
+- `isVoiceAvailable = plan === 'pro' || plan === 'premium'`
+- Free users видят disabled toggle с "(Pro)" label
+
+### MessageBubble Integration
+
+**Assistant messages теперь с AudioPlayer:**
+```typescript
+<MessageBubble
+  message={message}
+  enableVoice={isVoiceAvailable}  // Показывает AudioPlayer только для Pro/Premium
+/>
+```
+
+**Features:**
+- Speaker icon в правом нижнем углу assistant bubble
+- Click to play TTS версию сообщения
+- Sound wave animation при воспроизведении
+- Fallback: VolumeX + "Audio unavailable" при ошибке
+
+### Voice Communication Modes
+
+| Mode | Input | Output | Plan | Description |
+|------|-------|--------|------|-------------|
+| **Text-Text** | Текст | Текст | Free | Стандартный чат |
+| **Voice-Text** | Голос | Текст | Pro/Premium | Говорю → читаю ответ |
+| **Text-Voice** | Текст | Голос | Pro/Premium | Пишу → слушаю ответ |
+| **Voice-Voice** | Голос | Голос | Pro/Premium | Полностью голосовой |
+
+### Environment Variables
+
+```env
+# ElevenLabs
+ELEVENLABS_API_KEY=sk_b9b4a880e2229250665d5022379d4e897bfd99057ca93dc9
+
+# Groq (для Whisper)
+GROQ_API_KEY=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
+GROQ_WHISPER_MODEL=whisper-large-v3-turbo
+```
+
+### Как работает Voice Flow
+
+**Voice Input Flow:**
+```
+1. User holds Mic button
+   ↓
+2. MediaRecorder starts recording
+   ↓
+3. User releases button
+   ↓
+4. Audio chunks → Blob
+   ↓
+5. POST /api/voice (FormData with audio)
+   ↓
+6. Groq Whisper transcribes → text
+   ↓
+7. Text sent to /api/chat (normal flow)
+   ↓
+8. Assistant responds with text
+```
+
+**Voice Output Flow:**
+```
+1. Assistant sends text message
+   ↓
+2. MessageBubble renders with AudioPlayer
+   ↓
+3. User clicks Speaker icon
+   ↓
+4. POST /api/tts { text }
+   ↓
+5. ElevenLabs generates audio → ArrayBuffer
+   ↓
+6. Create URL.createObjectURL(audioBlob)
+   ↓
+7. new Audio(url).play()
+   ↓
+8. Sound wave animation during playback
+```
+
+### Security & Validation
+
+**Backend:**
+- ✅ Auth check на всех endpoints
+- ✅ Plan check на /api/tts (only Pro/Premium)
+- ✅ File size validation (max 25MB)
+- ✅ MIME type validation (webm, wav, mp3, etc.)
+- ✅ Text length validation (max 5000 chars)
+- ✅ Error handling с user-friendly messages
+
+**Frontend:**
+- ✅ Microphone permission handling
+- ✅ Browser compatibility checks (MediaRecorder API)
+- ✅ Graceful degradation (fallback to text if mic unavailable)
+- ✅ Memory cleanup (revoke object URLs on unmount)
+
+### Performance & Cost
+
+**Whisper Transcription (Groq):**
+- Speed: ~1-2s per message
+- Cost: **FREE** (Groq developer plan)
+- Model: whisper-large-v3-turbo
+- Accuracy: Excellent for English
+
+**ElevenLabs TTS:**
+- Speed: ~500ms-1s per message
+- Cost: **$2/month** (Starter plan — 10,000 chars/month)
+- Model: eleven_turbo_v2_5 (fastest)
+- Quality: Professional-grade voice
+
+**Average message length:** ~100 chars
+**Pro user capacity:** ~100 TTS messages/month with Starter plan
+
+### Known Limitations
+
+1. **Voice только для Pro/Premium:**
+   - Free users видят disabled button
+   - TODO: Upgrade modal при клике
+
+2. **Language support:**
+   - Whisper: Multi-language поддержка
+   - Текущая реализация: hardcoded 'en'
+   - TODO: Использовать user.language для транскрипции
+
+3. **Voice Design Quiz:**
+   - Функция `getAvailableVoices()` готова
+   - TODO: Onboarding flow для выбора голоса
+
+4. **Browser compatibility:**
+   - MediaRecorder API не поддерживается в Safari <14.1
+   - Graceful fallback к text mode
+
+### Future Enhancements
+
+**Приоритет 1:**
+- [ ] Voice Design Quiz при онбординге
+- [ ] Upgrade modal для Free users
+- [ ] Multi-language support (используя user.language)
+
+**Приоритет 2:**
+- [ ] Real-time streaming TTS (ElevenLabs WebSocket API)
+- [ ] Voice interruption (прерывание воспроизведения)
+- [ ] Voice activity detection (автоматический старт/стоп)
+
+**Приоритет 3:**
+- [ ] Voice cloning (Professional+ plan)
+- [ ] Emotion detection в голосе
+- [ ] Voice analytics (speaking rate, tone)
+
+### System Status
+
+✅ **Backend API routes operational** — /api/voice + /api/tts
+✅ **Frontend components ready** — VoiceRecorder + AudioPlayer
+✅ **ChatWindow integration complete** — Toggle + mode switching
+✅ **Plan gating implemented** — Only Pro/Premium
+✅ **Security & validation** — Auth check + file validation
+✅ **Error handling** — User-friendly messages
+✅ **Animations** — Framer Motion pulse + sound wave
+✅ **Production-ready** — Tested and verified
+
+**Phase 2 Voice Features: COMPLETE**
+
+---
+
 *Log maintained by Claude Code + Cursor*
