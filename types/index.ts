@@ -106,6 +106,7 @@ export interface ChatResponse {
   message: string
   messageId: string
   sessionId: string
+  audioUrl?: string // URL голосового ответа (если enableVoiceResponse)
   sources?: RAGSource[]
   isCrisis?: boolean
 }

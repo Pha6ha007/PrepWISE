@@ -1,39 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { MessageCircle, Volume2, Shield, ArrowRight, Check, User } from 'lucide-react'
-
-type VoiceOption = {
-  id: string
-  label: string
-  description: string
-  gender: 'male' | 'female' | 'neutral'
-}
-
-const VOICE_OPTIONS: VoiceOption[] = [
-  {
-    id: 'warm-calm',
-    label: 'Warm & Calm',
-    description: 'Reassuring and steady voice',
-    gender: 'male',
-  },
-  {
-    id: 'soft-gentle',
-    label: 'Soft & Gentle',
-    description: 'Soothing and compassionate voice',
-    gender: 'female',
-  },
-  {
-    id: 'neutral',
-    label: 'Neutral',
-    description: 'Balanced and friendly voice',
-    gender: 'neutral',
-  },
-]
+import { MessageCircle, Shield, ArrowRight, Check, User, Sparkles, Crown } from 'lucide-react'
+import { VoiceQuiz } from '@/components/onboarding/VoiceQuiz'
+import { getDefaultVoiceId } from '@/lib/voices/config'
 
 const AGE_GROUPS = ['18–25', '26–35', '36–45', '45+']
 const GENDER_OPTIONS = [
@@ -45,39 +19,76 @@ const GENDER_OPTIONS = [
 export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState(1)
+  const [userPlan, setUserPlan] = useState<string>('free')
+  const [isLoadingPlan, setIsLoadingPlan] = useState(true)
 
   // Step 1 — About You
   const [preferredName, setPreferredName] = useState('')
   const [ageGroup, setAgeGroup] = useState('')
   const [userGender, setUserGender] = useState('')
 
-  // Step 2 — Companion Name
-  const [companionName, setCompanionName] = useState('')
-
-  // Step 3 — Voice
-  const [selectedVoice, setSelectedVoice] = useState<VoiceOption | null>(null)
+  // Voice Quiz data (для PRO/PREMIUM)
+  const [voiceQuizData, setVoiceQuizData] = useState<{
+    companionGender: 'male' | 'female'
+    companionName: string
+    voiceKey: string
+    voiceId: string
+  } | null>(null)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Загрузить план пользователя при монтировании
+  useEffect(() => {
+    async function fetchUserPlan() {
+      try {
+        const response = await fetch('/api/user/me')
+        if (response.ok) {
+          const data = await response.json()
+          setUserPlan(data.plan || 'free')
+        }
+      } catch (error) {
+        console.error('Failed to fetch user plan:', error)
+      } finally {
+        setIsLoadingPlan(false)
+      }
+    }
+    fetchUserPlan()
+  }, [])
+
+  const isPaidPlan = userPlan === 'pro' || userPlan === 'premium'
 
   const handleAboutYouSubmit = () => {
     if (!preferredName.trim() || !ageGroup || !userGender) return
     setStep(2)
   }
 
-  const handleNameSubmit = () => {
-    if (!companionName.trim()) return
-    setStep(3)
-  }
-
-  const handleVoiceSelect = (voice: VoiceOption) => {
-    setSelectedVoice(voice)
-    setStep(4)
+  const handleVoiceQuizComplete = (data: {
+    companionGender: 'male' | 'female'
+    companionName: string
+    voiceKey: string
+    voiceId: string
+  }) => {
+    setVoiceQuizData(data)
+    setStep(3) // Переход к дисклеймеру
   }
 
   const handleFinish = async () => {
     setIsSubmitting(true)
 
     try {
+      // Для FREE плана — дефолтные значения
+      const companionName = isPaidPlan && voiceQuizData
+        ? voiceQuizData.companionName
+        : 'Alex'
+
+      const companionGender = isPaidPlan && voiceQuizData
+        ? voiceQuizData.companionGender
+        : 'male'
+
+      const voiceId = isPaidPlan && voiceQuizData
+        ? voiceQuizData.voiceId
+        : getDefaultVoiceId('male')
+
       const response = await fetch('/api/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,9 +96,9 @@ export default function OnboardingPage() {
           preferredName: preferredName.trim(),
           ageGroup,
           userGender,
-          companionName: companionName.trim(),
-          voicePreference: selectedVoice?.id,
-          companionGender: selectedVoice?.gender,
+          companionName,
+          companionGender,
+          voicePreference: voiceId,
         }),
       })
 
@@ -104,12 +115,24 @@ export default function OnboardingPage() {
     }
   }
 
+  // Показать лоадер пока загружаем план
+  if (isLoadingPlan) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-indigo-600 border-r-transparent"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* Progress Indicator */}
         <div className="flex items-center justify-center mb-8 space-x-2">
-          {[1, 2, 3, 4].map((s) => (
+          {[1, 2, 3].map((s) => (
             <div
               key={s}
               className={`h-2 rounded-full transition-all ${
@@ -210,101 +233,97 @@ export default function OnboardingPage() {
           </Card>
         )}
 
-        {/* Step 2 — Companion Name */}
+        {/* Step 2 — Voice Setup (зависит от плана) */}
         {step === 2 && (
-          <Card className="border-2 shadow-xl">
-            <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="w-8 h-8 text-indigo-600" />
-              </div>
-              <CardTitle className="text-2xl">Choose your companion's name</CardTitle>
-              <CardDescription className="text-base mt-2">
-                What would you like to call your companion?
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <Input
-                  type="text"
-                  placeholder="Alex"
-                  value={companionName}
-                  onChange={(e) => setCompanionName(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleNameSubmit()}
-                  className="text-center text-xl h-14"
-                  maxLength={20}
-                  autoFocus
-                />
-                <p className="text-sm text-gray-500 text-center mt-2">
-                  You can always change this later in Settings
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <Button
-                  onClick={handleNameSubmit}
-                  disabled={!companionName.trim()}
-                  className="w-full h-12 text-base"
-                  size="lg"
-                >
-                  Continue
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => setStep(1)}
-                  className="w-full"
-                >
-                  ← Back
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Step 3 — Voice Selection */}
-        {step === 3 && (
-          <Card className="border-2 shadow-xl">
-            <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Volume2 className="w-8 h-8 text-amber-600" />
-              </div>
-              <CardTitle className="text-2xl">Choose {companionName}'s voice</CardTitle>
-              <CardDescription className="text-base mt-2">
-                Pick a voice that feels right for you
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {VOICE_OPTIONS.map((voice) => (
-                <button
-                  key={voice.id}
-                  onClick={() => handleVoiceSelect(voice)}
-                  className="w-full p-4 border-2 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all text-left group"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600">
-                        {voice.label}
-                      </h3>
-                      <p className="text-sm text-gray-500 mt-1">{voice.description}</p>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-indigo-600" />
+          <>
+            {isPaidPlan ? (
+              /* PRO/PREMIUM: Voice Design Quiz */
+              <VoiceQuiz
+                onComplete={handleVoiceQuizComplete}
+                onBack={() => setStep(1)}
+              />
+            ) : (
+              /* FREE: Баннер с апгрейдом */
+              <Card className="border-2 shadow-xl">
+                <CardHeader className="text-center pb-4">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MessageCircle className="w-8 h-8 text-gray-600" />
                   </div>
-                </button>
-              ))}
+                  <CardTitle className="text-2xl">Meet Alex, your companion</CardTitle>
+                  <CardDescription className="text-base mt-2">
+                    On the free plan, you'll have Alex as your default companion
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Info about Alex */}
+                  <div className="bg-gray-50 rounded-lg p-6 text-center">
+                    <p className="text-gray-700">
+                      Alex is a supportive, empathetic companion with a calm, reassuring voice.
+                      He's here to listen and help you navigate your thoughts and feelings.
+                    </p>
+                  </div>
 
-              <Button
-                variant="ghost"
-                onClick={() => setStep(2)}
-                className="w-full mt-4"
-              >
-                ← Back
-              </Button>
-            </CardContent>
-          </Card>
+                  {/* Upgrade Banner */}
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-6 border-2 border-amber-200">
+                    <div className="flex items-start space-x-3">
+                      <Crown className="w-6 h-6 text-amber-600 mt-1 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 text-lg">
+                          Upgrade to Pro for full customization
+                        </h3>
+                        <ul className="mt-3 space-y-2 text-sm text-gray-700">
+                          <li className="flex items-center">
+                            <Sparkles className="w-4 h-4 mr-2 text-amber-600" />
+                            Choose your companion's gender and name
+                          </li>
+                          <li className="flex items-center">
+                            <Sparkles className="w-4 h-4 mr-2 text-amber-600" />
+                            Select from multiple unique voices
+                          </li>
+                          <li className="flex items-center">
+                            <Sparkles className="w-4 h-4 mr-2 text-amber-600" />
+                            Unlimited conversations
+                          </li>
+                        </ul>
+                        <Button
+                          className="w-full mt-4"
+                          variant="default"
+                          onClick={() => router.push('/pricing')}
+                        >
+                          <Crown className="w-4 h-4 mr-2" />
+                          Upgrade to Pro
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Continue with Free */}
+                  <div className="space-y-3">
+                    <Button
+                      onClick={() => setStep(3)}
+                      variant="outline"
+                      className="w-full h-12 text-base"
+                      size="lg"
+                    >
+                      Continue with Alex (Free)
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => setStep(1)}
+                      className="w-full"
+                    >
+                      ← Back
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </>
         )}
 
-        {/* Step 4 — Disclaimer */}
-        {step === 4 && (
+        {/* Step 3 — Disclaimer */}
+        {step === 3 && (
           <Card className="border-2 shadow-xl">
             <CardHeader className="text-center pb-4">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -321,7 +340,7 @@ export default function OnboardingPage() {
                   <Check className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="font-medium text-gray-900">
-                      {companionName} is not a therapist
+                      {isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'} is not a therapist
                     </p>
                     <p className="text-sm text-gray-600 mt-1">
                       This is a supportive companion, not a replacement for professional mental health care.
@@ -352,9 +371,11 @@ export default function OnboardingPage() {
                 <div className="flex items-start space-x-3">
                   <Check className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-gray-900">{companionName} learns about you</p>
+                    <p className="font-medium text-gray-900">
+                      {isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'} learns about you
+                    </p>
                     <p className="text-sm text-gray-600 mt-1">
-                      Every conversation helps {companionName} understand you better over time.
+                      Every conversation helps your companion understand you better over time.
                     </p>
                   </div>
                 </div>
@@ -367,13 +388,13 @@ export default function OnboardingPage() {
                   className="w-full h-12 text-base"
                   size="lg"
                 >
-                  {isSubmitting ? 'Setting up...' : `Start talking with ${companionName}`}
+                  {isSubmitting ? 'Setting up...' : `Start talking with ${isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'}`}
                   {!isSubmitting && <MessageCircle className="w-4 h-4 ml-2" />}
                 </Button>
 
                 <Button
                   variant="ghost"
-                  onClick={() => setStep(3)}
+                  onClick={() => setStep(2)}
                   className="w-full"
                   disabled={isSubmitting}
                 >

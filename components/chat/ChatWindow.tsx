@@ -1,9 +1,12 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2, Mic, Keyboard } from 'lucide-react'
+import { Send, Loader2, Mic, Keyboard, Volume2, VolumeX, Crown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import { Tooltip } from '@/components/ui/tooltip'
 import { MessageBubble } from './MessageBubble'
 import { TypingIndicator } from './TypingIndicator'
 import { SourcesPanel } from './SourcesPanel'
@@ -26,14 +29,19 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
   const [companionName, setCompanionName] = useState('Alex')
   const [isLoadingGreeting, setIsLoadingGreeting] = useState(false)
   const [greetingLoaded, setGreetingLoaded] = useState(false)
-  const [isVoiceMode, setIsVoiceMode] = useState(false)
-  const [isVoiceAvailable, setIsVoiceAvailable] = useState(true) // Will be set based on user plan
+  const [isVoiceMode, setIsVoiceMode] = useState(false) // Voice input
+  const [agentVoiceEnabled, setAgentVoiceEnabled] = useState(false) // Voice output
+  const [userPlan, setUserPlan] = useState<'free' | 'pro' | 'premium'>('free')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null)
   const lastActivityRef = useRef<Date>(new Date())
 
-  // Загрузить имя собеседника и проверить доступность голоса при монтировании
+  // Derived states
+  const isVoiceAvailable = userPlan === 'pro' || userPlan === 'premium'
+  const isPremium = userPlan === 'premium'
+
+  // Загрузить данные пользователя при монтировании
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -41,8 +49,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
         if (response.ok) {
           const data = await response.json()
           setCompanionName(data.companionName || 'Alex')
-          // Voice available только для Pro/Premium
-          setIsVoiceAvailable(data.plan === 'pro' || data.plan === 'premium')
+          setUserPlan(data.plan || 'free')
         }
       } catch (error) {
         console.error('Failed to fetch user data:', error)
@@ -217,6 +224,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
         body: JSON.stringify({
           message: userMessage,
           sessionId: currentSessionId,
+          enableVoiceResponse: agentVoiceEnabled, // Передаём флаг голосового ответа
         }),
       })
 
@@ -237,6 +245,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
         id: data.messageId || crypto.randomUUID(),
         role: 'assistant',
         content: data.message,
+        audioUrl: data.audioUrl, // Аудио URL если сгенерировано
         createdAt: new Date().toISOString(),
       }
 
@@ -245,6 +254,18 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
       // Update sources if provided
       if (data.sources) {
         setSources(data.sources)
+      }
+
+      // Auto-play audio если пришёл audioUrl и голос включён
+      if (data.audioUrl && agentVoiceEnabled) {
+        try {
+          const audio = new Audio(data.audioUrl)
+          audio.play().catch((error) => {
+            console.error('Failed to auto-play audio:', error)
+          })
+        } catch (error) {
+          console.error('Failed to create audio element:', error)
+        }
       }
     } catch (error) {
       console.error('Chat error:', error)
@@ -276,12 +297,19 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
     handleSubmit(undefined, text)
   }
 
-  const toggleVoiceMode = () => {
+  const toggleVoiceInput = () => {
     if (!isVoiceAvailable) {
-      // TODO: Show upgrade modal
+      // Заблокировано для FREE — tooltip покажет подсказку
       return
     }
     setIsVoiceMode(!isVoiceMode)
+  }
+
+  const toggleAgentVoice = () => {
+    if (!isVoiceAvailable) {
+      return
+    }
+    setAgentVoiceEnabled(!agentVoiceEnabled)
   }
 
   return (
@@ -312,33 +340,59 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
       {/* Input Area */}
       <div className="border-t border-gray-200 bg-white p-4">
         <div className="space-y-3">
-          {/* Mode Toggle */}
-          <div className="flex justify-center">
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              onClick={toggleVoiceMode}
-              disabled={!isVoiceAvailable}
-              className="text-xs"
-            >
-              {isVoiceMode ? (
-                <>
-                  <Keyboard className="w-4 h-4 mr-1" />
-                  Switch to Text
-                </>
-              ) : (
-                <>
-                  <Mic className="w-4 h-4 mr-1" />
-                  Switch to Voice
-                  {!isVoiceAvailable && ' (Pro)'}
-                </>
-              )}
-            </Button>
-          </div>
+          {/* Voice Controls — только для PRO/PREMIUM */}
+          {isVoiceAvailable && (
+            <div className="flex items-center justify-between px-2 py-2 bg-gray-50 rounded-lg">
+              {/* Agent Voice Toggle */}
+              <div className="flex items-center space-x-3">
+                <Switch
+                  checked={agentVoiceEnabled}
+                  onCheckedChange={toggleAgentVoice}
+                />
+                <div className="flex items-center space-x-2">
+                  {agentVoiceEnabled ? (
+                    <Volume2 className="w-4 h-4 text-indigo-600" />
+                  ) : (
+                    <VolumeX className="w-4 h-4 text-gray-400" />
+                  )}
+                  <span className="text-sm font-medium text-gray-700">
+                    Agent replies with voice
+                  </span>
+                  {/* Premium Badge */}
+                  {isPremium && (
+                    <Badge variant="premium" className="ml-2">
+                      <Crown className="w-3 h-3 mr-1" />
+                      Custom Voice
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Voice Input Toggle */}
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={toggleVoiceInput}
+                className="text-xs"
+              >
+                {isVoiceMode ? (
+                  <>
+                    <Keyboard className="w-4 h-4 mr-1" />
+                    Text Input
+                  </>
+                ) : (
+                  <>
+                    <Mic className="w-4 h-4 mr-1" />
+                    Voice Input
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
 
           {/* Text or Voice Input */}
-          {isVoiceMode ? (
+          {isVoiceMode && isVoiceAvailable ? (
             <VoiceRecorder
               onTranscriptionComplete={handleVoiceTranscription}
               disabled={isLoading}
@@ -354,17 +408,35 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
                 className="min-h-[60px] max-h-[200px] resize-none"
                 disabled={isLoading}
               />
-              <Button
-                type="submit"
-                disabled={!input.trim() || isLoading}
-                className="px-4 py-3 h-auto"
-              >
-                {isLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Send className="w-5 h-5" />
+              <div className="flex flex-col space-y-2">
+                {/* Send Button */}
+                <Button
+                  type="submit"
+                  disabled={!input.trim() || isLoading}
+                  className="px-4 py-3 h-auto"
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                </Button>
+
+                {/* Voice Button для FREE — заблокирован с tooltip */}
+                {!isVoiceAvailable && (
+                  <Tooltip content="Upgrade to Pro for voice features" side="left">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled
+                      className="px-3 py-2 opacity-50 cursor-not-allowed"
+                    >
+                      <Mic className="w-4 h-4" />
+                    </Button>
+                  </Tooltip>
                 )}
-              </Button>
+              </div>
             </form>
           )}
         </div>

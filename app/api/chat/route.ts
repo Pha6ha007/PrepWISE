@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { PrismaClient } from '@prisma/client'
 import { openai, getModel } from '@/lib/openai/client'
+import { textToSpeech } from '@/lib/elevenlabs/client'
 import {
   buildAnxietyPrompt,
   buildFamilyPrompt,
@@ -24,6 +25,7 @@ const prisma = new PrismaClient()
 const ChatRequestSchema = z.object({
   message: z.string().min(1).max(5000),
   sessionId: z.string().uuid().optional(),
+  enableVoiceResponse: z.boolean().optional(), // Флаг для голосового ответа
 })
 
 export async function POST(request: NextRequest) {
@@ -56,7 +58,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { message: userMessage, sessionId } = validation.data
+    const { message: userMessage, sessionId, enableVoiceResponse } = validation.data
 
     // ============================================
     // 3. ПОЛУЧИТЬ ИЛИ СОЗДАТЬ ПОЛЬЗОВАТЕЛЯ В БД
@@ -355,12 +357,43 @@ export async function POST(request: NextRequest) {
     })
 
     // ============================================
+    // 13.5. ГЕНЕРАЦИЯ ГОЛОСОВОГО ОТВЕТА (если запрошено)
+    // ============================================
+    let audioUrl: string | undefined
+
+    if (enableVoiceResponse && (dbUser.plan === 'pro' || dbUser.plan === 'premium')) {
+      try {
+        // Генерировать аудио через ElevenLabs
+        const audioBuffer = await textToSpeech(
+          assistantMessage,
+          dbUser.voiceId || undefined,
+          dbUser.companionGender as 'male' | 'female' | undefined
+        )
+
+        // TODO: Загрузить в Supabase Storage
+        // Пока вернём как base64 data URL для тестирования
+        const base64Audio = Buffer.from(audioBuffer).toString('base64')
+        audioUrl = `data:audio/mpeg;base64,${base64Audio}`
+
+        // Обновить message с audioUrl
+        await prisma.message.update({
+          where: { id: assistantMessageRecord.id },
+          data: { audioUrl },
+        })
+      } catch (error) {
+        console.error('Failed to generate voice response:', error)
+        // Не блокируем ответ если аудио не сгенерировалось
+      }
+    }
+
+    // ============================================
     // 14. ВЕРНУТЬ ОТВЕТ (с sources из RAG)
     // ============================================
     return NextResponse.json<ChatResponse>({
       message: assistantMessage,
       messageId: assistantMessageRecord.id,
       sessionId: session.id,
+      audioUrl, // Добавляем audioUrl если сгенерировано
       sources: retrievedChunks.map((chunk) => ({
         title: chunk.metadata.book_title,
         author: chunk.metadata.author,

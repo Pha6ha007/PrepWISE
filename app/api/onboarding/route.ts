@@ -12,8 +12,8 @@ const OnboardingSchema = z.object({
   ageGroup: z.string().min(1),
   userGender: z.enum(['male', 'female', 'not_specified']),
   companionName: z.string().min(1).max(20),
-  voicePreference: z.string().optional(),
-  companionGender: z.enum(['male', 'female', 'neutral']).optional(),
+  voicePreference: z.string().optional(), // ElevenLabs voice ID
+  companionGender: z.enum(['male', 'female']).optional(),
 })
 
 export async function POST(request: NextRequest) {
@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
         ageGroup,
         userGender,
         companionName,
-        companionGender: companionGender || null,
-        voiceId: voicePreference || null,
+        companionGender: companionGender || 'male', // Дефолт male если не указан
+        voiceId: voicePreference || null, // ElevenLabs voice ID
       },
     })
 
