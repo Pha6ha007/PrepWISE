@@ -138,7 +138,7 @@ Return JSON array of top ${topN} chunks sorted by relevance score (highest first
     }
 
     // Map LLM rankings back to chunks
-    const rerankedChunks: RerankedChunk[] = rankings
+    const rerankedChunks = rankings
       .slice(0, topN) // Take only top N
       .map((ranking: any) => {
         const chunkIndex = ranking.chunkIndex - 1 // Convert to 0-based
@@ -152,11 +152,11 @@ Return JSON array of top ${topN} chunks sorted by relevance score (highest first
         return {
           ...chunk,
           rerankScore: ranking.score || 0,
-          rerankReason: ranking.reason || undefined,
-        }
+          rerankReason: ranking.reason,
+        } as RerankedChunk
       })
-      .filter((chunk): chunk is RerankedChunk => chunk !== null)
-      .sort((a, b) => b.rerankScore - a.rerankScore) // Sort by rerank score descending
+      .filter((chunk) => chunk !== null)
+      .sort((a, b) => b.rerankScore - a.rerankScore) as RerankedChunk[] // Sort by rerank score descending
 
     // Log reranking results in development
     if (process.env.NODE_ENV === 'development') {

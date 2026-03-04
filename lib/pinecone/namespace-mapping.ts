@@ -20,7 +20,7 @@ export const AGENT_NAMESPACE_MAP: Record<AgentType, Namespace> = {
   trauma: NAMESPACES.TRAUMA,
   relationships: NAMESPACES.FAMILY, // Uses family namespace - attachment/relationship content overlaps
   mens: NAMESPACES.MENS,
-  womens: NAMESPACES.GENERAL, // TODO: Create dedicated womens namespace when content is ready
+  womens: NAMESPACES.WOMENS,
   general: NAMESPACES.GENERAL,
 }
 
@@ -53,7 +53,6 @@ export function getAvailableNamespaces(): Namespace[] {
  * Check if a namespace has content (based on mapping)
  */
 export function isNamespaceActive(namespace: Namespace): boolean {
-  // All mapped namespaces are active except womens (still using general)
-  return namespace !== NAMESPACES.GENERAL ||
-         Object.values(AGENT_NAMESPACE_MAP).includes(namespace)
+  // All mapped namespaces are active
+  return Object.values(AGENT_NAMESPACE_MAP).includes(namespace)
 }

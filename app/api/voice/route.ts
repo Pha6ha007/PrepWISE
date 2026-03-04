@@ -113,7 +113,6 @@ export async function POST(request: NextRequest) {
     // ============================================
     return NextResponse.json({
       text: transcribedText,
-      duration: transcription.duration || null,
     })
   } catch (error) {
     console.error('Voice transcription error:', error)

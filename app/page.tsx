@@ -20,25 +20,25 @@ export default function LandingPage() {
 
       {/* Glassmorphism Header */}
       <header className="glass sticky top-0 z-50 border-b border-white/20">
-        <nav className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
+        <nav className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-2 md:py-3">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3 hover-lift transition-smooth hover:opacity-90">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-serif font-bold text-xl">C</span>
+            <Link href="/" className="flex items-center space-x-2 md:space-x-3 hover-lift transition-smooth hover:opacity-90">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-lg md:rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-serif font-bold text-lg md:text-xl">C</span>
               </div>
-              <span className="font-serif text-2xl font-semibold text-[#1F2937]">Confide</span>
+              <span className="font-serif text-xl md:text-2xl font-semibold text-[#1F2937]">Confide</span>
             </Link>
 
             {/* Nav Links */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <Link href="/login">
-                <Button variant="ghost" className="text-[#1F2937] hover:bg-white/30 transition-smooth backdrop-blur-sm">
+                <Button variant="ghost" className="text-[#1F2937] hover:bg-white/30 transition-smooth backdrop-blur-sm text-sm md:text-base px-3 md:px-4">
                   Sign in
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="relative overflow-hidden group bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-semibold hover-lift shadow-lg">
+                <Button className="relative overflow-hidden group bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-semibold hover-lift shadow-lg text-sm md:text-base px-3 md:px-4">
                   <span className="relative z-10">Start for free</span>
                   <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300" />
                 </Button>
@@ -49,17 +49,17 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <main className="relative min-h-[calc(100vh-73px)] flex items-center">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-24 lg:py-32 w-full">
+      <main className="relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-6 pb-32 md:pt-12 md:pb-40 lg:pt-20 lg:pb-48 w-full">
           <div className="text-center max-w-5xl mx-auto">
             {/* Badge with glassmorphism */}
-            <div className="inline-flex items-center space-x-2 glass-button px-6 py-3 rounded-full text-sm font-medium mb-8 animate-fade-in">
-              <Sparkles className="w-4 h-4 text-[#6366F1]" />
+            <div className="inline-flex items-center space-x-2 glass-button px-4 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-medium mb-3 md:mb-6 animate-fade-in">
+              <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-[#6366F1]" />
               <span className="text-[#1F2937]">AI Emotional Support — Not Medical Service</span>
             </div>
 
             {/* Heading with Gradient Text */}
-            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[1.1] mb-6 animate-fade-in-up">
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.1] mb-2 md:mb-4 animate-fade-in-up">
               Therapy costs{' '}
               <span className="gradient-text">$200/hour</span>
               <br />
@@ -67,14 +67,14 @@ export default function LandingPage() {
             </h1>
 
             {/* Subheading */}
-            <p className="text-xl md:text-2xl text-[#4B5563] mb-12 leading-relaxed animate-fade-in-up max-w-3xl mx-auto" style={{ animationDelay: '100ms' }}>
+            <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-[#4B5563] mb-4 md:mb-6 lg:mb-8 leading-relaxed animate-fade-in-up max-w-3xl mx-auto" style={{ animationDelay: '100ms' }}>
               AI companion trained on real psychology — available 24/7
             </p>
 
             {/* CTA Button with 3D Effect */}
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6 animate-fade-in-up transform-3d" style={{ animationDelay: '200ms' }}>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6 animate-fade-in-up transform-3d" style={{ animationDelay: '200ms' }}>
               <Link href="/register">
-                <button className="group relative px-12 py-6 text-lg font-bold text-white rounded-2xl overflow-hidden transition-all duration-500 hover-lift shadow-large hover:shadow-2xl">
+                <button className="group relative px-6 md:px-10 py-3 md:py-5 text-sm md:text-base lg:text-lg font-bold text-white rounded-xl md:rounded-2xl overflow-hidden transition-all duration-500 hover-lift shadow-large hover:shadow-2xl">
                   {/* Animated Gradient Background */}
                   <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] via-[#EC4899] to-[#F59E0B] bg-[length:200%_100%] animate-gradient-x"
                        style={{
@@ -93,24 +93,24 @@ export default function LandingPage() {
                   {/* Button Text */}
                   <span className="relative z-10 flex items-center justify-center space-x-2">
                     <span>Start for free</span>
-                    <Sparkles className="w-5 h-5" />
+                    <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
                   </span>
                 </button>
               </Link>
 
               {/* Info text next to button */}
-              <div className="flex items-center space-x-2 px-6 py-3 glass rounded-full">
-                <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center space-x-2 px-4 py-2 md:px-6 md:py-3 glass rounded-full">
+                <svg className="w-3 h-3 md:w-4 md:h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                <span className="text-sm text-[#6B7280]">No credit card required</span>
+                <span className="text-xs md:text-sm text-[#6B7280]">No credit card required</span>
                 <span className="text-[#D1D5DB]">·</span>
-                <span className="text-sm text-[#6B7280]">5 free sessions</span>
+                <span className="text-xs md:text-sm text-[#6B7280]">5 free sessions</span>
               </div>
             </div>
 
             {/* Floating Cards with Glassmorphism */}
-            <div className="grid md:grid-cols-3 gap-6 mt-24 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+            <div className="hidden lg:grid md:grid-cols-3 gap-6 mt-32 md:mt-40 lg:mt-48 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
               {/* Card 1 */}
               <div className="glass-button p-8 rounded-2xl hover-lift group cursor-pointer">
                 <div className="w-14 h-14 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg group-hover:scale-110 transition-transform">

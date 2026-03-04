@@ -707,19 +707,60 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 anxiety_cbt  — CBT, ACT, DBT методики
 family       — Gottman, Satir, системная терапия
 trauma       — van der Kolk, Bowlby, ПТСР
+mens         — Мужская психология, эмоциональность, маскулинность
+womens       — Женская психология, burnout, anger, authenticity
 crisis       — протоколы кризисного вмешательства
 general      — Rogers, Yalom, Frankl, общая база
 
-### Первые книги для загрузки (приоритет)
+### Загруженные книги по namespace (март 2026)
 
-1. Aaron Beck — Cognitive Therapy (CBT основа)
-2. David Burns — Feeling Good
-3. Carl Rogers — On Becoming a Person
-4. Bessel van der Kolk — The Body Keeps the Score
-5. John Gottman — Seven Principles
-6. Viktor Frankl — Man's Search for Meaning
-7. Judith Herman — Trauma and Recovery
-8. Irvin Yalom — The Gift of Therapy
+**ANXIETY_CBT (246 chunks):**
+1. David Burns — Feeling Good (92 chunks)
+2. Edmund Bourne — Anxiety and Phobia Workbook (75 chunks)
+3. David Burns — When Panic Attacks (79 chunks)
+
+**FAMILY (261 chunks):**
+1. John Gottman — Seven Principles (98 chunks)
+2. Sue Johnson — Hold Me Tight (87 chunks)
+3. Amir Levine — Attached (76 chunks)
+
+**TRAUMA (413 chunks):**
+1. Bessel van der Kolk — The Body Keeps the Score (172 chunks)
+2. Judith Herman — Trauma and Recovery (120 chunks)
+3. Gabor Maté — In the Realm of Hungry Ghosts (56 chunks)
+4. Lindsay Gibson — Adult Children of Emotionally Immature Parents (65 chunks)
+
+**MENS (109 chunks):**
+1. Terry Real — I Don't Want to Talk About It (39 chunks)
+2. Robert Glover — No More Mr. Nice Guy (30 chunks)
+3. Bell Hooks — The Will to Change: Men, Masculinity, and Love (40 chunks)
+
+**WOMENS (252 chunks):**
+1. Harriet Lerner — The Dance of Anger (31 chunks)
+2. Glennon Doyle — Untamed (41 chunks)
+3. Emily Nagoski — Burnout: The Secret to Unlocking the Stress Cycle (180 chunks)
+
+**GENERAL (353 chunks):**
+1. Viktor Frankl — Man's Search for Meaning (61 chunks)
+2. Irvin Yalom — The Gift of Therapy (156 chunks)
+3. Carl Rogers — On Becoming a Person (64 chunks)
+4. Stephen Porges — Polyvagal Theory (72 chunks)
+
+**Итого: 1,634 chunks в Pinecone**
+
+### Следующие книги для добавления (приоритет)
+
+**ANXIETY_CBT:**
+- Steven Hayes — ACT Made Simple
+- Marsha Linehan — DBT Skills Training Manual
+
+**TRAUMA:**
+- Peter Levine — Waking the Tiger
+- Gabor Maté — The Myth of Normal
+
+**WOMENS:**
+- Brené Brown — Daring Greatly (уже в books/)
+- Naomi Wolf — The Beauty Myth
 
 ### Загрузка в RAG
 
@@ -732,6 +773,25 @@ npx tsx scripts/ingest-knowledge.ts   --file="book.pdf"   --namespace="anxiety_c
 - Retrieval: top-5 чанков по cosine similarity
 - Обновление: раз в квартал
 - Не загружать дубли — проверять по pineconeId
+
+### Тестирование RAG качества
+
+**Команда:** `npx tsx scripts/test-rag-full-comparison.ts`
+
+**Последний тест (март 2026):**
+- Всего запросов: 21
+- Average Score: 0.4225 → 0.6643 (+57.2%)
+- PASS (≥0.75): 7/21 (33%)
+- FAIL (<0.50): 0/21 (0%) ✅
+
+**Лучшие результаты по агентам:**
+- MENS: +128.7% (0.3060 → 0.7000) — огромный рост после добавления namespace
+- TRAUMA: +63.5% (0.4280 → 0.7000)
+- CROSS-AGENT: +72.8% (0.4244 → 0.7333)
+- FAMILY: +50.0% (0.4223 → 0.6333)
+- RELATIONSHIPS: +40.4% (0.4155 → 0.5833)
+- ANXIETY: +35.0% (0.5307 → 0.7167)
+- WOMENS: +35.5% (0.4303 → 0.5833) — улучшение после перехода на специализированный namespace
 
 ---
 

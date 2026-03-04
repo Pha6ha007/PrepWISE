@@ -1554,4 +1554,193 @@ GROQ_WHISPER_MODEL=whisper-large-v3-turbo
 
 ---
 
+## 🎉 [2026-03-04] RAG Expansion — MENS & WOMENS Namespaces COMPLETED
+
+**Gender-Specific Knowledge Bases Added** — 100% ✅
+
+### Задачи выполнены
+
+**Task 1: MENS namespace books loaded** ✅
+- Terry Real — I Don't Want to Talk About It (39 chunks)
+- Robert Glover — No More Mr. Nice Guy (30 chunks)
+- Bell Hooks — The Will to Change: Men, Masculinity, and Love (40 chunks)
+- **Total: 109 chunks in MENS namespace**
+
+**Task 2: WOMENS namespace books loaded** ✅
+- Harriet Lerner — The Dance of Anger (31 chunks)
+- Glennon Doyle — Untamed (41 chunks)
+- Emily Nagoski — Burnout: The Secret to Unlocking the Stress Cycle (180 chunks)
+- **Total: 252 chunks in WOMENS namespace**
+
+**Task 3: Namespace mapping updated** ✅
+- Updated `lib/pinecone/namespace-mapping.ts`
+- Changed `womens: NAMESPACES.GENERAL` → `womens: NAMESPACES.WOMENS`
+- Removed TODO comment (namespace now active)
+
+**Task 4: Duplicate cleanup** ✅
+- Removed duplicate PDF files:
+  - "Bell Hooks — The Will to Change- Men, Masculinity, and Love.pdf" (553KB)
+  - "No More Mr. Nice Guy by Robert Glover.pdf" (597KB)
+  - "Robert Glover — No More Mr. Nice Guy -1.pdf" (292KB)
+- Kept larger, complete versions (2.3-2.4MB)
+
+### Full RAG Test Results (After Gender Namespaces)
+
+**Test Command:** `npx tsx scripts/test-rag-full-comparison.ts`
+
+**Overall Metrics:**
+- Total Queries: 21
+- Average Score: 0.4225 → 0.6643 (+57.2%)
+- PASS (≥0.75): 7/21 (33%)
+- MARGINAL (0.50-0.75): 14/21 (67%)
+- FAIL (<0.50): 0/21 (0%) ✅
+
+**Results by Agent:**
+
+| Agent | Before | After Reranking | Improvement | Status |
+|-------|--------|-----------------|-------------|--------|
+| **MENS** 🚀 | 0.3060 | **0.7000** | **+128.7%** | ✅ HUGE WIN |
+| **TRAUMA** | 0.4280 | **0.7000** | +63.5% | ✅ EXCELLENT |
+| **CROSS-AGENT** | 0.4244 | **0.7333** | +72.8% | ✅ EXCELLENT |
+| **FAMILY** | 0.4223 | **0.6333** | +50.0% | 🟡 GOOD |
+| **RELATIONSHIPS** | 0.4155 | **0.5833** | +40.4% | 🟡 GOOD |
+| **ANXIETY** | 0.5307 | **0.7167** | +35.0% | ✅ EXCELLENT |
+| **WOMENS** | 0.4303 | **0.5833** | +35.5% | 🟡 IMPROVED |
+
+### Key Achievements
+
+**MENS Namespace — Massive Improvement:**
+- **Before:** 0.3060 (worst performing agent)
+- **After:** 0.7000 (competitive with other agents)
+- **Improvement:** +128.7% 🚀
+- **Best query:** "I don't really have anyone to talk to..." → **0.8000** (PASS)
+
+**Причина:** Специализированные книги о мужской психологии и эмоциональности создали сильный контекст для retrieval.
+
+**WOMENS Namespace — Activated:**
+- **Before:** 0.4303 (using GENERAL namespace)
+- **After:** 0.5833 (using WOMENS namespace)
+- **Improvement:** +35.5%
+- **Best query:** "I do everything at home and at work..." → **0.7500** (PASS)
+
+**Слабые стороны WOMENS:**
+- 2 queries scored 0.5000 (at MARGINAL threshold):
+  - "He told me I'm overreacting..." (gaslighting)
+  - "I love my kids but I've completely lost who I am..." (identity loss)
+- **Причина:** Нужны книги по gaslighting, материнству, identity loss
+
+### Current RAG System State
+
+**Total Knowledge Base:**
+- **Books:** 43 total
+- **Vectors:** 1,634 chunks in Pinecone
+- **Namespaces:** 7 active (anxiety_cbt, family, trauma, mens, womens, crisis, general)
+
+**Distribution by Namespace:**
+
+| Namespace | Chunks | Books | Key Authors |
+|-----------|--------|-------|-------------|
+| anxiety_cbt | 246 | 3 | David Burns, Edmund Bourne |
+| family | 261 | 3 | John Gottman, Sue Johnson, Amir Levine |
+| trauma | 413 | 4 | van der Kolk, Herman, Maté, Gibson |
+| **mens** | **109** | **3** | Terry Real, Robert Glover, Bell Hooks |
+| **womens** | **252** | **3** | Lerner, Doyle, Nagoski |
+| general | 353 | 4 | Frankl, Yalom, Rogers, Porges |
+
+### Books Ingested (Gender-Specific)
+
+**MENS Namespace:**
+```bash
+npx tsx scripts/ingest-knowledge.ts \
+  --file="books/Terry Real — I Don't Want to Talk About It.pdf" \
+  --namespace="mens" \
+  --title="I Don't Want to Talk About It" \
+  --author="Terry Real"
+
+npx tsx scripts/ingest-knowledge.ts \
+  --file="books/Robert Glover — No More Mr. Nice Guy.pdf" \
+  --namespace="mens" \
+  --title="No More Mr. Nice Guy" \
+  --author="Robert Glover"
+
+npx tsx scripts/ingest-knowledge.ts \
+  --file="books/Bell Hooks — The Will to Change.pdf" \
+  --namespace="mens" \
+  --title="The Will to Change: Men, Masculinity, and Love" \
+  --author="Bell Hooks"
+```
+
+**WOMENS Namespace:**
+```bash
+npx tsx scripts/ingest-knowledge.ts \
+  --file="books/Harriet Lerner — The Dance of Anger.pdf" \
+  --namespace="womens" \
+  --title="The Dance of Anger" \
+  --author="Harriet Lerner"
+
+npx tsx scripts/ingest-knowledge.ts \
+  --file="books/Glennon Doyle — Untamed.pdf" \
+  --namespace="womens" \
+  --title="Untamed" \
+  --author="Glennon Doyle"
+
+npx tsx scripts/ingest-knowledge.ts \
+  --file="books/Emily Nagoski — Burnout- The Secret to Unlocking the Stress Cycle.pdf" \
+  --namespace="womens" \
+  --title="Burnout: The Secret to Unlocking the Stress Cycle" \
+  --author="Emily Nagoski"
+```
+
+### Next Steps — Recommended Book Additions
+
+**WOMENS namespace (to reach 70%+ PASS):**
+- [ ] Brené Brown — Daring Greatly (уже в books/ directory)
+- [ ] Books on gaslighting and emotional abuse
+- [ ] Books on motherhood and identity
+- [ ] Books on work-life balance and mental load
+
+**MENS namespace (to maintain strong performance):**
+- [ ] Mark Greene — The Little #MeAsWell Book
+- [ ] Lewis Howes — The Mask of Masculinity
+- [ ] Noel Larson — Man Enough
+
+**FAMILY namespace (improve divorce/conflict queries):**
+- [ ] More books on divorce recovery
+- [ ] Books on conflict resolution
+- [ ] Books on blended families
+
+### Files Modified
+
+**Updated:**
+- `lib/pinecone/namespace-mapping.ts` — womens namespace activation
+- `CLAUDE.md` — RAG section updated with current state
+- `ARCHITECTURE.md` — this entry
+
+**Deleted:**
+- 3 duplicate PDF files (smaller versions)
+
+### Test Scripts Used
+
+**Full Comparison Test:**
+```bash
+npx tsx scripts/test-rag-full-comparison.ts
+```
+
+**Book Ingestion:**
+```bash
+npx tsx scripts/ingest-knowledge.ts --file="..." --namespace="..." --title="..." --author="..."
+```
+
+### System Status
+
+✅ **MENS namespace operational** — 109 chunks, +128.7% improvement
+✅ **WOMENS namespace operational** — 252 chunks, +35.5% improvement
+✅ **0% FAIL rate** — all queries ≥0.50 relevance
+✅ **7 PASS queries** (≥0.75) — 33% success rate
+✅ **Gender-adapted RAG working** — specialized agents use specialized knowledge
+
+**Next Phase:** Add more books to WOMENS namespace to reach 60%+ PASS rate
+
+---
+
 *Log maintained by Claude Code + Cursor*

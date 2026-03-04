@@ -88,10 +88,15 @@ export async function POST(request: NextRequest) {
     // 5. ГЕНЕРАЦИЯ РЕЧИ ЧЕРЕЗ ELEVENLABS
     // ============================================
     // Используем voiceId из профиля или дефолтный по полу
+    const gender: 'male' | 'female' | undefined =
+      dbUser.companionGender === 'male' || dbUser.companionGender === 'female'
+        ? dbUser.companionGender
+        : 'female'
+
     const audioBuffer = await textToSpeech(
       text,
       dbUser.voiceId || undefined,
-      dbUser.companionGender || 'female'
+      gender
     )
 
     // ============================================
