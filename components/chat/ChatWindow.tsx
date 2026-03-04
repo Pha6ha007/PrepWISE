@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Send, Loader2, Mic, Keyboard, Volume2, VolumeX, Crown, Plus } from 'lucide-react'
 import { toast } from 'sonner'
+import { getExerciseById } from '@/lib/exercises/data'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
@@ -26,6 +28,7 @@ interface ChatWindowProps {
 }
 
 export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
+  const searchParams = useSearchParams()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -77,6 +80,24 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
       setShowOnboarding(true)
     }
   }, [])
+
+  // Handle exercise deep linking from query parameter
+  useEffect(() => {
+    const exerciseId = searchParams?.get('exercise')
+    if (exerciseId && !input) {
+      const exercise = getExerciseById(exerciseId)
+      if (exercise) {
+        setInput(`I just finished the ${exercise.name} exercise. Here's how I feel: `)
+        // Focus the textarea after a short delay to ensure it's rendered
+        setTimeout(() => {
+          textareaRef.current?.focus()
+          // Move cursor to end
+          const length = textareaRef.current?.value.length || 0
+          textareaRef.current?.setSelectionRange(length, length)
+        }, 100)
+      }
+    }
+  }, [searchParams, input])
 
   // Загрузить приветственное сообщение если чат пустой
   useEffect(() => {

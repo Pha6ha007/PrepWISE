@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { Button } from '@/components/ui/button'
-import { MessageSquare, BookOpen, TrendingUp, Settings, LogOut, Crown } from 'lucide-react'
+import { MessageSquare, BookOpen, TrendingUp, Settings, LogOut, Crown, Sparkles } from 'lucide-react'
 
 async function signOut() {
   'use server'
@@ -38,6 +38,7 @@ export default async function DashboardLayout({
   const navigation = [
     { name: 'Chat', href: '/dashboard/chat', icon: MessageSquare },
     { name: 'Journal', href: '/dashboard/journal', icon: BookOpen },
+    { name: 'Exercises', href: '/dashboard/exercises', icon: Sparkles },
     { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ]
