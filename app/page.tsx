@@ -1,6 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, DollarSign, Brain, MessageCircle, Check, X, Shield, Lock, AlertTriangle, FileText } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 export default function LandingPage() {
   return (
@@ -20,12 +23,12 @@ export default function LandingPage() {
         <nav className="max-w-7xl mx-auto px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="flex items-center space-x-3 hover-lift">
+            <Link href="/" className="flex items-center space-x-3 hover-lift transition-smooth hover:opacity-90">
               <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-white font-serif font-bold text-xl">C</span>
               </div>
               <span className="font-serif text-2xl font-semibold text-[#1F2937]">Confide</span>
-            </div>
+            </Link>
 
             {/* Nav Links */}
             <div className="flex items-center space-x-4">
@@ -35,9 +38,9 @@ export default function LandingPage() {
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="glass-button text-white font-semibold relative overflow-hidden group">
+                <Button className="relative overflow-hidden group bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-semibold hover-lift shadow-lg">
                   <span className="relative z-10">Start for free</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] to-[#EC4899] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300" />
                 </Button>
               </Link>
             </div>
@@ -69,7 +72,7 @@ export default function LandingPage() {
             </p>
 
             {/* CTA Button with 3D Effect */}
-            <div className="animate-fade-in-up transform-3d" style={{ animationDelay: '200ms' }}>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 animate-fade-in-up transform-3d" style={{ animationDelay: '200ms' }}>
               <Link href="/register">
                 <button className="group relative px-12 py-6 text-lg font-bold text-white rounded-2xl overflow-hidden transition-all duration-500 hover-lift shadow-large hover:shadow-2xl">
                   {/* Animated Gradient Background */}
@@ -95,8 +98,8 @@ export default function LandingPage() {
                 </button>
               </Link>
 
-              {/* Under button text with glassmorphism */}
-              <div className="inline-flex items-center space-x-2 mt-6 px-6 py-2 glass rounded-full">
+              {/* Info text next to button */}
+              <div className="flex items-center space-x-2 px-6 py-3 glass rounded-full">
                 <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
@@ -144,6 +147,496 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
+
+      {/* Demo Section */}
+      <section className="relative py-24 lg:py-32">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#1F2937] mb-4">
+              Alex <span className="gradient-text">remembers</span> your story
+            </h2>
+            <p className="text-xl text-[#6B7280] max-w-2xl mx-auto">
+              No need to repeat yourself — every conversation builds on the last
+            </p>
+          </div>
+
+          {/* Chat Mockup */}
+          <div className="glass-button p-8 lg:p-12 rounded-3xl shadow-large max-w-3xl mx-auto">
+            <div className="space-y-6">
+              {/* User Message 1 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex justify-end"
+              >
+                <div className="max-w-[80%] px-6 py-4 rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#818CF8] text-white shadow-lg">
+                  <p className="text-base leading-relaxed">
+                    I've been feeling anxious about work lately
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Alex Message 1 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="flex justify-start"
+              >
+                <div className="max-w-[80%]">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-full flex items-center justify-center shadow-md">
+                      <span className="text-white font-serif font-bold text-sm">A</span>
+                    </div>
+                    <span className="text-sm font-medium text-[#6B7280]">Alex</span>
+                  </div>
+                  <div className="glass px-6 py-4 rounded-2xl shadow-lg border border-white/20">
+                    <p className="text-base leading-relaxed text-[#1F2937]">
+                      I remember you mentioned your manager's criticism last week. Has anything changed since then?
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* User Message 2 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1.0 }}
+                className="flex justify-end"
+              >
+                <div className="max-w-[80%] px-6 py-4 rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#818CF8] text-white shadow-lg">
+                  <p className="text-base leading-relaxed">
+                    Actually yes, we had a good talk yesterday
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Alex Message 2 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1.4 }}
+                className="flex justify-start"
+              >
+                <div className="max-w-[80%]">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-full flex items-center justify-center shadow-md">
+                      <span className="text-white font-serif font-bold text-sm">A</span>
+                    </div>
+                    <span className="text-sm font-medium text-[#6B7280]">Alex</span>
+                  </div>
+                  <div className="glass px-6 py-4 rounded-2xl shadow-lg border border-white/20">
+                    <p className="text-base leading-relaxed text-[#1F2937]">
+                      That's real progress. Three weeks ago you said confrontation felt impossible.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Caption */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 1.8 }}
+              className="mt-8 text-center"
+            >
+              <p className="text-[#6B7280] text-lg font-medium">
+                Alex remembers your story — no need to repeat yourself
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* PAIN → SOLUTION Section */}
+      <section className="relative py-24 lg:py-32 bg-white/50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#1F2937] mb-4">
+              Therapy is <span className="gradient-text">expensive</span>. We get it.
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="glass-button p-8 rounded-3xl hover-lift"
+            >
+              <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                <DollarSign className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-3">Can't afford therapy?</h3>
+              <div className="h-1 w-16 bg-gradient-to-r from-[#6366F1] to-[#EC4899] rounded-full mb-4"></div>
+              <p className="text-[#4B5563] text-lg leading-relaxed">
+                <span className="font-bold text-[#6366F1]">$19/month</span>, unlimited sessions — not $240/week
+              </p>
+            </motion.div>
+
+            {/* Card 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="glass-button p-8 rounded-3xl hover-lift"
+            >
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                <Brain className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-3">Tired of repeating yourself?</h3>
+              <div className="h-1 w-16 bg-gradient-to-r from-[#6366F1] to-[#EC4899] rounded-full mb-4"></div>
+              <p className="text-[#4B5563] text-lg leading-relaxed">
+                <span className="font-bold text-[#6366F1]">Memory that grows</span> with every conversation
+              </p>
+            </motion.div>
+
+            {/* Card 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="glass-button p-8 rounded-3xl hover-lift"
+            >
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                <MessageCircle className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-3">Generic chatbot advice?</h3>
+              <div className="h-1 w-16 bg-gradient-to-r from-[#6366F1] to-[#EC4899] rounded-full mb-4"></div>
+              <p className="text-[#4B5563] text-lg leading-relaxed">
+                Trained on <span className="font-bold text-[#6366F1]">37 psychology books</span> (CBT, DBT, ACT, Gottman)
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* COMPARISON TABLE Section */}
+      <section className="relative py-24 lg:py-32">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#1F2937] mb-4">
+              How we <span className="gradient-text">compare</span>
+            </h2>
+            <p className="text-xl text-[#6B7280]">
+              AI support that actually remembers you
+            </p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="glass-button rounded-3xl overflow-hidden shadow-large"
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-white/20">
+                    <th className="px-6 py-4 text-left font-serif text-lg text-[#1F2937]">Platform</th>
+                    <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Price</th>
+                    <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Memory</th>
+                    <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Voice</th>
+                    <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Agents</th>
+                    <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">24/7</th>
+                    <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Crisis</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Confide Row - Highlighted */}
+                  <tr className="bg-gradient-to-r from-[#6366F1]/10 via-[#EC4899]/10 to-[#F59E0B]/10 border-b border-white/20">
+                    <td className="px-6 py-4 font-bold text-[#1F2937]">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-lg flex items-center justify-center">
+                          <span className="text-white font-serif font-bold text-xs">C</span>
+                        </div>
+                        <span>Confide</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center font-bold text-[#6366F1]">$19/mo</td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center font-semibold text-[#1F2937]">6</td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                  </tr>
+
+                  {/* BetterHelp */}
+                  <tr className="border-b border-white/20">
+                    <td className="px-6 py-4 text-[#4B5563]">BetterHelp</td>
+                    <td className="px-6 py-4 text-center text-[#4B5563]">$240/mo</td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center text-[#4B5563]">Human</td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                  </tr>
+
+                  {/* Wysa */}
+                  <tr className="border-b border-white/20">
+                    <td className="px-6 py-4 text-[#4B5563]">Wysa</td>
+                    <td className="px-6 py-4 text-center text-[#4B5563]">$6/mo</td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center text-[#4B5563]">1</td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                  </tr>
+
+                  {/* Woebot */}
+                  <tr>
+                    <td className="px-6 py-4 text-[#4B5563]">Woebot</td>
+                    <td className="px-6 py-4 text-center text-[#4B5563]">Free</td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center text-[#4B5563]">1</td>
+                    <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS Section */}
+      <section className="relative py-24 lg:py-32 bg-white/50">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#1F2937] mb-4">
+              Get started in <span className="gradient-text">3 simple steps</span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-12">
+            {/* Step 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-center"
+            >
+              <div className="relative inline-block mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-2xl flex items-center justify-center shadow-large hover-lift">
+                  <span className="font-serif text-3xl font-bold text-white">1</span>
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#F59E0B] rounded-full flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-3">Sign up in 2 minutes</h3>
+              <p className="text-[#6B7280] text-lg">
+                No credit card required. Start with 5 free sessions.
+              </p>
+            </motion.div>
+
+            {/* Step 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="relative inline-block mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#EC4899] to-[#F472B6] rounded-2xl flex items-center justify-center shadow-large hover-lift">
+                  <span className="font-serif text-3xl font-bold text-white">2</span>
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#F59E0B] rounded-full flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-3">Choose your companion</h3>
+              <p className="text-[#6B7280] text-lg">
+                Pick a name and voice that feels right for you.
+              </p>
+            </motion.div>
+
+            {/* Step 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-center"
+            >
+              <div className="relative inline-block mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#F59E0B] to-[#FBBF24] rounded-2xl flex items-center justify-center shadow-large hover-lift">
+                  <span className="font-serif text-3xl font-bold text-white">3</span>
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#F59E0B] rounded-full flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-3">Start your first conversation</h3>
+              <p className="text-[#6B7280] text-lg">
+                Talk about anything. Alex is here to listen.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* TRUST & SAFETY Section */}
+      <section className="relative py-24 lg:py-32">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#1F2937] mb-4">
+              Your <span className="gradient-text">privacy</span> matters
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Trust Card 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="glass-button p-6 rounded-2xl text-center hover-lift"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg">
+                <Lock className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-[#1F2937] mb-2">End-to-end encrypted</h3>
+              <p className="text-sm text-[#6B7280]">Your conversations are private and secure</p>
+            </motion.div>
+
+            {/* Trust Card 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="glass-button p-6 rounded-2xl text-center hover-lift"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg">
+                <AlertTriangle className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-[#1F2937] mb-2">Crisis detection</h3>
+              <p className="text-sm text-[#6B7280]">We detect urgent situations from day one</p>
+            </motion.div>
+
+            {/* Trust Card 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="glass-button p-6 rounded-2xl text-center hover-lift"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-[#1F2937] mb-2">Not a medical service</h3>
+              <p className="text-sm text-[#6B7280]">AI support, not medical diagnosis</p>
+            </motion.div>
+
+            {/* Trust Card 4 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="glass-button p-6 rounded-2xl text-center hover-lift"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 mx-auto shadow-lg">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-[#1F2937] mb-2">Your data is yours</h3>
+              <p className="text-sm text-[#6B7280]">Never used to train AI models</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA Section */}
+      <section className="relative py-32 lg:py-40">
+        <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="font-serif text-5xl lg:text-6xl font-bold text-[#1F2937] mb-6">
+              Ready to feel <span className="gradient-text">heard</span>?
+            </h2>
+            <p className="text-2xl text-[#6B7280] mb-12">
+              Start your first conversation — free
+            </p>
+
+            <Link href="/register">
+              <button className="group relative px-16 py-8 text-xl font-bold text-white rounded-2xl overflow-hidden transition-all duration-500 hover-lift shadow-large hover:shadow-2xl">
+                {/* Animated Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] via-[#EC4899] to-[#F59E0B] bg-[length:200%_100%]"
+                     style={{
+                       animation: 'gradient-shift 3s ease infinite'
+                     }}
+                />
+
+                {/* Glass overlay on hover */}
+                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300" />
+
+                {/* Shine effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                </div>
+
+                {/* Button Text */}
+                <span className="relative z-10 flex items-center justify-center space-x-3">
+                  <span>Start for free</span>
+                  <Sparkles className="w-6 h-6" />
+                </span>
+              </button>
+            </Link>
+
+            <p className="text-[#9CA3AF] mt-8 text-lg">
+              No credit card required · 5 free sessions · Cancel anytime
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative border-t border-white/20 py-12">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <Link href="/" className="flex items-center space-x-2 transition-smooth hover:opacity-90">
+              <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-lg flex items-center justify-center shadow-lg">
+                <span className="font-serif font-bold text-lg text-white">C</span>
+              </div>
+              <span className="font-serif text-xl font-semibold text-[#1F2937]">Confide</span>
+            </Link>
+
+            <p className="text-[#9CA3AF] text-sm">
+              © 2026 Confide. AI Emotional Support — Not Medical Service.
+            </p>
+
+            <div className="flex items-center space-x-6 text-sm text-[#6B7280]">
+              <a href="#" className="hover:text-[#6366F1] transition-smooth">Privacy</a>
+              <a href="#" className="hover:text-[#6366F1] transition-smooth">Terms</a>
+              <a href="#" className="hover:text-[#6366F1] transition-smooth">Contact</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
