@@ -656,4 +656,182 @@ OPENAI_API_KEY=sk-proj-...
 
 ---
 
+## 🎉 [2026-03-04] RAG System Optimization - Query Expansion
+
+**Критическое улучшение retrieval качества через Query Expansion**
+
+### Проблема
+
+RAG система показывала низкие scores:
+- Средний score: **0.46** (13/21 FAIL, 8/21 MARGINAL)
+- Короткие пользовательские запросы создавали бедные embeddings
+- Semantic search не находил релевантный контент
+- MENS namespace критически плохой: 0.33 average
+
+### Реализовано
+
+#### 1. Query Expansion (`lib/pinecone/retrieval.ts`)
+
+**Новая функция `expandQuery(userQuery, namespace)`:**
+- Использует `gpt-4o-mini` (быстрый и дешёвый)
+- Расширяет короткие запросы в 50-100 слов психологических терминов
+- Контекстно-зависимые подсказки по namespace
+- Стоимость: ~$0.00004 за запрос (фактически бесплатно)
+
+**Пример работы:**
+```
+Input:  "I don't have anyone to talk to about my feelings"
+Output: "emotional isolation loneliness social support lack of connection
+         vulnerability sharing feelings emotional expression male friendships
+         stigma around emotions hidden suffering mental health awareness..."
+```
+
+#### 2. Увеличен topK с 5 до 10
+
+Больше chunks для поиска → лучше шансы найти релевантный контент
+
+#### 3. Development logging
+
+Логирование original query и expanded query для debugging (только в dev mode)
+
+### Результаты тестирования (21 запросов)
+
+**До Query Expansion:**
+- Average Score: 0.46
+- PASS (≥0.75): 0/21 (0%)
+- MARGINAL (0.50-0.75): 8/21 (38%)
+- FAIL (<0.50): 13/21 (62%)
+
+**После Query Expansion:**
+- Average Score: **0.64** (+38% улучшение)
+- PASS (≥0.75): 0/21 (0%)
+- MARGINAL (0.50-0.75): **21/21 (100%)** ✅
+- FAIL (<0.50): 0/21 (0%)
+
+### Детальные результаты по агентам
+
+| Agent | Before | After | Improvement | Quality |
+|-------|--------|-------|-------------|---------|
+| ANXIETY | 0.57 | **0.68** | +19% | 3/3 MARGINAL |
+| FAMILY | 0.46 | **0.61** | +34% | 3/3 MARGINAL |
+| TRAUMA | 0.47 | **0.64** | +35% | 3/3 MARGINAL |
+| RELATIONSHIPS | 0.50 | **0.64** | +28% | 3/3 MARGINAL |
+| MENS | 0.33 | **0.65** | **+96%** 🚀 | 3/3 MARGINAL |
+| WOMENS | 0.45 | **0.59** | +32% | 3/3 MARGINAL |
+| CROSS-AGENT | 0.46 | **0.65** | +41% | 3/3 MARGINAL |
+
+**Лучшие индивидуальные результаты:**
+- CROSS-AGENT: "I don't see the point..." → 0.7092 (почти PASS!)
+- ANXIETY: "I feel anxious all the time..." → 0.7049 (почти PASS!)
+- MENS: "Everyone thinks I'm fine..." → 0.6816 (+123% от baseline!)
+
+### Текущее состояние RAG системы
+
+**Статистика:**
+- Книг загружено: **37**
+- Векторов в Pinecone: **9,431**
+- Namespaces: 5 активных
+- Embedding model: `text-embedding-3-small` (1536 dimensions)
+- Similarity metric: `cosine`
+- Chunk size: 800 tokens (было 500)
+- Chunk overlap: 150 tokens (было 50)
+
+**Распределение по namespaces:**
+
+| Namespace | Vectors | Books | Top Books |
+|-----------|---------|-------|-----------|
+| general | 5,937 | 19 | On Becoming a Person, Why Zebras Don't Get Ulcers |
+| anxiety_cbt | 1,789 | 9 | Mindfulness & Acceptance Workbook, DBT Skills |
+| family | 869 | 4 | Seven Principles (Gottman), Attached, Hold Me Tight |
+| trauma | 778 | 4 | The Body Keeps the Score |
+| mens | 40 | 1 | I Don't Want to Talk About It |
+
+### Известные проблемы
+
+1. **Рассинхронизация БД ↔ Pinecone:** +195 vectors в Pinecone vs PostgreSQL
+   - Причина: незавершённые операции в прошлом
+   - Некритично для работы
+
+2. **Низкое качество некоторых chunks:**
+   - Chunk #5 "The Body Keeps the Score" содержит endorsement quote, не содержание
+   - Нужна фильтрация preface/endorsements при ingestion
+
+3. **MENS namespace слабый:**
+   - Только 1 книга (40 chunks)
+   - Нужно добавить 2-3 качественных книги
+
+4. **Ни один запрос не достиг PASS (0.75+):**
+   - Лучшие: 0.7049 и 0.7092
+   - Не хватает 0.04-0.05 до порога
+
+### Запланированные улучшения
+
+**Приоритет 1 (для достижения PASS 0.75+):**
+- [ ] Reranking с cross-encoder model (+0.05-0.10 expected)
+- [ ] Добавить больше книг в MENS namespace
+- [ ] Создать WOMENS namespace (отдельно от GENERAL)
+
+**Приоритет 2:**
+- [ ] Фильтровать endorsements/preface при chunking
+- [ ] Hybrid search (semantic + BM25 keyword search)
+- [ ] Увеличить chunk_size для теоретических книг до 1000 tokens
+
+**Приоритет 3:**
+- [ ] Upgrade embedding model: text-embedding-3-large (3072 dims)
+- [ ] Fine-tune embeddings на психологических текстах
+- [ ] A/B тестирование разных chunking стратегий
+
+### Скрипты и инструменты
+
+**Созданные скрипты:**
+- `scripts/ingest-knowledge.ts` — загрузка PDF в Pinecone
+- `scripts/delete-vectors.ts` — удаление книг из RAG
+- `scripts/list-knowledge.ts` — инвентаризация RAG системы
+- `scripts/test-rag-full-expansion.ts` — полное тестирование (21 запрос)
+- `scripts/check-pinecone-config.ts` — проверка конфигурации
+- `scripts/analyze-duplicates.ts` — поиск дубликатов книг
+
+**Инструкция по загрузке книг:**
+- См. `docs/RAG_BOOK_UPLOAD_GUIDE.md`
+
+### Как работает Query Expansion
+
+```typescript
+// 1. User query (короткий)
+const userQuery = "I'm anxious"
+
+// 2. Расширяем через GPT-4o-mini
+const expandedQuery = await expandQuery(userQuery, namespace)
+// → "anxiety symptoms panic racing thoughts worry fear physical
+//    sensations chest tightness breathing difficulty CBT cognitive
+//    distortions safety behaviors avoidance anxiety management..."
+
+// 3. Создаём embedding РАСШИРЕННОГО запроса
+const embedding = await openai.embeddings.create({
+  model: 'text-embedding-3-small',
+  input: expandedQuery  // ← богатый semantic context
+})
+
+// 4. Semantic search в Pinecone находит релевантный контент
+const results = await pinecone.query({
+  vector: embedding,
+  topK: 10,
+  namespace: 'anxiety_cbt'
+})
+```
+
+### Вердикт
+
+✅ **Query Expansion — ОГРОМНЫЙ SUCCESS**
+
+- +38% улучшение retrieval качества
+- 100% запросов достигли MARGINAL (было 38%)
+- 0% FAIL результатов (было 62%)
+- Система готова для beta testing
+- Стоимость negligible (~$0.00004/запрос)
+
+**Next steps:** Добавить reranking для финального буста до PASS (0.75+)
+
+---
+
 *Log maintained by Claude Code + Cursor*

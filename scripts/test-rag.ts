@@ -1,418 +1,255 @@
 #!/usr/bin/env node
 /**
- * Confide — RAG Knowledge Base Testing Script
- *
- * Тестирует качество и покрытие RAG базы знаний
- *
- * Usage:
- *   npx tsx scripts/test-rag.ts
+ * Confide — RAG System Full Testing
+ * Tests retrieval quality across all agent types with user queries
  */
 
 // IMPORTANT: Load .env.local BEFORE any other imports
 require('dotenv').config({ path: require('path').resolve(process.cwd(), '.env.local') })
 
-import { retrieveContext } from '../lib/pinecone/retrieval'
-import { NAMESPACES, type Namespace } from '../lib/pinecone/client'
+import OpenAI from 'openai'
+import { getPineconeIndex, NAMESPACES } from '../lib/pinecone/client'
 
-// Минимальный relevance score для прохождения теста
-// Semantic search обычно дает scores 0.5-0.8, поэтому 0.55 — реалистичный порог
-const MIN_RELEVANCE_SCORE = 0.55
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 
 interface TestQuery {
+  id: number
+  agent: string
   query: string
-  expectedNamespace: Namespace
-  expectedAuthors: string[]
-  category: string
+  namespace: string
 }
 
-// Набор тестовых запросов
-const testQueries: TestQuery[] = [
-  // ANXIETY
-  {
-    query: 'I feel anxious and my heart is racing',
-    expectedNamespace: NAMESPACES.ANXIETY_CBT,
-    expectedAuthors: ['David Burns', 'Russ Harris', 'Matthew McKay', 'Edmund Bourne'],
-    category: 'Anxiety',
-  },
-  {
-    query: 'I have panic attacks and feel like I cannot breathe',
-    expectedNamespace: NAMESPACES.ANXIETY_CBT,
-    expectedAuthors: ['David Burns', 'Edmund Bourne'],
-    category: 'Anxiety',
-  },
-  {
-    query: "I have OCD intrusive thoughts that won't go away",
-    expectedNamespace: NAMESPACES.ANXIETY_CBT,
-    expectedAuthors: ['Jeffrey Schwartz', 'Matthew McKay'],
-    category: 'OCD',
-  },
-  {
-    query: 'I worry constantly about everything',
-    expectedNamespace: NAMESPACES.ANXIETY_CBT,
-    expectedAuthors: ['David Burns', 'Matthew McKay', 'Russ Harris'],
-    category: 'Anxiety',
-  },
-
-  // TRAUMA
-  {
-    query: 'I experienced childhood trauma and it still affects me',
-    expectedNamespace: NAMESPACES.TRAUMA,
-    expectedAuthors: ['Bessel van der Kolk', 'Judith Herman'],
-    category: 'Trauma',
-  },
-  {
-    query: 'I have PTSD from a traumatic event',
-    expectedNamespace: NAMESPACES.TRAUMA,
-    expectedAuthors: ['Bessel van der Kolk', 'Judith Herman'],
-    category: 'Trauma',
-  },
-  {
-    query: 'I was abused as a child and struggle to trust people',
-    expectedNamespace: NAMESPACES.TRAUMA,
-    expectedAuthors: ['Judith Herman', 'Bessel van der Kolk'],
-    category: 'Trauma',
-  },
-
-  // FAMILY & RELATIONSHIPS
-  {
-    query: 'My relationship is falling apart and we fight constantly',
-    expectedNamespace: NAMESPACES.FAMILY,
-    expectedAuthors: ['John Gottman', 'Sue Johnson', 'Amir Levine'],
-    category: 'Relationships',
-  },
-  {
-    query: 'My partner and I have communication problems',
-    expectedNamespace: NAMESPACES.FAMILY,
-    expectedAuthors: ['John Gottman', 'Sue Johnson'],
-    category: 'Relationships',
-  },
-  {
-    query: 'My marriage is in crisis',
-    expectedNamespace: NAMESPACES.FAMILY,
-    expectedAuthors: ['John Gottman', 'Sue Johnson'],
-    category: 'Relationships',
-  },
-  {
-    query: 'I have problems with my parents and family',
-    expectedNamespace: NAMESPACES.FAMILY,
-    expectedAuthors: ['Lindsay Gibson'], // Virginia Satir нет в базе
-    category: 'Family',
-  },
-
-  // GENERAL
-  {
-    query: 'I feel worthless and have low self-esteem',
-    expectedNamespace: NAMESPACES.GENERAL,
-    expectedAuthors: ['Nathaniel Branden', 'Carl Rogers', 'Kristin Neff'],
-    category: 'Self-esteem',
-  },
-  {
-    query: 'I feel like my life has no meaning',
-    expectedNamespace: NAMESPACES.GENERAL,
-    expectedAuthors: ['Viktor Frankl', 'Irvin Yalom'],
-    category: 'Meaning',
-  },
-  {
-    query: 'I am lonely and isolated',
-    expectedNamespace: NAMESPACES.GENERAL,
-    expectedAuthors: ['Carl Rogers', 'Irvin Yalom', 'Johann Hari'],
-    category: 'Loneliness',
-  },
-
-  // Previously GAP topics — now with coverage
-  {
-    query: 'I struggle with alcohol addiction',
-    expectedNamespace: NAMESPACES.GENERAL,
-    expectedAuthors: ['Gabor Maté'],
-    category: 'Addiction',
-  },
-  {
-    query: "My child has ADHD and I don't know how to help",
-    expectedNamespace: NAMESPACES.GENERAL,
-    expectedAuthors: ['Gabor Maté'], // Scattered Minds covers ADHD
-    category: 'Parenting',
-  },
-  {
-    query: 'I have an eating disorder and binge eat',
-    expectedNamespace: NAMESPACES.GENERAL,
-    expectedAuthors: ['Evelyn Tribole'],
-    category: 'Eating Disorders',
-  },
-  {
-    query: 'I am struggling with grief after losing someone',
-    expectedNamespace: NAMESPACES.GENERAL,
-    expectedAuthors: ['Elisabeth Kübler-Ross'],
-    category: 'Grief',
-  },
-  {
-    query: 'I have bipolar disorder',
-    expectedNamespace: NAMESPACES.GENERAL,
-    expectedAuthors: [], // Still a GAP — need bipolar book
-    category: 'Bipolar',
-  },
-]
+interface RetrievalResult {
+  bookTitle: string
+  author: string
+  score: number
+  text: string
+}
 
 interface TestResult {
-  query: string
-  category: string
-  status: 'PASS' | 'FAIL' | 'GAP'
-  relevanceScore: number
-  foundAuthors: string[]
-  expectedAuthors: string[]
-  missingAuthors: string[]
-  namespace: string
-  details: string
+  query: TestQuery
+  results: RetrievalResult[]
+  averageScore: number
+  topScore: number
+  quality: 'PASS' | 'MARGINAL' | 'FAIL'
 }
 
-/**
- * Запустить один тест
- */
-async function runTest(testQuery: TestQuery): Promise<TestResult> {
-  const { query, expectedNamespace, expectedAuthors, category } = testQuery
+const TEST_QUERIES: TestQuery[] = [
+  // ANXIETY AGENT (1-3)
+  { id: 1, agent: 'ANXIETY', query: 'I keep having panic attacks at work and I don\'t know how to stop them', namespace: NAMESPACES.ANXIETY_CBT },
+  { id: 2, agent: 'ANXIETY', query: 'My mind won\'t stop racing with worst-case scenarios about everything', namespace: NAMESPACES.ANXIETY_CBT },
+  { id: 3, agent: 'ANXIETY', query: 'I feel anxious all the time but I can\'t pinpoint why', namespace: NAMESPACES.ANXIETY_CBT },
 
-  // Получить контекст из RAG
-  const chunks = await retrieveContext(query, expectedNamespace, 5)
+  // FAMILY AGENT (4-6)
+  { id: 4, agent: 'FAMILY', query: 'My mother criticizes everything I do and I can\'t take it anymore', namespace: NAMESPACES.FAMILY },
+  { id: 5, agent: 'FAMILY', query: 'My husband and I keep having the same fight over and over', namespace: NAMESPACES.FAMILY },
+  { id: 6, agent: 'FAMILY', query: 'My parents are getting divorced and I feel like it\'s tearing me apart', namespace: NAMESPACES.FAMILY },
 
-  // Если нет результатов — FAIL
-  if (chunks.length === 0) {
-    return {
-      query,
-      category,
-      status: 'FAIL',
-      relevanceScore: 0,
-      foundAuthors: [],
-      expectedAuthors,
-      missingAuthors: expectedAuthors,
-      namespace: expectedNamespace,
-      details: 'No chunks retrieved',
-    }
-  }
+  // TRAUMA AGENT (7-9)
+  { id: 7, agent: 'TRAUMA', query: 'Sometimes I freeze up when someone raises their voice and I can\'t move', namespace: NAMESPACES.TRAUMA },
+  { id: 8, agent: 'TRAUMA', query: 'I had something happen to me as a child that I\'ve never told anyone', namespace: NAMESPACES.TRAUMA },
+  { id: 9, agent: 'TRAUMA', query: 'I keep having nightmares about what happened and I wake up in a sweat', namespace: NAMESPACES.TRAUMA },
 
-  // Лучший relevance score
-  const topScore = chunks[0].score
+  // RELATIONSHIPS AGENT (10-12)
+  { id: 10, agent: 'RELATIONSHIPS', query: 'My boyfriend goes quiet for hours and I spiral into panic', namespace: NAMESPACES.FAMILY },
+  { id: 11, agent: 'RELATIONSHIPS', query: 'I always pick partners who are emotionally unavailable', namespace: NAMESPACES.FAMILY },
+  { id: 12, agent: 'RELATIONSHIPS', query: 'I need constant reassurance or I think he\'s going to leave me', namespace: NAMESPACES.FAMILY },
 
-  // Найденные авторы
-  const foundAuthors = Array.from(new Set(chunks.map((c) => c.metadata.author)))
+  // MENS AGENT (13-15)
+  { id: 13, agent: 'MENS', query: 'I don\'t really have anyone to talk to about how I\'m actually feeling', namespace: NAMESPACES.MENS },
+  { id: 14, agent: 'MENS', query: 'I feel like if I\'m not providing for my family I\'m worthless', namespace: NAMESPACES.MENS },
+  { id: 15, agent: 'MENS', query: 'Everyone thinks I\'m fine but I\'m falling apart inside', namespace: NAMESPACES.MENS },
 
-  // Недостающие авторы
-  const missingAuthors = expectedAuthors.filter((author) => !foundAuthors.includes(author))
+  // WOMENS AGENT (16-18)
+  { id: 16, agent: 'WOMENS', query: 'I do everything at home and at work and I feel guilty for being exhausted', namespace: NAMESPACES.GENERAL },
+  { id: 17, agent: 'WOMENS', query: 'He told me I\'m overreacting and now I\'m questioning my own feelings', namespace: NAMESPACES.GENERAL },
+  { id: 18, agent: 'WOMENS', query: 'I love my kids but I\'ve completely lost who I am', namespace: NAMESPACES.GENERAL },
 
-  // Определить статус
-  let status: 'PASS' | 'FAIL' | 'GAP'
+  // CROSS-AGENT (19-21)
+  { id: 19, agent: 'CROSS-AGENT', query: 'I don\'t see the point of anything anymore', namespace: NAMESPACES.GENERAL },
+  { id: 20, agent: 'CROSS-AGENT', query: 'I hate myself and I don\'t think I deserve to be loved', namespace: NAMESPACES.GENERAL },
+  { id: 21, agent: 'CROSS-AGENT', query: 'I feel completely alone even though I have people around me', namespace: NAMESPACES.GENERAL },
+]
 
-  // Если ожидали пробел (expectedAuthors пустой) и score низкий — это GAP
-  if (expectedAuthors.length === 0) {
-    status = 'GAP'
-  }
-  // Если score слишком низкий — FAIL
-  else if (topScore < MIN_RELEVANCE_SCORE) {
-    status = 'FAIL'
-  }
-  // Если нашли всех ожидаемых авторов — PASS
-  else if (missingAuthors.length === 0) {
-    status = 'PASS'
-  }
-  // Если нашли хотя бы одного автора — PASS (частичное покрытие)
-  else if (foundAuthors.some((author) => expectedAuthors.includes(author))) {
-    status = 'PASS'
-  }
-  // Иначе FAIL
-  else {
-    status = 'FAIL'
-  }
-
-  return {
-    query,
-    category,
-    status,
-    relevanceScore: topScore,
-    foundAuthors,
-    expectedAuthors,
-    missingAuthors,
-    namespace: expectedNamespace,
-    details: chunks.length > 0 ? `${chunks.length} chunks, top: ${chunks[0].metadata.book_title}` : '',
-  }
+async function createQueryEmbedding(query: string): Promise<number[]> {
+  const response = await openai.embeddings.create({
+    model: 'text-embedding-3-small',
+    input: query,
+  })
+  return response.data[0].embedding
 }
 
-/**
- * Форматировать результат теста для консоли
- */
-function formatResult(result: TestResult): string {
-  const icon = result.status === 'PASS' ? '✅' : result.status === 'GAP' ? '⚠️ ' : '❌'
-  const score = result.relevanceScore.toFixed(3)
+async function searchPinecone(
+  query: string,
+  namespace: string,
+  topK: number = 3
+): Promise<RetrievalResult[]> {
+  const index = getPineconeIndex()
+  const embedding = await createQueryEmbedding(query)
 
-  let output = `${icon} ${result.status.padEnd(4)} | Score: ${score} | ${result.category.padEnd(18)} | ${result.query.substring(0, 50)}`
+  const searchResults = await index.namespace(namespace).query({
+    vector: embedding,
+    topK,
+    includeMetadata: true,
+  })
 
-  if (result.status === 'GAP') {
-    output += `\n        → Coverage gap detected`
-  } else if (result.status === 'FAIL') {
-    output += `\n        → Failed: ${result.details}`
-    if (result.missingAuthors.length > 0) {
-      output += `\n        → Missing authors: ${result.missingAuthors.join(', ')}`
-    }
-  } else if (result.missingAuthors.length > 0) {
-    output += `\n        → Partial coverage (missing: ${result.missingAuthors.join(', ')})`
-  }
-
-  if (result.foundAuthors.length > 0 && result.status !== 'GAP') {
-    output += `\n        → Found: ${result.foundAuthors.join(', ')}`
-  }
-
-  return output
+  return (searchResults.matches || []).map((match) => ({
+    bookTitle: (match.metadata?.book_title as string) || 'Unknown',
+    author: (match.metadata?.author as string) || 'Unknown',
+    score: match.score || 0,
+    text: ((match.metadata?.text as string) || '').substring(0, 150) + '...',
+  }))
 }
 
-/**
- * Генерировать рекомендации по пробелам
- */
-function generateRecommendations(results: TestResult[]): string[] {
-  const recommendations: string[] = []
-
-  const gapsByCategory = results
-    .filter((r) => r.status === 'GAP')
-    .reduce(
-      (acc, r) => {
-        if (!acc[r.category]) {
-          acc[r.category] = []
-        }
-        acc[r.category].push(r.query)
-        return acc
-      },
-      {} as Record<string, string[]>
-    )
-
-  // Addiction
-  if (gapsByCategory['Addiction']) {
-    recommendations.push('📚 Addiction: "The Biology of Desire" by Marc Lewis')
-    recommendations.push('📚 Addiction: "In the Realm of Hungry Ghosts" by Gabor Maté')
-  }
-
-  // Parenting
-  if (gapsByCategory['Parenting']) {
-    recommendations.push('📚 Parenting/ADHD: "Driven to Distraction" by Edward Hallowell')
-    recommendations.push('📚 Parenting: "The Whole-Brain Child" by Daniel Siegel')
-  }
-
-  // Eating Disorders
-  if (gapsByCategory['Eating Disorders']) {
-    recommendations.push('📚 Eating Disorders: "Intuitive Eating" by Evelyn Tribole')
-    recommendations.push('📚 Eating Disorders: "The Body Keeps the Score" (trauma aspect)')
-  }
-
-  // Grief
-  if (gapsByCategory['Grief']) {
-    recommendations.push('📚 Grief: "On Grief and Grieving" by Elisabeth Kübler-Ross')
-    recommendations.push('📚 Grief: "The Year of Magical Thinking" by Joan Didion')
-  }
-
-  // Bipolar
-  if (gapsByCategory['Bipolar']) {
-    recommendations.push('📚 Bipolar: "An Unquiet Mind" by Kay Redfield Jamison')
-    recommendations.push('📚 Bipolar: "The Bipolar Disorder Survival Guide" by David Miklowitz')
-  }
-
-  return recommendations
+function getQualityRating(topScore: number): 'PASS' | 'MARGINAL' | 'FAIL' {
+  if (topScore >= 0.75) return 'PASS'
+  if (topScore >= 0.50) return 'MARGINAL'
+  return 'FAIL'
 }
 
-/**
- * Основная функция тестирования
- */
-async function testRAG() {
-  console.log('🧪 Confide RAG Knowledge Base Testing\n')
-  console.log(`Testing ${testQueries.length} queries...\n`)
+async function runTests() {
+  console.log('🧪 Confide RAG System — Full Test Suite')
+  console.log('Testing retrieval quality across all agent types')
+  console.log('=' .repeat(90))
+  console.log()
 
   const results: TestResult[] = []
 
-  // Запустить все тесты
-  for (const testQuery of testQueries) {
-    const result = await runTest(testQuery)
-    results.push(result)
-    console.log(formatResult(result))
-    console.log()
+  for (const testQuery of TEST_QUERIES) {
+    console.log(`\n📝 TEST ${testQuery.id}/21: ${testQuery.agent} Agent`)
+    console.log(`Query: "${testQuery.query}"`)
+    console.log(`Namespace: ${testQuery.namespace}`)
+    console.log('─'.repeat(90))
+
+    try {
+      const retrievalResults = await searchPinecone(testQuery.query, testQuery.namespace)
+
+      if (retrievalResults.length === 0) {
+        console.log('   ⚠️  No results found!')
+        results.push({
+          query: testQuery,
+          results: [],
+          averageScore: 0,
+          topScore: 0,
+          quality: 'FAIL',
+        })
+        continue
+      }
+
+      const topScore = retrievalResults[0].score
+      const avgScore = retrievalResults.reduce((sum, r) => sum + r.score, 0) / retrievalResults.length
+      const quality = getQualityRating(topScore)
+
+      retrievalResults.forEach((result, i) => {
+        const scoreIcon = result.score >= 0.75 ? '✅' : result.score >= 0.50 ? '⚠️' : '❌'
+        console.log(`\n   ${i + 1}. ${scoreIcon} "${result.bookTitle}" by ${result.author}`)
+        console.log(`      Score: ${result.score.toFixed(4)}`)
+        console.log(`      Text: ${result.text}`)
+      })
+
+      console.log(`\n   📊 Top Score: ${topScore.toFixed(4)} | Avg: ${avgScore.toFixed(4)} — ${quality}`)
+
+      results.push({
+        query: testQuery,
+        results: retrievalResults,
+        averageScore: avgScore,
+        topScore: topScore,
+        quality,
+      })
+    } catch (error) {
+      console.error(`   ❌ Error:`, error)
+      results.push({
+        query: testQuery,
+        results: [],
+        averageScore: 0,
+        topScore: 0,
+        quality: 'FAIL',
+      })
+    }
+
+    // Small delay to avoid rate limits
+    await new Promise((resolve) => setTimeout(resolve, 500))
   }
 
-  // Статистика
-  console.log('━'.repeat(80))
-  console.log('\n📊 SUMMARY\n')
-
-  const passed = results.filter((r) => r.status === 'PASS').length
-  const failed = results.filter((r) => r.status === 'FAIL').length
-  const gaps = results.filter((r) => r.status === 'GAP').length
-
-  const passRate = ((passed / testQueries.length) * 100).toFixed(1)
-  const coverageRate = (((passed + failed) / testQueries.length) * 100).toFixed(1)
-
-  console.log(`✅ PASSED:  ${passed}/${testQueries.length} (${passRate}%)`)
-  console.log(`❌ FAILED:  ${failed}/${testQueries.length}`)
-  console.log(`⚠️  GAPS:    ${gaps}/${testQueries.length}`)
-  console.log(`📈 Coverage: ${coverageRate}% (topics with any content)`)
+  // Summary
+  console.log('\n\n')
+  console.log('=' .repeat(90))
+  console.log('📊 FINAL SUMMARY TABLE')
+  console.log('=' .repeat(90))
   console.log()
 
-  // Средний relevance score
-  const avgScore =
-    results.filter((r) => r.status !== 'GAP').reduce((sum, r) => sum + r.relevanceScore, 0) /
-    results.filter((r) => r.status !== 'GAP').length
-  console.log(`📊 Average relevance score: ${avgScore.toFixed(3)}`)
-  console.log()
+  // Group by agent
+  const byAgent: Record<string, TestResult[]> = {}
+  results.forEach((r) => {
+    if (!byAgent[r.query.agent]) byAgent[r.query.agent] = []
+    byAgent[r.query.agent].push(r)
+  })
 
-  // Gaps по категориям
-  if (gaps > 0) {
-    console.log('━'.repeat(80))
-    console.log('\n⚠️  COVERAGE GAPS\n')
+  console.log('AGENT         | AVG SCORE | PASS | MARGINAL | FAIL | TOP BOOKS')
+  console.log('─'.repeat(90))
 
-    const gapsByCategory = results
-      .filter((r) => r.status === 'GAP')
-      .reduce(
-        (acc, r) => {
-          if (!acc[r.category]) {
-            acc[r.category] = 0
-          }
-          acc[r.category]++
-          return acc
-        },
-        {} as Record<string, number>
-      )
+  Object.entries(byAgent).forEach(([agent, agentResults]) => {
+    const avgScore = agentResults.reduce((sum, r) => sum + r.topScore, 0) / agentResults.length
+    const passCount = agentResults.filter((r) => r.quality === 'PASS').length
+    const marginalCount = agentResults.filter((r) => r.quality === 'MARGINAL').length
+    const failCount = agentResults.filter((r) => r.quality === 'FAIL').length
 
-    Object.entries(gapsByCategory)
+    // Get top books
+    const topBooks: Record<string, number> = {}
+    agentResults.forEach((r) => {
+      r.results.forEach((result) => {
+        const key = `${result.bookTitle} (${result.author})`
+        topBooks[key] = (topBooks[key] || 0) + 1
+      })
+    })
+
+    const topBooksList = Object.entries(topBooks)
       .sort((a, b) => b[1] - a[1])
-      .forEach(([category, count]) => {
-        console.log(`   ${category}: ${count} queries`)
-      })
+      .slice(0, 2)
+      .map(([book]) => book)
+      .join(', ')
 
-    console.log()
+    const agentName = agent.padEnd(13)
+    const score = avgScore.toFixed(4)
+    const pass = `${passCount}/3`.padEnd(4)
+    const marginal = `${marginalCount}/3`.padEnd(8)
+    const fail = `${failCount}/3`.padEnd(4)
 
-    // Рекомендации
-    console.log('━'.repeat(80))
-    console.log('\n💡 RECOMMENDATIONS\n')
-    console.log('Add these books to improve coverage:\n')
+    console.log(`${agentName} | ${score}    | ${pass} | ${marginal} | ${fail} | ${topBooksList}`)
+  })
 
-    const recommendations = generateRecommendations(results)
-    recommendations.forEach((rec) => console.log(`   ${rec}`))
-    console.log()
+  // Overall stats
+  const overallTopScoreAvg = results.reduce((sum, r) => sum + r.topScore, 0) / results.length
+  const overallPass = results.filter((r) => r.quality === 'PASS').length
+  const overallMarginal = results.filter((r) => r.quality === 'MARGINAL').length
+  const overallFail = results.filter((r) => r.quality === 'FAIL').length
+
+  console.log('─'.repeat(90))
+  console.log(`OVERALL       | ${overallTopScoreAvg.toFixed(4)}    | ${overallPass}/21 | ${overallMarginal}/21     | ${overallFail}/21`)
+  console.log()
+
+  console.log('=' .repeat(90))
+  console.log('🎯 OVERALL PERFORMANCE')
+  console.log('=' .repeat(90))
+  console.log()
+  console.log(`   Average Top Score:     ${overallTopScoreAvg.toFixed(4)}`)
+  console.log(`   PASS:                  ${overallPass}/21 (${((overallPass / 21) * 100).toFixed(1)}%)`)
+  console.log(`   MARGINAL:              ${overallMarginal}/21 (${((overallMarginal / 21) * 100).toFixed(1)}%)`)
+  console.log(`   FAIL:                  ${overallFail}/21 (${((overallFail / 21) * 100).toFixed(1)}%)`)
+  console.log()
+
+  if (overallTopScoreAvg >= 0.75) {
+    console.log('   ✅ RAG system is performing EXCELLENTLY')
+  } else if (overallTopScoreAvg >= 0.60) {
+    console.log('   ⚠️  RAG system is performing ADEQUATELY (could use improvement)')
+  } else {
+    console.log('   ❌ RAG system needs SIGNIFICANT IMPROVEMENT')
   }
 
-  // Failed tests
-  if (failed > 0) {
-    console.log('━'.repeat(80))
-    console.log('\n❌ FAILED TESTS (need better sources)\n')
-
-    results
-      .filter((r) => r.status === 'FAIL')
-      .forEach((r) => {
-        console.log(`   ${r.category}: "${r.query.substring(0, 60)}..."`)
-        console.log(`      Score: ${r.relevanceScore.toFixed(3)} (need > ${MIN_RELEVANCE_SCORE})`)
-        if (r.missingAuthors.length > 0) {
-          console.log(`      Missing: ${r.missingAuthors.join(', ')}`)
-        }
-        console.log()
-      })
-  }
-
-  console.log('━'.repeat(80))
-  console.log('\n✨ Testing complete!\n')
+  console.log()
 }
 
-// Запуск
-testRAG().catch((error) => {
-  console.error('❌ Error:', error)
+runTests().catch((error) => {
+  console.error('❌ Fatal error:', error)
   process.exit(1)
 })

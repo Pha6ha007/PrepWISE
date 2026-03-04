@@ -30,8 +30,8 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
 const prisma = new PrismaClient()
 
 const EMBEDDING_MODEL = 'text-embedding-3-small'
-const CHUNK_SIZE = 500 // токенов
-const CHUNK_OVERLAP = 50 // токенов
+const CHUNK_SIZE = 800 // токенов (increased from 500 for better context)
+const CHUNK_OVERLAP = 150 // токенов (increased from 50 for better continuity)
 
 interface ChunkData {
   text: string

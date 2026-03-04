@@ -16,6 +16,9 @@ function getOpenAIClient() {
 // Модель для embeddings
 const EMBEDDING_MODEL = 'text-embedding-3-small'
 
+// Модель для query expansion (быстрая и дешёвая)
+const EXPANSION_MODEL = 'gpt-4o-mini'
+
 export interface RetrievedChunk {
   id: string
   score: number
@@ -29,29 +32,110 @@ export interface RetrievedChunk {
 }
 
 /**
+ * Расширить запрос пользователя в набор релевантных психологических терминов
+ * для улучшения semantic search в RAG базе знаний
+ *
+ * @param userQuery - Оригинальный запрос пользователя
+ * @param namespace - Namespace для контекстно-зависимого расширения
+ * @returns Расширенный запрос с ключевыми словами и концепциями
+ */
+async function expandQuery(userQuery: string, namespace: Namespace): Promise<string> {
+  const openai = getOpenAIClient()
+
+  // Контекстно-зависимые подсказки по namespace
+  const namespaceContext: Record<Namespace, string> = {
+    anxiety_cbt:
+      'Focus on anxiety, panic, worry, CBT concepts, cognitive distortions, safety behaviors, exposure therapy',
+    family:
+      'Focus on family dynamics, attachment styles, communication patterns, boundaries, relationship conflicts',
+    trauma:
+      'Focus on PTSD, childhood trauma, freeze/fight/flight, body sensations, dissociation, trauma recovery',
+    crisis: 'Focus on suicidal ideation, self-harm, crisis intervention, safety planning, emergency resources',
+    general:
+      'Focus on general mental health, self-esteem, meaning, loneliness, identity, personal growth',
+    mens: 'Focus on male depression, masculinity, emotional expression, provider role, hidden suffering, male identity',
+    womens:
+      'Focus on female experiences, maternal identity, emotional labor, gaslighting, self-care, gender roles',
+  }
+
+  const contextHint = namespaceContext[namespace] || 'Focus on general psychological concepts'
+
+  const systemPrompt = `You are a query expansion assistant for a psychology RAG (Retrieval-Augmented Generation) system.
+
+Your task: Transform a user's conversational query into a rich set of psychological keywords, concepts, and related terms that will help semantic search find the most relevant content in our knowledge base.
+
+Guidelines:
+- Expand short queries into 50-100 words of relevant search terms
+- Include: clinical terms, symptom descriptions, theoretical concepts, treatment approaches, related emotions
+- Use both professional terminology AND everyday language
+- Include synonyms and related concepts
+- ${contextHint}
+- Output ONLY keywords and short phrases, separated by spaces
+- NO full sentences, NO explanations, NO formatting
+
+Example:
+Input: "I'm anxious all the time"
+Output: chronic anxiety generalized anxiety disorder GAD persistent worry racing thoughts catastrophizing rumination physical symptoms chest tightness breathing difficulty hyperventilation panic cognitive distortions safety behaviors avoidance anxiety management techniques CBT cognitive behavioral therapy acceptance commitment therapy mindfulness grounding
+
+Input: "My relationship is falling apart"
+Output: relationship conflict marriage problems communication breakdown emotional disconnection attachment insecurity criticism contempt defensiveness stonewalling Gottman method couples therapy intimacy trust issues emotional availability vulnerability connection repair attempts love languages`
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: EXPANSION_MODEL,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userQuery },
+      ],
+      temperature: 0.7,
+      max_tokens: 150,
+    })
+
+    const expandedQuery = response.choices[0]?.message?.content?.trim() || userQuery
+
+    // Fallback: если модель вернула пустой ответ, использовать оригинальный запрос
+    return expandedQuery.length > 0 ? expandedQuery : userQuery
+  } catch (error) {
+    console.error('Query expansion failed, using original query:', error)
+    return userQuery
+  }
+}
+
+/**
  * Получить релевантный контекст из RAG базы знаний
  *
  * @param query - Запрос пользователя
  * @param namespace - Namespace для поиска (anxiety_cbt, family, trauma, etc)
- * @param topK - Сколько чанков вернуть (по умолчанию 5)
+ * @param topK - Сколько чанков вернуть (по умолчанию 10, увеличено с 5)
  * @returns Массив релевантных чанков с metadata
  */
 export async function retrieveContext(
   query: string,
   namespace: Namespace,
-  topK: number = 5
+  topK: number = 10
 ): Promise<RetrievedChunk[]> {
   try {
-    // 1. Создать embedding запроса через OpenAI
+    // 1. Расширить запрос для улучшения semantic search
+    const expandedQuery = await expandQuery(query, namespace)
+
+    // Логирование для debugging (только в development)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[RAG Retrieval]')
+      console.log('  Original query:', query)
+      console.log('  Expanded query:', expandedQuery)
+      console.log('  Namespace:', namespace)
+    }
+
+    // 2. Создать embedding расширенного запроса через OpenAI
     const openai = getOpenAIClient()
     const embeddingResponse = await openai.embeddings.create({
       model: EMBEDDING_MODEL,
-      input: query,
+      input: expandedQuery, // ← Используем расширенный запрос вместо оригинального
     })
 
     const queryEmbedding = embeddingResponse.data[0].embedding
 
-    // 2. Поиск в Pinecone по namespace
+    // 3. Поиск в Pinecone по namespace
     const index = getPineconeIndex()
     const queryResponse = await index.namespace(namespace).query({
       vector: queryEmbedding,
@@ -59,7 +143,7 @@ export async function retrieveContext(
       includeMetadata: true,
     })
 
-    // 3. Преобразовать результаты
+    // 4. Преобразовать результаты
     const chunks: RetrievedChunk[] = queryResponse.matches
       .filter((match) => match.metadata && match.metadata.text)
       .map((match) => ({
