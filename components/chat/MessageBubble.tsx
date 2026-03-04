@@ -3,13 +3,16 @@
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { Message } from '@/types'
+import { AudioPlayer } from '@/components/voice/AudioPlayer'
 
 interface MessageBubbleProps {
   message: Message
+  enableVoice?: boolean
 }
 
-export function MessageBubble({ message }: MessageBubbleProps) {
+export function MessageBubble({ message, enableVoice = false }: MessageBubbleProps) {
   const isUser = message.role === 'user'
+  const isAssistant = message.role === 'assistant'
 
   return (
     <motion.div
@@ -32,19 +35,24 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
           {message.content}
         </p>
-        {message.createdAt && (
-          <p
-            className={cn(
-              'text-xs mt-2',
-              isUser ? 'text-indigo-100' : 'text-gray-400'
-            )}
-          >
-            {new Date(message.createdAt).toLocaleTimeString('en-US', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </p>
-        )}
+        <div className="flex items-center justify-between mt-2">
+          {message.createdAt && (
+            <p
+              className={cn(
+                'text-xs',
+                isUser ? 'text-indigo-100' : 'text-gray-400'
+              )}
+            >
+              {new Date(message.createdAt).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </p>
+          )}
+          {isAssistant && enableVoice && (
+            <AudioPlayer text={message.content} />
+          )}
+        </div>
       </div>
     </motion.div>
   )

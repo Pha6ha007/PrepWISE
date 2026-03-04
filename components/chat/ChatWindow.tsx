@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2 } from 'lucide-react'
+import { Send, Loader2, Mic, Keyboard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { MessageBubble } from './MessageBubble'
 import { TypingIndicator } from './TypingIndicator'
 import { SourcesPanel } from './SourcesPanel'
+import { VoiceRecorder } from '@/components/voice/VoiceRecorder'
+import { AudioPlayer } from '@/components/voice/AudioPlayer'
 import { Message } from '@/types'
 
 interface ChatWindowProps {
@@ -24,26 +26,30 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
   const [companionName, setCompanionName] = useState('Alex')
   const [isLoadingGreeting, setIsLoadingGreeting] = useState(false)
   const [greetingLoaded, setGreetingLoaded] = useState(false)
+  const [isVoiceMode, setIsVoiceMode] = useState(false)
+  const [isVoiceAvailable, setIsVoiceAvailable] = useState(true) // Will be set based on user plan
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null)
   const lastActivityRef = useRef<Date>(new Date())
 
-  // Загрузить имя собеседника при монтировании
+  // Загрузить имя собеседника и проверить доступность голоса при монтировании
   useEffect(() => {
-    const fetchCompanionName = async () => {
+    const fetchUserData = async () => {
       try {
         const response = await fetch('/api/user/me')
         if (response.ok) {
           const data = await response.json()
           setCompanionName(data.companionName || 'Alex')
+          // Voice available только для Pro/Premium
+          setIsVoiceAvailable(data.plan === 'pro' || data.plan === 'premium')
         }
       } catch (error) {
-        console.error('Failed to fetch companion name:', error)
+        console.error('Failed to fetch user data:', error)
       }
     }
 
-    fetchCompanionName()
+    fetchUserData()
   }, [])
 
   // Загрузить приветственное сообщение если чат пустой
@@ -177,12 +183,15 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
     }
   }, [currentSessionId, messages.length])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (e?: React.FormEvent, transcribedText?: string) => {
+    if (e) {
+      e.preventDefault()
+    }
 
-    if (!input.trim() || isLoading) return
+    const userMessage = transcribedText || input.trim()
 
-    const userMessage = input.trim()
+    if (!userMessage || isLoading) return
+
     setInput('')
 
     // Reset idle timer on user activity
@@ -263,12 +272,28 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
     }
   }
 
+  const handleVoiceTranscription = (text: string) => {
+    handleSubmit(undefined, text)
+  }
+
+  const toggleVoiceMode = () => {
+    if (!isVoiceAvailable) {
+      // TODO: Show upgrade modal
+      return
+    }
+    setIsVoiceMode(!isVoiceMode)
+  }
+
   return (
     <div className="flex flex-col h-full bg-gray-50">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
+          <MessageBubble
+            key={message.id}
+            message={message}
+            enableVoice={isVoiceAvailable}
+          />
         ))}
 
         {/* Show typing indicator when loading greeting or response */}
@@ -286,28 +311,64 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
 
       {/* Input Area */}
       <div className="border-t border-gray-200 bg-white p-4">
-        <form onSubmit={handleSubmit} className="flex items-end space-x-3">
-          <Textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message... (Shift+Enter for new line)"
-            className="min-h-[60px] max-h-[200px] resize-none"
-            disabled={isLoading}
-          />
-          <Button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="px-4 py-3 h-auto"
-          >
-            {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Send className="w-5 h-5" />
-            )}
-          </Button>
-        </form>
+        <div className="space-y-3">
+          {/* Mode Toggle */}
+          <div className="flex justify-center">
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={toggleVoiceMode}
+              disabled={!isVoiceAvailable}
+              className="text-xs"
+            >
+              {isVoiceMode ? (
+                <>
+                  <Keyboard className="w-4 h-4 mr-1" />
+                  Switch to Text
+                </>
+              ) : (
+                <>
+                  <Mic className="w-4 h-4 mr-1" />
+                  Switch to Voice
+                  {!isVoiceAvailable && ' (Pro)'}
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Text or Voice Input */}
+          {isVoiceMode ? (
+            <VoiceRecorder
+              onTranscriptionComplete={handleVoiceTranscription}
+              disabled={isLoading}
+            />
+          ) : (
+            <form onSubmit={handleSubmit} className="flex items-end space-x-3">
+              <Textarea
+                ref={textareaRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Type your message... (Shift+Enter for new line)"
+                className="min-h-[60px] max-h-[200px] resize-none"
+                disabled={isLoading}
+              />
+              <Button
+                type="submit"
+                disabled={!input.trim() || isLoading}
+                className="px-4 py-3 h-auto"
+              >
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
+              </Button>
+            </form>
+          )}
+        </div>
+
         <p className="text-xs text-gray-500 mt-2 text-center">
           This is AI support, not medical advice. In crisis, contact emergency
           services.
