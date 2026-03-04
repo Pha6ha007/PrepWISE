@@ -2,6 +2,19 @@
 // Confide Platform — Anxiety Agent (CBT / ACT / DBT)
 // Model: Groq (llama-3.3-70b)
 
+import { UserProfile } from '@/types'
+
+// Agent Prompt Builder Parameters
+export interface AgentPromptParams {
+  userProfile: UserProfile
+  recentHistory?: string
+  pastSessions?: string
+  ragContext?: string
+  companionName: string
+  preferredName?: string
+  language: 'en' | 'ru'
+}
+
 export const ANXIETY_AGENT_PROMPT = `
 
 # ROLE
@@ -540,3 +553,85 @@ Don't crumble. Don't fight. Hold steady.
 "I hear that I missed the mark. That's on me. What did you actually need in that moment?"
 
 `;
+
+/**
+ * Build the complete Anxiety Agent system prompt with user context
+ */
+export function buildAnxietyPrompt(params: AgentPromptParams): string {
+  const {
+    userProfile,
+    recentHistory,
+    pastSessions,
+    ragContext,
+    companionName,
+    preferredName,
+    language,
+  } = params
+
+  // Replace template variables
+  let prompt = ANXIETY_AGENT_PROMPT
+    .replace(/\{\{companionName\}\}/g, companionName)
+    .replace(/\{\{preferredName\}\}/g, preferredName || 'there')
+    .replace(/\{\{language\}\}/g, language)
+
+  // Add user profile context
+  const profileContext = `
+
+# USER PROFILE (Long-term Memory)
+
+${JSON.stringify(userProfile, null, 2)}
+
+## Communication Style
+${JSON.stringify(userProfile.communicationStyle, null, 2)}
+
+## Emotional Profile
+- Triggers: ${userProfile.emotionalProfile?.triggers?.join(', ') || 'Not yet identified'}
+- Pain Points: ${userProfile.emotionalProfile?.pain_points?.join(', ') || 'Not yet identified'}
+- Responds To: ${userProfile.emotionalProfile?.responds_to || 'Still learning'}
+
+## Life Context
+- Key People: ${userProfile.lifeContext?.key_people?.join(', ') || 'Not yet mentioned'}
+- Work: ${userProfile.lifeContext?.work || 'Not yet discussed'}
+- Situation: ${userProfile.lifeContext?.situation || 'Not yet disclosed'}
+
+## Patterns Observed
+${userProfile.patterns.length > 0 ? userProfile.patterns.map((p) => `- ${p}`).join('\n') : '- Still identifying patterns'}
+
+## What Has Worked
+${userProfile.whatWorked.length > 0 ? userProfile.whatWorked.map((w) => `- ${w}`).join('\n') : '- Still testing approaches'}
+
+## Progress Notes
+${JSON.stringify(userProfile.progress, null, 2)}
+`
+
+  // Add past sessions context
+  const pastSessionsSection = pastSessions
+    ? `
+
+# PAST SESSIONS SUMMARY
+
+${pastSessions}
+`
+    : ''
+
+  // Add recent conversation history
+  const historySection = recentHistory
+    ? `
+
+# RECENT CONVERSATION (Current Session)
+
+${recentHistory}
+`
+    : ''
+
+  // Add RAG context
+  const ragSection = ragContext
+    ? `
+
+${ragContext}
+`
+    : ''
+
+  // Combine all sections
+  return prompt + profileContext + pastSessionsSection + historySection + ragSection
+}

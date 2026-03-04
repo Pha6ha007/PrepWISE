@@ -2,6 +2,18 @@
 // Confide Platform — Women's Agent (Gender-Adapted)
 // Model: Groq (llama-3.3-70b)
 
+import { UserProfile } from '@/types'
+
+export interface AgentPromptParams {
+  userProfile: UserProfile
+  recentHistory?: string
+  pastSessions?: string
+  ragContext?: string
+  companionName: string
+  preferredName?: string
+  language: 'en' | 'ru'
+}
+
 export const WOMENS_AGENT_PROMPT = `
 
 # ROLE
@@ -442,3 +454,58 @@ How was Thanksgiving for you, in the end?"
 "You're running the relationship like a project manager — except nobody hired you, nobody's paying you, and nobody notices the work. That's not a partnership. That's a one-woman operation with a spectator. What would happen if you stopped running the show?"
 
 `;
+
+/**
+ * Build the complete Women's Agent system prompt with user context
+ */
+export function buildWomensPrompt(params: AgentPromptParams): string {
+  const {
+    userProfile,
+    recentHistory,
+    pastSessions,
+    ragContext,
+    companionName,
+    preferredName,
+    language,
+  } = params
+
+  let prompt = WOMENS_AGENT_PROMPT
+    .replace(/\{\{companionName\}\}/g, companionName)
+    .replace(/\{\{preferredName\}\}/g, preferredName || 'there')
+    .replace(/\{\{language\}\}/g, language)
+
+  const profileContext = `
+
+# USER PROFILE (Long-term Memory)
+
+${JSON.stringify(userProfile, null, 2)}
+
+## Communication Style
+${JSON.stringify(userProfile.communicationStyle, null, 2)}
+
+## Emotional Profile
+- Triggers: ${userProfile.emotionalProfile?.triggers?.join(', ') || 'Not yet identified'}
+- Pain Points: ${userProfile.emotionalProfile?.pain_points?.join(', ') || 'Not yet identified'}
+- Responds To: ${userProfile.emotionalProfile?.responds_to || 'Still learning'}
+
+## Life Context
+- Key People: ${userProfile.lifeContext?.key_people?.join(', ') || 'Not yet mentioned'}
+- Work: ${userProfile.lifeContext?.work || 'Not yet discussed'}
+- Situation: ${userProfile.lifeContext?.situation || 'Not yet disclosed'}
+
+## Patterns Observed
+${userProfile.patterns.length > 0 ? userProfile.patterns.map((p) => `- ${p}`).join('\n') : '- Still identifying patterns'}
+
+## What Has Worked
+${userProfile.whatWorked.length > 0 ? userProfile.whatWorked.map((w) => `- ${w}`).join('\n') : '- Still testing approaches'}
+
+## Progress Notes
+${JSON.stringify(userProfile.progress, null, 2)}
+`
+
+  const pastSessionsSection = pastSessions ? `\n\n# PAST SESSIONS SUMMARY\n\n${pastSessions}\n` : ''
+  const historySection = recentHistory ? `\n\n# RECENT CONVERSATION (Current Session)\n\n${recentHistory}\n` : ''
+  const ragSection = ragContext ? `\n\n${ragContext}\n` : ''
+
+  return prompt + profileContext + pastSessionsSection + historySection + ragSection
+}

@@ -33,3 +33,6 @@ export const NAMESPACES = {
 } as const
 
 export type Namespace = (typeof NAMESPACES)[keyof typeof NAMESPACES]
+
+// Re-export namespace utilities for convenience
+export { getNamespaceForAgent, AGENT_NAMESPACE_MAP, getAvailableNamespaces } from './namespace-mapping'

@@ -3,12 +3,20 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { PrismaClient } from '@prisma/client'
 import { openai, getModel } from '@/lib/openai/client'
-import { buildAnxietyPrompt } from '@/agents/prompts/anxiety'
+import {
+  buildAnxietyPrompt,
+  buildFamilyPrompt,
+  buildTraumaPrompt,
+  buildRelationshipsPrompt,
+  buildMensPrompt,
+  buildWomensPrompt,
+} from '@/agents/prompts'
 import { detectCrisis, getCrisisResponse, logCrisisEvent } from '@/agents/crisis/protocol'
 import { checkRateLimit, recordRequest } from '@/lib/utils/rate-limit'
 import { retrieveContext, formatContextForPrompt } from '@/lib/pinecone/retrieval'
-import { NAMESPACES } from '@/lib/pinecone/client'
-import { ChatResponse, ErrorResponse } from '@/types'
+import { getNamespaceForAgent } from '@/lib/pinecone/namespace-mapping'
+import { ChatResponse, ErrorResponse, AgentType } from '@/types'
+import { routeToAgent, shouldReroute } from '@/lib/agents/orchestrator'
 
 const prisma = new PrismaClient()
 
@@ -124,22 +132,48 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 6. СОЗДАТЬ ИЛИ НАЙТИ СЕССИЮ
+    // 6. СОЗДАТЬ ИЛИ НАЙТИ СЕССИЮ + ORCHESTRATOR ROUTING
     // ============================================
     let session
+    let routingDecision
+
     if (sessionId) {
       session = await prisma.session.findUnique({
         where: { id: sessionId },
+        include: {
+          messages: {
+            orderBy: { createdAt: 'asc' },
+            take: 5, // First few messages for routing context
+          },
+        },
       })
     }
 
     if (!session) {
+      // NEW SESSION - Use Orchestrator to determine which agent
+      routingDecision = await routeToAgent(
+        user.id,
+        userMessage,
+        dbUser.profile as any,
+        dbUser.companionGender as 'male' | 'female' | undefined,
+        0 // First message
+      )
+
       session = await prisma.session.create({
         data: {
           userId: user.id,
-          agentType: 'anxiety', // Пока только anxiety agent
+          agentType: routingDecision.route,
         },
       })
+
+      // Log routing decision in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Orchestrator] New session routing:')
+        console.log(`  Agent: ${routingDecision.route}`)
+        console.log(`  Confidence: ${routingDecision.confidence.toFixed(2)}`)
+        console.log(`  Reasoning: ${routingDecision.reasoning}`)
+        console.log(`  Topics: ${routingDecision.detectedTopics.join(', ')}`)
+      }
     }
 
     // ============================================
@@ -155,19 +189,7 @@ export async function POST(request: NextRequest) {
     })
 
     // ============================================
-    // 8. RAG RETRIEVAL (получить релевантный контекст из книг)
-    // ============================================
-    // Определяем namespace по типу агента (пока только anxiety_cbt)
-    const agentNamespace = session.agentType === 'anxiety' ? NAMESPACES.ANXIETY_CBT : NAMESPACES.GENERAL
-
-    // Получить top-5 релевантных чанков из Pinecone
-    const retrievedChunks = await retrieveContext(userMessage, agentNamespace, 5)
-
-    // Форматировать для system prompt
-    const ragContext = formatContextForPrompt(retrievedChunks)
-
-    // ============================================
-    // 9. ЗАГРУЗИТЬ КОНТЕКСТ ИЗ ИСТОРИИ
+    // 8. ЗАГРУЗИТЬ КОНТЕКСТ ИЗ ИСТОРИИ
     // ============================================
     // Последние 30 сообщений из этой сессии
     const recentMessages = await prisma.message.findMany({
@@ -219,9 +241,55 @@ export async function POST(request: NextRequest) {
       : undefined
 
     // ============================================
-    // 10. ПОСТРОИТЬ SYSTEM PROMPT (с RAG контекстом)
+    // 9.5. MID-CONVERSATION RE-ROUTING (Handoff Protocol)
     // ============================================
-    const systemPrompt = buildAnxietyPrompt({
+    // Check if we should switch agents based on topic shift
+    const messageCount = recentMessages.length
+    if (messageCount >= 5) {
+      const rerouting = await shouldReroute(
+        session.id,
+        session.agentType as AgentType,
+        recentMessages.map((m) => ({ role: m.role, content: m.content })),
+        dbUser.profile as any,
+        dbUser.companionGender as 'male' | 'female' | undefined
+      )
+
+      if (rerouting.shouldReroute && rerouting.newAgent) {
+        // Update session agent type
+        await prisma.session.update({
+          where: { id: session.id },
+          data: { agentType: rerouting.newAgent },
+        })
+
+        // Update local session object
+        session.agentType = rerouting.newAgent
+
+        // Log handoff in development
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[Orchestrator] Mid-conversation handoff:')
+          console.log(`  From: ${rerouting.handoffPayload?.fromAgent}`)
+          console.log(`  To: ${rerouting.newAgent}`)
+          console.log(`  Reason: ${rerouting.reason}`)
+        }
+      }
+    }
+
+    // ============================================
+    // 10. RAG NAMESPACE & RETRIEVAL (после возможного handoff)
+    // ============================================
+    // NOTE: Namespace определяется ПОСЛЕ возможного handoff в шаге 9.5
+    const agentNamespace = getNamespaceForAgent(session.agentType as AgentType)
+
+    // Получить top-5 релевантных чанков из Pinecone
+    const retrievedChunks = await retrieveContext(userMessage, agentNamespace, 5)
+
+    // Форматировать для system prompt
+    const ragContext = formatContextForPrompt(retrievedChunks)
+
+    // ============================================
+    // 11. ПОСТРОИТЬ SYSTEM PROMPT (с RAG контекстом)
+    // ============================================
+    const promptParams = {
       userProfile: dbUser.profile as any,
       recentHistory: recentHistory || undefined,
       pastSessions: pastSessionsContext,
@@ -229,10 +297,37 @@ export async function POST(request: NextRequest) {
       companionName: dbUser.companionName || 'Alex', // Fallback если пустой
       preferredName: dbUser.preferredName || undefined,
       language: dbUser.language as 'en' | 'ru',
-    })
+    }
+
+    // Route to appropriate agent prompt builder
+    let systemPrompt: string
+
+    switch (session.agentType) {
+      case 'anxiety':
+        systemPrompt = buildAnxietyPrompt(promptParams)
+        break
+      case 'family':
+        systemPrompt = buildFamilyPrompt(promptParams)
+        break
+      case 'trauma':
+        systemPrompt = buildTraumaPrompt(promptParams)
+        break
+      case 'relationships':
+        systemPrompt = buildRelationshipsPrompt(promptParams)
+        break
+      case 'mens':
+        systemPrompt = buildMensPrompt(promptParams)
+        break
+      case 'womens':
+        systemPrompt = buildWomensPrompt(promptParams)
+        break
+      default:
+        // Fallback to anxiety agent
+        systemPrompt = buildAnxietyPrompt(promptParams)
+    }
 
     // ============================================
-    // 11. ВЫЗВАТЬ AI (Groq/OpenAI)
+    // 12. ВЫЗВАТЬ AI (Groq/OpenAI)
     // ============================================
     const completion = await openai.chat.completions.create({
       model: getModel(),
@@ -248,7 +343,7 @@ export async function POST(request: NextRequest) {
       'I apologize, but I had trouble generating a response. Could you try again?'
 
     // ============================================
-    // 12. СОХРАНИТЬ ASSISTANT MESSAGE
+    // 13. СОХРАНИТЬ ASSISTANT MESSAGE
     // ============================================
     const assistantMessageRecord = await prisma.message.create({
       data: {
@@ -260,7 +355,7 @@ export async function POST(request: NextRequest) {
     })
 
     // ============================================
-    // 13. ВЕРНУТЬ ОТВЕТ (с sources из RAG)
+    // 14. ВЕРНУТЬ ОТВЕТ (с sources из RAG)
     // ============================================
     return NextResponse.json<ChatResponse>({
       message: assistantMessage,
