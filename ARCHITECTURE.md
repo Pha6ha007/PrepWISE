@@ -1764,4 +1764,93 @@ npx tsx scripts/ingest-knowledge.ts --file="..." --namespace="..." --title="..."
 
 ---
 
+## [2026-03-04] Wellness Exercises — Timer Architecture Fix
+
+### Критическое исправление: CompletionScreen Bug
+
+**Проблема:**
+После завершения всех циклов упражнения (например, 4 цикла Box Breathing) вместо CompletionScreen показывался пустой экран. В консоли появлялась ошибка `Invalid phase index: 4`.
+
+**Причина:**
+- Множественные state переменные: `currentCycle`, `currentPhaseIndex`, `elapsed`
+- Refs для доступа к state внутри setInterval: `currentCycleRef`, `currentPhaseIndexRef`
+- Refs обновлялись асинхронно через useEffect
+- Между `setState` и обновлением ref проходило несколько тиков таймера (50ms)
+- **Stale closures**: setInterval видел устаревшие значения в refs
+
+**Решение — Single Source of Truth:**
+
+```typescript
+// БЫЛО (❌ проблемно):
+const [currentCycle, setCurrentCycle] = useState(0)
+const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0)
+const [elapsed, setElapsed] = useState(0)
+const currentCycleRef = useRef(currentCycle)
+const currentPhaseIndexRef = useRef(currentPhaseIndex)
+
+// СТАЛО (✅ правильно):
+const [totalElapsed, setTotalElapsed] = useState(0)
+
+// Все значения вычисляются из totalElapsed:
+const getCurrentState = () => {
+  const cycleLength = phases.reduce((sum, p) => sum + p.duration, 0)
+  const currentCycle = Math.floor(totalElapsed / cycleLength)
+  const elapsedInCycle = totalElapsed - currentCycle * cycleLength
+  // ... вычисляем currentPhaseIndex, progress, elapsed
+}
+```
+
+**Преимущества новой архитектуры:**
+1. Single source of truth — только одна state переменная времени
+2. Нет race conditions — невозможна ситуация с invalid indices
+3. Нет stale closures — таймер не зависит от refs
+4. Чистая детерминированная логика — все значения вычисляются из одного числа
+
+**Таймер:**
+```typescript
+setInterval(() => {
+  setTotalElapsed((prev) => {
+    const newElapsed = prev + 0.05
+    if (newElapsed >= totalDuration) {
+      console.log('ALL CYCLES DONE')
+      setViewMode('completed')
+      return totalDuration
+    }
+    return newElapsed
+  })
+}, 50)
+```
+
+### Другие улучшения UI
+
+**BreathingCircle:**
+- Phase name: text-base font-medium (было text-2xl) — более деликатный стиль
+- Seconds number: text-4xl font-light — лёгкий шрифт для цифр
+
+**Active Mode Header:**
+- Layout: flex justify-between вместо grid grid-cols-3
+- Центрирование: absolute left-1/2 -translate-x-1/2 для идеального выравнивания
+- Название упражнения всегда строго по центру независимо от длины боковых элементов
+
+**Countdown:**
+- Font: font-serif text-7xl font-light — лёгкий, элегантный
+- Animation: пульсация, плавное появление после завершения
+
+### Результаты
+
+✅ Нет ошибок "Invalid phase index" в консоли
+✅ Smooth анимации переходов между фазами
+✅ Pause/Resume/Stop работают корректно
+✅ CompletionScreen показывается после всех циклов
+
+### Файлы
+
+- components/exercises/ExercisesPage.tsx — основная логика таймера
+- components/exercises/BreathingCircle.tsx — визуализация дыхательного круга
+- components/exercises/CompletionScreen.tsx — экран завершения
+
+**Commit:** 05f0f01 — fix: Wellness Exercises timer — CompletionScreen now shows correctly after all cycles
+
+---
+
 *Log maintained by Claude Code + Cursor*
