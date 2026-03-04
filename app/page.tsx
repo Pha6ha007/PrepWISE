@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Sparkles, DollarSign, Brain, MessageCircle, Check, X, Shield, Lock, AlertTriangle, FileText } from 'lucide-react'
+import { Sparkles, DollarSign, Brain, MessageCircle, Check, X, Shield, Lock, AlertTriangle, FileText, Star, Zap, TrendingUp, Award } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function LandingPage() {
@@ -31,14 +31,23 @@ export default function LandingPage() {
             </Link>
 
             {/* Nav Links */}
-            <div className="flex items-center space-x-2 md:space-x-4">
+            <div className="flex items-center space-x-1 md:space-x-2 lg:space-x-6">
+              {/* Desktop Navigation */}
+              <div className="hidden lg:flex items-center space-x-6 text-sm font-medium text-[#6B7280]">
+                <a href="#pricing" className="hover:text-[#6366F1] transition-smooth">Pricing</a>
+                <a href="mailto:support@confide.app" className="hover:text-[#6366F1] transition-smooth">Contact</a>
+                <Link href="/privacy" className="hover:text-[#6366F1] transition-smooth">Privacy</Link>
+                <Link href="/terms" className="hover:text-[#6366F1] transition-smooth">Terms</Link>
+              </div>
+
+              {/* Auth buttons */}
               <Link href="/login">
                 <Button variant="ghost" className="text-[#1F2937] hover:bg-white/30 transition-smooth backdrop-blur-sm text-sm md:text-base px-3 md:px-4">
                   Sign in
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="relative overflow-hidden group bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-semibold hover-lift shadow-lg text-sm md:text-base px-3 md:px-4">
+                <Button className="relative overflow-hidden group bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-semibold hover-lift shadow-lg text-sm md:text-base px-3 md:px-6">
                   <span className="relative z-10">Start for free</span>
                   <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300" />
                 </Button>
@@ -493,6 +502,184 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* PRICING Section */}
+      <section id="pricing" className="relative py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#1F2937] mb-4">
+              Simple, <span className="gradient-text">transparent</span> pricing
+            </h2>
+            <p className="text-xl text-[#6B7280] max-w-2xl mx-auto">
+              Start free, upgrade when you're ready — cancel anytime
+            </p>
+          </div>
+
+          {/* Pricing Cards */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* FREE Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="glass-button rounded-3xl p-8 hover-lift"
+            >
+              <div className="text-center mb-6">
+                <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-2">Free</h3>
+                <div className="flex items-baseline justify-center mb-4">
+                  <span className="font-serif text-5xl font-bold text-[#1F2937]">$0</span>
+                  <span className="text-[#6B7280] ml-2">/month</span>
+                </div>
+                <p className="text-[#6B7280] text-sm">Perfect to get started</p>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">5 sessions per week</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Text chat only</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">1 agent (Anxiety)</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Crisis support always</span>
+                </li>
+              </ul>
+
+              <Link href="/register" className="block">
+                <button className="w-full py-4 px-6 rounded-xl font-semibold text-[#1F2937] bg-white/50 hover:bg-white/70 transition-all border-2 border-[#E5E7EB]">
+                  Start free
+                </button>
+              </Link>
+            </motion.div>
+
+            {/* PRO Plan - Most Popular */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="glass-button rounded-3xl p-8 hover-lift relative border-2 border-[#6366F1] shadow-2xl scale-105"
+            >
+              {/* Most Popular Badge */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <div className="bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg flex items-center space-x-2">
+                  <Star className="w-4 h-4" />
+                  <span>Most Popular</span>
+                </div>
+              </div>
+
+              <div className="text-center mb-6 mt-4">
+                <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-2">Pro</h3>
+                <div className="flex items-baseline justify-center mb-4">
+                  <span className="font-serif text-5xl font-bold gradient-text">$19</span>
+                  <span className="text-[#6B7280] ml-2">/month</span>
+                </div>
+                <p className="text-[#6B7280] text-sm">For serious progress</p>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#6366F1] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563] font-medium">Unlimited sessions</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#6366F1] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563] font-medium">Voice + Text modes</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#6366F1] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563] font-medium">All 6 specialist agents</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#6366F1] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563] font-medium">Memory that grows</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#6366F1] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563] font-medium">Basic analytics</span>
+                </li>
+              </ul>
+
+              <Link href="/register" className="block">
+                <button className="w-full group relative overflow-hidden py-4 px-6 rounded-xl font-bold text-white transition-all shadow-lg hover:shadow-xl">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] to-[#EC4899]" />
+                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300" />
+                  <span className="relative z-10">Start free trial</span>
+                </button>
+              </Link>
+            </motion.div>
+
+            {/* PREMIUM Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="glass-button rounded-3xl p-8 hover-lift"
+            >
+              <div className="text-center mb-6">
+                <h3 className="font-serif text-2xl font-bold text-[#1F2937] mb-2">Premium</h3>
+                <div className="flex items-baseline justify-center mb-4">
+                  <span className="font-serif text-5xl font-bold text-[#1F2937]">$29</span>
+                  <span className="text-[#6B7280] ml-2">/month</span>
+                </div>
+                <p className="text-[#6B7280] text-sm">Maximum personalization</p>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Everything in Pro</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Custom voice selection</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Full analytics & insights</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Monthly PDF diary</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Priority support</span>
+                </li>
+              </ul>
+
+              <Link href="/register" className="block">
+                <button className="w-full py-4 px-6 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] hover:shadow-lg transition-all">
+                  Get Premium
+                </button>
+              </Link>
+            </motion.div>
+          </div>
+
+          {/* Trust note */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-center mt-12"
+          >
+            <p className="text-[#9CA3AF] text-sm">
+              No credit card required · 7-day money-back guarantee · Cancel anytime
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* TRUST & SAFETY Section */}
       <section className="relative py-24 lg:py-32">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -630,9 +817,9 @@ export default function LandingPage() {
             </p>
 
             <div className="flex items-center space-x-6 text-sm text-[#6B7280]">
-              <a href="#" className="hover:text-[#6366F1] transition-smooth">Privacy</a>
-              <a href="#" className="hover:text-[#6366F1] transition-smooth">Terms</a>
-              <a href="#" className="hover:text-[#6366F1] transition-smooth">Contact</a>
+              <Link href="/privacy" className="hover:text-[#6366F1] transition-smooth">Privacy</Link>
+              <Link href="/terms" className="hover:text-[#6366F1] transition-smooth">Terms</Link>
+              <a href="mailto:support@confide.app" className="hover:text-[#6366F1] transition-smooth">Contact</a>
             </div>
           </div>
         </div>

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { textToSpeech } from '@/lib/elevenlabs/client'
 import { ErrorResponse } from '@/types'
 
-const prisma = new PrismaClient()
+
 
 /**
  * POST /api/tts

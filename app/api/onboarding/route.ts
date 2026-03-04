@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { sendWelcomeEmail } from '@/lib/resend/emails/welcome'
 
-const prisma = new PrismaClient()
+
 
 // Валидация данных онбординга
 const OnboardingSchema = z.object({
@@ -53,17 +53,39 @@ export async function POST(request: NextRequest) {
     } = validation.data
 
     // ============================================
-    // 3. ОБНОВИТЬ ПОЛЬЗОВАТЕЛЯ
+    // 3. СОЗДАТЬ/ОБНОВИТЬ ПОЛЬЗОВАТЕЛЯ
     // ============================================
-    const updatedUser = await prisma.user.update({
+    // Используем upsert потому что запись может не существовать после регистрации
+    const updatedUser = await prisma.user.upsert({
       where: { id: user.id },
-      data: {
+      create: {
+        id: user.id,
+        email: user.email!,
         preferredName,
         ageGroup,
         userGender,
         companionName,
-        companionGender: companionGender || 'male', // Дефолт male если не указан
-        voiceId: voicePreference || null, // ElevenLabs voice ID
+        companionGender: companionGender || 'male',
+        voiceId: voicePreference || null,
+        plan: 'free', // Дефолтный план для новых пользователей
+        profile: {
+          create: {
+            communicationStyle: {},
+            emotionalProfile: {},
+            lifeContext: {},
+            patterns: [],
+            progress: {},
+            whatWorked: [],
+          },
+        },
+      },
+      update: {
+        preferredName,
+        ageGroup,
+        userGender,
+        companionName,
+        companionGender: companionGender || 'male',
+        voiceId: voicePreference || null,
       },
     })
 

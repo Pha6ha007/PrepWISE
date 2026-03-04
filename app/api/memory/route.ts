@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { openai, getModel } from '@/lib/openai/client'
 import {
   buildMemoryPrompt,
@@ -9,7 +9,7 @@ import {
 } from '@/agents/prompts/memory'
 import { ErrorResponse } from '@/types'
 
-const prisma = new PrismaClient()
+
 
 // Валидация входных данных
 const MemoryRequestSchema = z.object({

@@ -799,7 +799,7 @@ npx tsx scripts/ingest-knowledge.ts   --file="book.pdf"   --namespace="anxiety_c
 
 ### Тарифные планы
 
-| | Free | Pro 9/мес | Premium 9/мес |
+| | Free | Pro $19/мес | Premium $29/мес |
 |-|------|-------------|-----------------|
 | Сессии | 5/неделю | Безлимит | Безлимит |
 | Голос | - | + | + |

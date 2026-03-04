@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { openai, getModel } from '@/lib/openai/client'
 import { textToSpeech } from '@/lib/elevenlabs/client'
 import {
@@ -19,7 +19,7 @@ import { getNamespaceForAgent } from '@/lib/pinecone/namespace-mapping'
 import { ChatResponse, ErrorResponse, AgentType } from '@/types'
 import { routeToAgent, shouldReroute } from '@/lib/agents/orchestrator'
 
-const prisma = new PrismaClient()
+
 
 // Валидация входных данных
 const ChatRequestSchema = z.object({
@@ -136,6 +136,16 @@ export async function POST(request: NextRequest) {
     // ============================================
     // 6. СОЗДАТЬ ИЛИ НАЙТИ СЕССИЮ + ORCHESTRATOR ROUTING
     // ============================================
+    // Создаём fallback для userProfile если его нет
+    const userProfile = dbUser.profile || {
+      communicationStyle: {},
+      emotionalProfile: {},
+      lifeContext: {},
+      patterns: [],
+      progress: {},
+      whatWorked: [],
+    }
+
     let session
     let routingDecision
 
@@ -156,7 +166,7 @@ export async function POST(request: NextRequest) {
       routingDecision = await routeToAgent(
         user.id,
         userMessage,
-        dbUser.profile as any,
+        userProfile as any,
         dbUser.companionGender as 'male' | 'female' | undefined,
         0 // First message
       )
@@ -252,7 +262,7 @@ export async function POST(request: NextRequest) {
         session.id,
         session.agentType as AgentType,
         recentMessages.map((m) => ({ role: m.role, content: m.content })),
-        dbUser.profile as any,
+        userProfile as any,
         dbUser.companionGender as 'male' | 'female' | undefined
       )
 
@@ -292,7 +302,7 @@ export async function POST(request: NextRequest) {
     // 11. ПОСТРОИТЬ SYSTEM PROMPT (с RAG контекстом)
     // ============================================
     const promptParams = {
-      userProfile: dbUser.profile as any,
+      userProfile: userProfile as any,
       recentHistory: recentHistory || undefined,
       pastSessions: pastSessionsContext,
       ragContext: ragContext || undefined,

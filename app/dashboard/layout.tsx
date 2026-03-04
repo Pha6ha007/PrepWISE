@@ -1,11 +1,9 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { Button } from '@/components/ui/button'
 import { MessageSquare, BookOpen, TrendingUp, Settings, LogOut, Crown } from 'lucide-react'
-
-const prisma = new PrismaClient()
 
 async function signOut() {
   'use server'

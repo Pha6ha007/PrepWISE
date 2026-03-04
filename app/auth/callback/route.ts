@@ -35,7 +35,21 @@ export async function GET(request: Request) {
       }
     )
 
-    await supabase.auth.exchangeCodeForSession(code)
+    const { data } = await supabase.auth.exchangeCodeForSession(code)
+
+    // Проверить завершён ли онбординг у пользователя
+    if (data.user) {
+      const { data: dbUser } = await supabase
+        .from('users')
+        .select('companion_name')
+        .eq('id', data.user.id)
+        .single()
+
+      // Если companion_name пустой — редирект на onboarding
+      if (!dbUser || !dbUser.companion_name || dbUser.companion_name.trim() === '') {
+        return NextResponse.redirect(`${origin}/onboarding`)
+      }
+    }
   }
 
   // Редирект на dashboard после успешной аутентификации

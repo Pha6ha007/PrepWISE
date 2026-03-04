@@ -1,12 +1,12 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Settings, User, MessageCircle, Globe, CreditCard, LogOut } from 'lucide-react'
 import { CompanionNameEditor } from '@/components/settings/CompanionNameEditor'
 
-const prisma = new PrismaClient()
+
 
 async function signOut() {
   'use server'

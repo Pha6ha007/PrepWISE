@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,10 +19,18 @@ export async function GET(request: NextRequest) {
     }
 
     // ============================================
-    // 2. ПОЛУЧИТЬ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
+    // 2. ПОЛУЧИТЬ/СОЗДАТЬ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
     // ============================================
-    const dbUser = await prisma.user.findUnique({
+    // Используем upsert чтобы создать запись если её нет после регистрации
+    const dbUser = await prisma.user.upsert({
       where: { id: user.id },
+      create: {
+        id: user.id,
+        email: user.email!,
+        plan: 'free',
+        companionName: '', // Пустой = не прошёл onboarding
+      },
+      update: {}, // Ничего не обновляем, просто получаем данные
       select: {
         companionName: true,
         companionGender: true,
@@ -33,10 +41,6 @@ export async function GET(request: NextRequest) {
         plan: true,
       },
     })
-
-    if (!dbUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
-    }
 
     return NextResponse.json({
       companionName: dbUser.companionName || 'Alex',

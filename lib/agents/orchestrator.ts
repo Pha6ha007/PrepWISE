@@ -2,9 +2,9 @@
 // Orchestrator routing logic for multi-agent system
 
 import { AgentType, UserProfile } from '@/types'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+
 
 export interface RoutingDecision {
   route: AgentType
@@ -142,7 +142,7 @@ export async function routeToAgent(
   }
 
   // Add user profile context weighting (20%)
-  if (userProfile.patterns.length > 0) {
+  if (userProfile?.patterns && userProfile.patterns.length > 0) {
     userContextUsed.push('patterns')
     // Could add pattern-based scoring here
   }
