@@ -527,6 +527,20 @@ Crisis Agent ВСЕГДА работает параллельно основно
 ВСЕГДА обрабатывать идемпотентно (событие может прийти дважды)
 user_id передавать через customData, не через email
 
+### Git Commits — АБСОЛЮТНОЕ ПРАВИЛО
+
+НИКОГДА не добавляй Co-Authored-By в commit messages
+НИКОГДА не используй другой email кроме photobp2019@gmail.com
+Vercel Hobby план блокирует деплои если:
+- Git author email НЕ совпадает с Vercel account email
+- Есть co-authors в коммите
+
+Git config должен быть:
+user.name = "Pavel Gayvoronskiy"
+user.email = "photobp2019@gmail.com"
+
+Коммиты делаются ТОЛЬКО от этого автора без co-authors
+
 ---
 
 ## 10. ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ (.env.local)
