@@ -42,6 +42,20 @@ export interface Session {
   moodScore?: number
 }
 
+// Session Preview (for chat history sidebar)
+export interface SessionPreview {
+  id: string
+  createdAt: string
+  agentType: string
+  messageCount: number
+  moodBefore: number | null
+  moodAfter: number | null
+  summary: string | null
+  firstUserMessage: string | null
+  lastAssistantMessage: string | null
+  isActive: boolean
+}
+
 export type AgentType =
   | 'anxiety'
   | 'family'

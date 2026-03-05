@@ -35,9 +35,11 @@ interface ProactiveMessage {
 interface ChatWindowProps {
   sessionId?: string
   onSessionCreated?: (sessionId: string) => void
+  activeSessionId?: string | null
+  onSessionChange?: (sessionId: string | null) => void
 }
 
-export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
+export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSessionChange }: ChatWindowProps) {
   const searchParams = useSearchParams()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -68,7 +70,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
   const isVoiceAvailable = userPlan === 'pro' || userPlan === 'premium'
   const isPremium = userPlan === 'premium'
 
-  // Загрузить данные пользователя и восстановить сессию при монтировании
+  // Загрузить данные пользователя при монтировании
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -84,36 +86,46 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
       }
     }
 
-    const restoreSession = async () => {
-      const savedSessionId = localStorage.getItem('confide_active_session')
-      if (savedSessionId && !sessionId) {
-        try {
-          // Загрузить сообщения этой сессии
-          const response = await fetch(`/api/chat/messages?sessionId=${savedSessionId}`)
-          if (response.ok) {
-            const data = await response.json()
-            const loadedMessages = data.messages || []
-            setMessages(loadedMessages)
-            setCurrentSessionId(savedSessionId)
-            onSessionCreated?.(savedSessionId)
+    fetchUserData()
+  }, [])
 
-            // Восстановить messageCount (количество user сообщений)
-            const userMessageCount = loadedMessages.filter((msg: any) => msg.role === 'user').length
-            setMessageCount(userMessageCount)
-          } else {
-            // Сессия не найдена — очистить localStorage
-            localStorage.removeItem('confide_active_session')
-          }
-        } catch (error) {
-          console.error('Failed to restore session:', error)
-          localStorage.removeItem('confide_active_session')
+  // Load messages when activeSessionId changes (session switching from sidebar)
+  useEffect(() => {
+    const loadSessionMessages = async () => {
+      if (!activeSessionId) {
+        // Clear messages when no session selected (new conversation)
+        setMessages([])
+        setCurrentSessionId(undefined)
+        setMessageCount(0)
+        setMemoryUpdated(false)
+        setGreetingLoaded(false)
+        setSources([])
+        return
+      }
+
+      // Load messages for selected session
+      try {
+        const response = await fetch(`/api/chat/messages?sessionId=${activeSessionId}`)
+        if (response.ok) {
+          const data = await response.json()
+          const loadedMessages = data.messages || []
+          setMessages(loadedMessages)
+          setCurrentSessionId(activeSessionId)
+
+          // Restore messageCount (количество user сообщений)
+          const userMessageCount = loadedMessages.filter((msg: any) => msg.role === 'user').length
+          setMessageCount(userMessageCount)
+          setGreetingLoaded(true) // Don't load greeting for existing sessions
+        } else {
+          console.error('Failed to load session messages')
         }
+      } catch (error) {
+        console.error('Error loading session messages:', error)
       }
     }
 
-    fetchUserData()
-    restoreSession()
-  }, [])
+    loadSessionMessages()
+  }, [activeSessionId])
 
   // Проверить первый ли это визит (SSR safe)
   useEffect(() => {
@@ -377,6 +389,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
       if (data.sessionId && !currentSessionId) {
         setCurrentSessionId(data.sessionId)
         onSessionCreated?.(data.sessionId)
+        onSessionChange?.(data.sessionId)
         // Сохранить в localStorage для восстановления при навигации
         localStorage.setItem('confide_active_session', data.sessionId)
       }
@@ -562,6 +575,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
       setMemoryUpdated(false)
       setGreetingLoaded(false)
       setSources([])
+      onSessionChange?.(null)
       return
     }
 
@@ -603,6 +617,7 @@ export function ChatWindow({ sessionId, onSessionCreated }: ChatWindowProps) {
       setMemoryUpdated(false)
       setGreetingLoaded(false)
       setSources([])
+      onSessionChange?.(null)
 
       // Очистить localStorage после успешного сохранения
       localStorage.removeItem('confide_active_session')
