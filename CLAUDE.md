@@ -726,15 +726,23 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
    - Благодарность от Alex
 
 **Технология:**
-- **PDF генерация:** react-pdf или pdf-lib
-- **Хранение:** Supabase Storage (приватные bucket для каждого пользователя)
-- **Генерация:** Автоматически 1 числа каждого месяца (cron job)
-- **Доступ:** Dashboard → Journal → "View Monthly Diaries"
+- **PDF генерация:** @react-pdf/renderer ✅
+- **Хранение:** Supabase Storage (приватный bucket "diaries") ✅
+- **Генерация:** Автоматически 1 числа каждого месяца (Vercel Cron Job) ✅
+- **Доступ:** Dashboard → Journal → "View Monthly Diaries" ✅
 
 **API Endpoints:**
-- `POST /api/diary/generate` — ручная генерация PDF за месяц
-- `GET /api/diary/list` — список всех дневников пользователя
-- `GET /api/diary/download/:id` — скачать конкретный дневник
+- `POST /api/diary/generate` — ручная генерация PDF за месяц ✅
+- `GET /api/diary/list` — список всех дневников пользователя ✅
+- `GET /api/diary/[id]` — получить конкретный дневник ✅
+- `GET /api/cron/generate-diaries` — cron endpoint для автогенерации ✅
+
+**Vercel Cron Job (реализовано март 2026):**
+- Schedule: "0 6 1 * *" (6:00 UTC на 1 число каждого месяца)
+- Security: CRON_SECRET auth header (Bearer token)
+- Batch processing: генерирует дневники для всех пользователей с сессиями
+- Service layer: lib/diary/service.ts — переиспользуемая логика генерации
+- Error handling: если генерация упала для одного пользователя, продолжает для остальных
 
 **Монетизация:**
 - Free план: только текущий месяц

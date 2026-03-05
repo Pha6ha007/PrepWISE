@@ -58,6 +58,7 @@
 - Progress goals with milestones
 - Journal insights + word cloud
 - Confide Diary — PDF monthly journals
+- PDF Diary auto-generation (Vercel Cron Job на 1 число каждого месяца)
 - Chat history sidebar (Telegram-style)
 - Session persistence
 - Memory agent upgrade (style analyzer, emotional anchors)
