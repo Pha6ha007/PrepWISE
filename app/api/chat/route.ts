@@ -13,7 +13,7 @@ import {
   buildWomensPrompt,
 } from '@/agents/prompts'
 import { detectCrisis, getCrisisResponse, logCrisisEvent } from '@/agents/crisis/protocol'
-import { checkRateLimit, recordRequest } from '@/lib/utils/rate-limit'
+import { checkRateLimit } from '@/lib/utils/rate-limit'
 import { retrieveContext, formatContextForPrompt } from '@/lib/pinecone/retrieval'
 import { getNamespaceForAgent } from '@/lib/pinecone/namespace-mapping'
 import { ChatResponse, ErrorResponse, AgentType } from '@/types'
@@ -103,21 +103,30 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 4. RATE LIMITING
+    // 4. RATE LIMITING (PostgreSQL-based for serverless)
     // ============================================
-    const { allowed, remaining } = checkRateLimit(user.id, dbUser.plan as any)
+    const rateLimitResult = await checkRateLimit(
+      user.id,
+      dbUser.plan as 'free' | 'pro' | 'premium',
+      '/api/chat'
+    )
 
-    if (!allowed) {
+    if (!rateLimitResult.success) {
       return NextResponse.json<ErrorResponse>(
         {
           error: 'Rate limit exceeded',
-          details: `Free plan: 5 messages per 10 minutes. Upgrade for more.`,
+          details: `${dbUser.plan} plan: ${rateLimitResult.limit} messages per 10 minutes. Upgrade for more.`,
         },
-        { status: 429 }
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': rateLimitResult.resetIn.toString(),
+          },
+        }
       )
     }
-
-    recordRequest(user.id)
 
     // ============================================
     // 5. CRISIS DETECTION (параллельно, hardcoded)
@@ -483,20 +492,29 @@ CRITICAL REMINDER — FOLLOW THESE OR THE RESPONSE FAILS:
     }
 
     // ============================================
-    // 14. ВЕРНУТЬ ОТВЕТ (с sources из RAG)
+    // 14. ВЕРНУТЬ ОТВЕТ (с sources из RAG + rate limit headers)
     // ============================================
-    return NextResponse.json<ChatResponse>({
-      message: assistantMessage,
-      messageId: assistantMessageRecord.id,
-      sessionId: session.id,
-      audioUrl, // Добавляем audioUrl если сгенерировано
-      sources: retrievedChunks.map((chunk) => ({
-        title: chunk.metadata.book_title,
-        author: chunk.metadata.author,
-        excerpt: chunk.text.slice(0, 200) + (chunk.text.length > 200 ? '...' : ''),
-        score: chunk.score,
-      })),
-    })
+    return NextResponse.json<ChatResponse>(
+      {
+        message: assistantMessage,
+        messageId: assistantMessageRecord.id,
+        sessionId: session.id,
+        audioUrl, // Добавляем audioUrl если сгенерировано
+        sources: retrievedChunks.map((chunk) => ({
+          title: chunk.metadata.book_title,
+          author: chunk.metadata.author,
+          excerpt: chunk.text.slice(0, 200) + (chunk.text.length > 200 ? '...' : ''),
+          score: chunk.score,
+        })),
+      },
+      {
+        headers: {
+          'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': rateLimitResult.resetIn.toString(),
+        },
+      }
+    )
   } catch (error) {
     console.error('Chat API error:', error)
 

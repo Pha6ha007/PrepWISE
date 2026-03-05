@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { textToSpeech } from '@/lib/elevenlabs/client'
+import { checkRateLimit } from '@/lib/utils/rate-limit'
 import { ErrorResponse } from '@/types'
 
 
@@ -72,7 +73,33 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 4. PLAN CHECK (голос только для Pro/Premium)
+    // 4. RATE LIMITING (PostgreSQL-based for serverless)
+    // ============================================
+    const rateLimitResult = await checkRateLimit(
+      user.id,
+      dbUser.plan as 'free' | 'pro' | 'premium',
+      '/api/tts'
+    )
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json<ErrorResponse>(
+        {
+          error: 'Rate limit exceeded',
+          details: `${dbUser.plan} plan: ${rateLimitResult.limit} messages per 10 minutes. Upgrade for more.`,
+        },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': rateLimitResult.resetIn.toString(),
+          },
+        }
+      )
+    }
+
+    // ============================================
+    // 5. PLAN CHECK (голос только для Pro/Premium)
     // ============================================
     if (dbUser.plan === 'free') {
       return NextResponse.json<ErrorResponse>(
@@ -85,7 +112,7 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 5. ГЕНЕРАЦИЯ РЕЧИ ЧЕРЕЗ ELEVENLABS
+    // 6. ГЕНЕРАЦИЯ РЕЧИ ЧЕРЕЗ ELEVENLABS
     // ============================================
     // Используем voiceId из профиля или дефолтный по полу
     const gender: 'male' | 'female' | undefined =
@@ -100,7 +127,7 @@ export async function POST(request: NextRequest) {
     )
 
     // ============================================
-    // 6. ВЕРНУТЬ АУДИО КАК STREAM
+    // 7. ВЕРНУТЬ АУДИО КАК STREAM (с rate limit headers)
     // ============================================
     return new NextResponse(audioBuffer, {
       status: 200,
@@ -109,6 +136,10 @@ export async function POST(request: NextRequest) {
         'Content-Length': audioBuffer.byteLength.toString(),
         // Cache для экономии запросов (тот же текст = тот же аудио)
         'Cache-Control': 'public, max-age=3600',
+        // Rate limit headers
+        'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+        'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+        'X-RateLimit-Reset': rateLimitResult.resetIn.toString(),
       },
     })
   } catch (error) {

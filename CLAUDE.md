@@ -581,7 +581,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - [x] .env.local заполнен всеми ключами ✅
 - [x] .cursorrules создан ✅
 
-### Фаза 1 — MVP Core (почти завершено — 18/22 задач)
+### Фаза 1 — MVP Core (почти завершено — 19/22 задач)
 
 Неделя 1-2: Фундамент ✅
 - [x] Auth flow (register, login, middleware) ✅
@@ -600,10 +600,10 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - [x] Подгрузка профиля в начало каждой сессии ✅
 - [x] Семантический поиск по истории ✅
 
-Неделя 6: Crisis + безопасность (3/4)
+Неделя 6: Crisis + безопасность ✅ ЗАВЕРШЕНО (4/4)
 - [x] Crisis Detection Agent (параллельный) ✅
 - [x] Hardcoded кризисный протокол ✅
-- [ ] Rate limiting на API
+- [x] Rate limiting на API ✅
 - [x] Input validation (Zod) ✅
 
 Неделя 7-8: Монетизация (1/4) — НЕ ГОТОВО

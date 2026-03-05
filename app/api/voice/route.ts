@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { prisma } from '@/lib/prisma'
 import { openai } from '@/lib/openai/client'
+import { checkRateLimit } from '@/lib/utils/rate-limit'
 import { ErrorResponse } from '@/types'
 
 /**
@@ -45,7 +47,48 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 2. ПОЛУЧИТЬ АУДИО ФАЙЛ ИЗ FORMDATA
+    // 2. ПОЛУЧИТЬ USER PLAN ДЛЯ RATE LIMITING
+    // ============================================
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { plan: true },
+    })
+
+    if (!dbUser) {
+      return NextResponse.json<ErrorResponse>(
+        { error: 'User not found' },
+        { status: 404 }
+      )
+    }
+
+    // ============================================
+    // 3. RATE LIMITING (PostgreSQL-based for serverless)
+    // ============================================
+    const rateLimitResult = await checkRateLimit(
+      user.id,
+      dbUser.plan as 'free' | 'pro' | 'premium',
+      '/api/voice'
+    )
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json<ErrorResponse>(
+        {
+          error: 'Rate limit exceeded',
+          details: `${dbUser.plan} plan: ${rateLimitResult.limit} messages per 10 minutes. Upgrade for more.`,
+        },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': rateLimitResult.resetIn.toString(),
+          },
+        }
+      )
+    }
+
+    // ============================================
+    // 4. ПОЛУЧИТЬ АУДИО ФАЙЛ ИЗ FORMDATA
     // ============================================
     const formData = await request.formData()
     const audioFile = formData.get('audio') as File | null
@@ -58,7 +101,7 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 3. ВАЛИДАЦИЯ ФАЙЛА
+    // 5. ВАЛИДАЦИЯ ФАЙЛА
     // ============================================
     // Проверить размер
     if (audioFile.size > MAX_FILE_SIZE) {
@@ -83,7 +126,7 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 4. ТРАНСКРИПЦИЯ ЧЕРЕЗ WHISPER
+    // 6. ТРАНСКРИПЦИЯ ЧЕРЕЗ WHISPER
     // ============================================
     // Groq поддерживает Whisper API совместимый интерфейс
     // Модель: whisper-large-v3-turbo (быстрая и точная)
@@ -109,11 +152,20 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 5. ВЕРНУТЬ ТРАНСКРИПЦИЮ
+    // 7. ВЕРНУТЬ ТРАНСКРИПЦИЮ (с rate limit headers)
     // ============================================
-    return NextResponse.json({
-      text: transcribedText,
-    })
+    return NextResponse.json(
+      {
+        text: transcribedText,
+      },
+      {
+        headers: {
+          'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+          'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+          'X-RateLimit-Reset': rateLimitResult.resetIn.toString(),
+        },
+      }
+    )
   } catch (error) {
     console.error('Voice transcription error:', error)
 

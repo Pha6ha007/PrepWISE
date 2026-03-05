@@ -309,3 +309,19 @@ model SafetyLog {
 
   @@map("safety_logs")
 }
+
+// ============================================
+// RATE LIMITING
+// ============================================
+
+model RateLimit {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  endpoint    String   // "/api/chat" | "/api/voice" | "/api/tts"
+  count       Int      @default(1)
+  windowStart DateTime @default(now()) @map("window_start")
+
+  @@unique([userId, endpoint])
+  @@index([windowStart]) // для быстрой очистки старых записей
+  @@map("rate_limits")
+}

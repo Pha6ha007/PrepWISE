@@ -1,119 +1,159 @@
-/**
- * Rate Limiting для API endpoints
- *
- * Простая in-memory реализация для старта.
- * TODO: При масштабировании переместить в Redis
- */
+// Confide — Rate Limiting Utility
+// PostgreSQL-based rate limiting for serverless environment (Vercel)
+// CRITICAL: In-memory storage does NOT work in serverless — each invocation is separate
 
-import { RateLimit } from '@/types'
+import { prisma } from "@/lib/supabase/client";
 
-// Rate limits по планам
-const RATE_LIMITS: Record<string, RateLimit> = {
-  free: {
-    plan: 'free',
-    maxRequests: 5,
-    windowMs: 10 * 60 * 1000, // 10 минут
-  },
-  pro: {
-    plan: 'pro',
-    maxRequests: 30,
-    windowMs: 10 * 60 * 1000, // 10 минут
-  },
-  premium: {
-    plan: 'premium',
-    maxRequests: 60,
-    windowMs: 10 * 60 * 1000, // 10 минут
-  },
+// Rate limits by plan (messages per 10 minutes)
+const RATE_LIMITS = {
+  free: 5,
+  pro: 30,
+  premium: 60,
+} as const;
+
+const WINDOW_DURATION_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
+
+export interface RateLimitResult {
+  success: boolean;
+  limit: number;
+  remaining: number;
+  resetIn: number; // seconds until window resets
 }
 
-// In-memory хранилище запросов
-// Структура: Map<userId, Array<timestamp>>
-const requestStore = new Map<string, number[]>()
-
 /**
- * Проверить rate limit для пользователя
+ * Check if user has exceeded rate limit for given endpoint
+ * Uses PostgreSQL to track requests across serverless invocations
  *
- * @param userId - ID пользователя
- * @param plan - План подписки
- * @returns { allowed: boolean, remaining: number, resetAt: Date }
+ * @param userId - User ID from auth token
+ * @param plan - User's subscription plan (free | pro | premium)
+ * @param endpoint - API endpoint being accessed (/api/chat, /api/voice, /api/tts)
+ * @returns RateLimitResult with success flag and metadata
  */
-export function checkRateLimit(
+export async function checkRateLimit(
   userId: string,
-  plan: 'free' | 'pro' | 'premium' = 'free'
-): {
-  allowed: boolean
-  remaining: number
-  resetAt: Date
-} {
-  const limit = RATE_LIMITS[plan]
-  const now = Date.now()
-  const windowStart = now - limit.windowMs
+  plan: "free" | "pro" | "premium",
+  endpoint: string
+): Promise<RateLimitResult> {
+  const limit = RATE_LIMITS[plan];
+  const now = new Date();
+  const windowStart = new Date(now.getTime() - WINDOW_DURATION_MS);
 
-  // Получить историю запросов пользователя
-  let requests = requestStore.get(userId) || []
+  try {
+    // Find existing rate limit record for this user + endpoint
+    const existing = await prisma.rateLimit.findUnique({
+      where: {
+        userId_endpoint: {
+          userId,
+          endpoint,
+        },
+      },
+    });
 
-  // Удалить запросы вне окна
-  requests = requests.filter((timestamp) => timestamp > windowStart)
+    // If no record exists, create new one
+    if (!existing) {
+      await prisma.rateLimit.create({
+        data: {
+          userId,
+          endpoint,
+          count: 1,
+          windowStart: now,
+        },
+      });
 
-  // Обновить хранилище
-  requestStore.set(userId, requests)
-
-  // Проверить лимит
-  const allowed = requests.length < limit.maxRequests
-  const remaining = Math.max(0, limit.maxRequests - requests.length)
-
-  // Время сброса = конец текущего окна
-  const resetAt = new Date(now + limit.windowMs)
-
-  return {
-    allowed,
-    remaining,
-    resetAt,
-  }
-}
-
-/**
- * Записать новый запрос
- *
- * @param userId - ID пользователя
- */
-export function recordRequest(userId: string): void {
-  const now = Date.now()
-  const requests = requestStore.get(userId) || []
-  requests.push(now)
-  requestStore.set(userId, requests)
-}
-
-/**
- * Получить лимит по плану
- *
- * @param plan - План подписки
- * @returns Объект RateLimit
- */
-export function getRateLimit(plan: 'free' | 'pro' | 'premium'): RateLimit {
-  return RATE_LIMITS[plan]
-}
-
-/**
- * Очистка старых записей (запускать периодически)
- * В production это должно быть в background job
- */
-export function cleanupOldRequests(): void {
-  const now = Date.now()
-  const maxWindow = 10 * 60 * 1000 // 10 минут
-
-  for (const [userId, requests] of requestStore.entries()) {
-    const filtered = requests.filter((timestamp) => timestamp > now - maxWindow)
-
-    if (filtered.length === 0) {
-      requestStore.delete(userId)
-    } else {
-      requestStore.set(userId, filtered)
+      return {
+        success: true,
+        limit,
+        remaining: limit - 1,
+        resetIn: Math.ceil(WINDOW_DURATION_MS / 1000),
+      };
     }
+
+    // Check if window has expired (more than 10 minutes old)
+    const windowExpired = existing.windowStart < windowStart;
+
+    if (windowExpired) {
+      // Reset window with new count
+      await prisma.rateLimit.update({
+        where: { id: existing.id },
+        data: {
+          count: 1,
+          windowStart: now,
+        },
+      });
+
+      return {
+        success: true,
+        limit,
+        remaining: limit - 1,
+        resetIn: Math.ceil(WINDOW_DURATION_MS / 1000),
+      };
+    }
+
+    // Window is still active — check if limit exceeded
+    if (existing.count >= limit) {
+      const resetIn = Math.ceil(
+        (existing.windowStart.getTime() + WINDOW_DURATION_MS - now.getTime()) / 1000
+      );
+
+      return {
+        success: false,
+        limit,
+        remaining: 0,
+        resetIn: Math.max(0, resetIn),
+      };
+    }
+
+    // Increment count
+    await prisma.rateLimit.update({
+      where: { id: existing.id },
+      data: {
+        count: existing.count + 1,
+      },
+    });
+
+    const resetIn = Math.ceil(
+      (existing.windowStart.getTime() + WINDOW_DURATION_MS - now.getTime()) / 1000
+    );
+
+    return {
+      success: true,
+      limit,
+      remaining: limit - existing.count - 1,
+      resetIn: Math.max(0, resetIn),
+    };
+  } catch (error) {
+    console.error("[Rate Limit] Error checking rate limit:", error);
+
+    // On error, fail open (allow request) but log the issue
+    // This prevents rate limiting from blocking all requests if DB has issues
+    return {
+      success: true,
+      limit,
+      remaining: limit,
+      resetIn: 0,
+    };
   }
 }
 
-// Очистка каждые 5 минут
-if (typeof setInterval !== 'undefined') {
-  setInterval(cleanupOldRequests, 5 * 60 * 1000)
+/**
+ * Cleanup old rate limit records (older than 10 minutes)
+ * Should be called periodically (e.g., via cron job)
+ */
+export async function cleanupOldRateLimits(): Promise<number> {
+  const cutoff = new Date(Date.now() - WINDOW_DURATION_MS);
+
+  try {
+    const result = await prisma.rateLimit.deleteMany({
+      where: {
+        windowStart: {
+          lt: cutoff,
+        },
+      },
+    });
+
+    return result.count;
+  } catch (error) {
+    console.error("[Rate Limit] Error cleaning up old records:", error);
+    return 0;
+  }
 }
