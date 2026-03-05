@@ -2146,4 +2146,310 @@ git commit -m "feat: mood tracking — 3-step check-in, graph, heatmap, triggers
 
 ---
 
+## 🎉 [2026-03-05] Phase 4 — Progress Goals System COMPLETED
+
+**Goal Tracking with Milestones + Homework** — 100% ✅
+
+### Задачи выполнены
+
+**Task 1: Database Schema** ✅
+- Добавлена модель `Goal` — целеполагание с прогрессом
+- Добавлена модель `Milestone` — подзадачи цели
+- Добавлена модель `Homework` — домашние задания от агента
+- Migration: `20260305_add_goals_system`
+
+**Task 2: Goals Data Layer** ✅
+- Создан `lib/goals/data.ts` — 8 категорий целей
+- Categories: Anxiety, Relationships, Self-Esteem, Sleep, Stress, Communication, Boundaries, Grief
+- Helpers: `getCategoryById()`, `getCategoryColor()`, `getCategoryEmoji()`
+- Fallback category: General 🎯 (если не найдена)
+
+**Task 3: API Routes** ✅
+- `POST /api/goals` — создание новой цели
+- `GET /api/goals` — список целей с прогрессом
+- `GET /api/goals/[id]` — детали цели с milestones
+- `PATCH /api/goals/[id]/milestones/[milestoneId]` — toggle milestone done
+- `POST /api/homework` — создание домашнего задания
+- `GET /api/homework` — список домашних заданий
+- `PATCH /api/homework/[id]` — toggle homework done
+
+**Task 4: UI Components** ✅
+- `GoalCard.tsx` — карточка цели с прогресс-баром
+- `GoalDetail.tsx` — детальный вид с milestones
+- `AddGoalModal.tsx` — модал создания цели
+- `HomeworkCard.tsx` — карточка домашнего задания
+- `WordCloud.tsx` — облако слов (топ темы за месяц)
+- `GoalsTab.tsx` — табы Goals | Homework | Themes
+
+**Task 5: Progress Page Integration** ✅
+- Обновлён `ProgressClient.tsx` — 2 основных таба
+- Tab 1: **Mood** — график настроения, heatmap, insights
+- Tab 2: **Goals** — цели, домашние задания, облако слов
+
+### Database Schema
+
+**Goal Model:**
+```prisma
+model Goal {
+  id          String      @id @default(uuid())
+  userId      String
+  category    String      // anxiety | relationships | selfesteem | sleep | stress | communication | boundaries | grief
+  title       String
+  description String?
+  progress    Int         @default(0)  // 0-100%
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id])
+  milestones  Milestone[]
+}
+```
+
+**Milestone Model:**
+```prisma
+model Milestone {
+  id          String    @id @default(uuid())
+  goalId      String
+  text        String
+  done        Boolean   @default(false)
+  completedAt DateTime?
+  goal        Goal      @relation(fields: [goalId], references: [id], onDelete: Cascade)
+}
+```
+
+**Homework Model:**
+```prisma
+model Homework {
+  id          String    @id @default(uuid())
+  userId      String
+  sessionId   String?
+  title       String
+  description String?
+  done        Boolean   @default(false)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+}
+```
+
+### Goal Categories (8 total)
+
+| ID | Label | Emoji | Color |
+|----|-------|-------|-------|
+| anxiety | Manage Anxiety | 🧘 | #6366F1 (indigo) |
+| relationships | Better Relationships | 💕 | #EC4899 (pink) |
+| selfesteem | Self-Esteem | 💪 | #F59E0B (amber) |
+| sleep | Sleep Better | 🌙 | #8B5CF6 (purple) |
+| stress | Stress Management | 🌿 | #10B981 (green) |
+| communication | Communication | 💬 | #06B6D4 (cyan) |
+| boundaries | Set Boundaries | 🛡 | #EF4444 (red) |
+| grief | Process Grief | 🕊 | #6B7280 (gray) |
+
+### UI Features
+
+**GoalCard:**
+- Category emoji + color-coded badge
+- Progress bar with gradient (0-100%)
+- Milestones counter (completed/total)
+- Created date
+- Session count (optional)
+- Hover: lift animation + shadow
+- Click → GoalDetail view
+
+**GoalDetail:**
+- Full goal header with description
+- Large progress indicator
+- Interactive milestones list:
+  - Click to toggle done
+  - Checkmark animation
+  - Completion date display
+  - Green background when done
+  - Line-through text styling
+
+**AddGoalModal:**
+- Category selection (8 cards с emoji)
+- Title + description inputs
+- Auto-generates 3-5 AI milestones (будущее)
+- Manual milestone input (текущее)
+- Validation: title required, min 3 chars
+
+**HomeworkCard:**
+- Title + description
+- Due date badge
+- Checkbox to mark done
+- Completion animation
+- Overdue indicator (red badge)
+
+**WordCloud (будущее):**
+- Top 15 most frequent words from sessions
+- Font size based on frequency
+- Color gradient по настроению
+- Filters: last 7/30/90 days
+
+### Progress Page Structure
+
+**Layout:**
+```
+┌─────────────────────────────────────┐
+│  Progress Header + Streak Badge 🔥  │
+├─────────────────────────────────────┤
+│  Stats Cards Row (4 cards)          │
+├─────────────────────────────────────┤
+│  Tab: [Mood] | [Goals]              │
+├─────────────────────────────────────┤
+│  MOOD TAB:                           │
+│  - AI Insights (4 cards)             │
+│  - Graph/Calendar/Triggers tabs      │
+│  - Recent Check-ins List             │
+│                                      │
+│  GOALS TAB:                          │
+│  - Sub-tabs: [Goals] [Homework] [☁️] │
+│  - Goals: Grid of GoalCards          │
+│  - Homework: List of HomeworkCards   │
+│  - Themes: WordCloud visualization   │
+└─────────────────────────────────────┘
+```
+
+### API Endpoints Summary
+
+**Goals:**
+- `POST /api/goals` — create goal
+- `GET /api/goals` — list all goals with progress
+- `GET /api/goals/[id]` — goal details + milestones
+- `PATCH /api/goals/[id]/milestones/[milestoneId]` — toggle milestone
+
+**Homework:**
+- `POST /api/homework` — create homework
+- `GET /api/homework` — list all homework
+- `PATCH /api/homework/[id]` — toggle done
+
+**Word Cloud:**
+- `GET /api/wordcloud?limit=15` — top frequent words
+
+### Bug Fixes
+
+**GoalCard Title Display Bug** ✅
+- **Issue:** Goal title не отображался рядом с emoji, показывал только emoji и "))"
+- **Cause:** Возможная проблема с undefined/null title или category
+- **Fix:**
+  1. `getCategoryById()` теперь всегда возвращает валидную категорию (fallback: General 🎯)
+  2. Добавлен `displayTitle` fallback: `goal.title || 'Untitled Goal'`
+  3. Удалены все optional chaining операторы (`category?.`)
+  4. Добавлен `flex-1 min-w-0` для правильного text overflow
+- **Result:** Title теперь всегда отображается корректно
+
+### Files Created
+
+**Data & Types:**
+- `lib/goals/data.ts` — категории, helpers
+
+**API Routes:**
+- `app/api/goals/route.ts` — CRUD операции
+- `app/api/goals/[id]/route.ts` — детали цели
+- `app/api/goals/[id]/milestones/[milestoneId]/route.ts` — toggle milestone
+- `app/api/homework/route.ts` — CRUD домашних заданий
+- `app/api/homework/[id]/route.ts` — toggle homework
+- `app/api/wordcloud/route.ts` — генерация облака слов
+
+**Components:**
+- `components/goals/GoalCard.tsx`
+- `components/goals/GoalDetail.tsx`
+- `components/goals/AddGoalModal.tsx`
+- `components/goals/GoalsTab.tsx`
+- `components/homework/HomeworkCard.tsx`
+- `components/wordcloud/WordCloud.tsx`
+
+**Modified:**
+- `components/progress/ProgressClient.tsx` — добавлен Goals tab
+- `prisma/schema.prisma` — Goal, Milestone, Homework models
+
+### How It Works
+
+**Goal Creation Flow:**
+```
+1. User clicks "Add Goal" в Progress → Goals tab
+   ↓
+2. AddGoalModal открывается
+   ↓
+3. Выбор категории (8 options) → highlight selected
+   ↓
+4. Ввод title + description
+   ↓
+5. POST /api/goals { category, title, description }
+   ↓
+6. Prisma создаёт Goal record (progress: 0%)
+   ↓
+7. Возвращает goalId
+   ↓
+8. UI обновляется → показывает новую GoalCard
+```
+
+**Milestone Tracking:**
+```
+1. User clicks GoalCard → GoalDetail view
+   ↓
+2. Click на milestone checkbox
+   ↓
+3. PATCH /api/goals/[id]/milestones/[milestoneId] { done: true }
+   ↓
+4. Update milestone.done + milestone.completedAt
+   ↓
+5. Recalculate goal.progress = (doneMilestones / totalMilestones) * 100
+   ↓
+6. UI: Checkmark animation + green background
+   ↓
+7. Progress bar updates smoothly (Framer Motion)
+```
+
+**Progress Calculation:**
+```typescript
+const completedMilestones = goal.milestones.filter(m => m.done).length
+const totalMilestones = goal.milestones.length
+const progress = Math.round((completedMilestones / totalMilestones) * 100)
+```
+
+### Design System
+
+**Colors:**
+- Category colors используются для:
+  - Border цвет карточек (`${color}20` opacity)
+  - Background emoji badge (`${color}15`)
+  - Progress bar gradient (`${color}80` → `${color}`)
+- Consistent с mood tracking палитрой
+
+**Typography:**
+- Headers: font-serif (Instrument Serif)
+- Body: font-sans (Inter)
+- Progress numbers: text-2xl font-bold
+
+**Animations:**
+- GoalCard hover: `y: -2px` lift
+- Milestone toggle: checkmark fade-in
+- Progress bar: width animation 0.8s ease-out
+- Modal: fade-in-up с backdrop blur
+
+### Future Enhancements
+
+**Planned (not yet implemented):**
+- [ ] AI auto-generates milestones при создании цели
+- [ ] Homework suggestions от агента после сессии
+- [ ] Goal templates (anxiety → "Practice deep breathing 3x/day")
+- [ ] Progress notifications ("You're 50% done with 'Manage Anxiety'!")
+- [ ] WordCloud visualization (top themes from sessions)
+- [ ] Goal sharing (export as image)
+- [ ] Streaks for goal completion
+
+### System Status
+
+✅ **Goals system operational** — create, track, complete
+✅ **Milestones tracking** — checkbox toggle, progress calculation
+✅ **Homework assignments** — create, mark done, due dates
+✅ **Progress page integration** — 2-tab layout (Mood | Goals)
+✅ **Bug fixes** — GoalCard title display resolved
+✅ **API complete** — 6 endpoints для goals/homework
+✅ **UI polished** — animations, colors, responsive
+
+**Phase 4 Progress Tracking: 60% COMPLETE**
+
+---
+
 *Log maintained by Claude Code + Cursor*

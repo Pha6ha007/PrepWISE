@@ -26,6 +26,11 @@ export default function GoalCard({ goal, onClick }: GoalCardProps) {
     day: 'numeric',
   })
 
+  // Get category emoji (getCategoryById now always returns a valid category)
+  const emoji = category.emoji
+  // Ensure title is never empty
+  const displayTitle = goal.title || 'Untitled Goal'
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -34,7 +39,7 @@ export default function GoalCard({ goal, onClick }: GoalCardProps) {
       onClick={onClick}
       className="bg-white p-6 rounded-2xl border border-gray-100 shadow-subtle hover:shadow-card transition-all cursor-pointer hover:border-opacity-50"
       style={{
-        borderColor: category?.color ? `${category.color}20` : undefined,
+        borderColor: `${category.color}20`,
       }}
     >
       {/* Header */}
@@ -43,13 +48,15 @@ export default function GoalCard({ goal, onClick }: GoalCardProps) {
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
             style={{
-              backgroundColor: category?.color ? `${category.color}15` : '#F3F4F6',
+              backgroundColor: `${category.color}15`,
             }}
           >
-            {category?.emoji || '🎯'}
+            {emoji}
           </div>
-          <div>
-            <h3 className="font-serif font-semibold text-lg text-foreground">{goal.title}</h3>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-serif font-semibold text-lg text-foreground">
+              {displayTitle}
+            </h3>
             {goal.description && (
               <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
                 {goal.description}
@@ -74,9 +81,7 @@ export default function GoalCard({ goal, onClick }: GoalCardProps) {
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="h-full rounded-full"
             style={{
-              background: category?.color
-                ? `linear-gradient(90deg, ${category.color}80 0%, ${category.color} 100%)`
-                : 'linear-gradient(90deg, #6366F180 0%, #6366F1 100%)',
+              background: `linear-gradient(90deg, ${category.color}80 0%, ${category.color} 100%)`,
             }}
           />
         </div>

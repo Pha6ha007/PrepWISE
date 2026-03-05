@@ -54,10 +54,10 @@ export default function GoalDetail({ goal, onBack, onMilestoneToggle }: GoalDeta
           <div
             className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
             style={{
-              backgroundColor: category?.color ? `${category.color}15` : '#F3F4F6',
+              backgroundColor: `${category.color}15`,
             }}
           >
-            {category?.emoji || '🎯'}
+            {category.emoji}
           </div>
           <div className="flex-1">
             <h2 className="font-serif text-3xl font-semibold text-foreground mb-2">
@@ -84,9 +84,7 @@ export default function GoalDetail({ goal, onBack, onMilestoneToggle }: GoalDeta
               transition={{ duration: 0.8, ease: 'easeOut' }}
               className="h-full rounded-full"
               style={{
-                background: category?.color
-                  ? `linear-gradient(90deg, ${category.color}80 0%, ${category.color} 100%)`
-                  : 'linear-gradient(90deg, #6366F180 0%, #6366F1 100%)',
+                background: `linear-gradient(90deg, ${category.color}80 0%, ${category.color} 100%)`,
               }}
             />
           </div>

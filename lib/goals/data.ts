@@ -19,16 +19,18 @@ export const GOAL_CATEGORIES: GoalCategory[] = [
   { id: 'grief', label: 'Process Grief', emoji: '🕊', color: '#6B7280' },
 ]
 
-export function getCategoryById(id: string): GoalCategory | undefined {
-  return GOAL_CATEGORIES.find((cat) => cat.id === id)
+export function getCategoryById(id: string): GoalCategory {
+  const category = GOAL_CATEGORIES.find((cat) => cat.id === id)
+  // Fallback to a default category if not found
+  return category || { id: 'general', label: 'General', emoji: '🎯', color: '#6366F1' }
 }
 
 export function getCategoryColor(categoryId: string): string {
   const category = getCategoryById(categoryId)
-  return category?.color || '#6366F1'
+  return category.color
 }
 
 export function getCategoryEmoji(categoryId: string): string {
   const category = getCategoryById(categoryId)
-  return category?.emoji || '🎯'
+  return category.emoji
 }
