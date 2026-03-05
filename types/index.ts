@@ -172,3 +172,13 @@ export interface CrisisResponse {
   message: string
   resources: CrisisResource[]
 }
+
+// Diary Types
+export interface MonthSummary {
+  mainThemes: string[]
+  progress: string
+  whatHelped: string[]
+  challengesRemaining: string
+  alexNote: string
+  goalsForNextMonth: string[]
+}

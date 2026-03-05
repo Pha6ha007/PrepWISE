@@ -4,6 +4,8 @@
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
 import { generateDiaryPDF, DiaryData, DiarySession } from '@/lib/diary/generator';
+import { generateMonthSummary } from '@/lib/diary/summary-generator';
+import { sendMonthlyLetter } from '@/lib/email/send-monthly-letter';
 import { format } from 'date-fns';
 
 // ============================================
@@ -14,6 +16,8 @@ export interface GenerateDiaryResult {
   success: boolean;
   diaryId?: string;
   error?: string;
+  emailSent?: boolean; // Whether monthly letter email was sent
+  emailError?: string; // Email error (if any) - does NOT affect success
 }
 
 // ============================================
@@ -36,6 +40,7 @@ export async function generateDiaryForUser(
       select: {
         companionName: true,
         email: true,
+        profile: true, // Include user profile for AI summary
       },
     });
 
@@ -117,22 +122,26 @@ export async function generateDiaryForUser(
       };
     });
 
-    // Generate month summary (simplified — can use GPT later)
-    const monthSummary = {
-      mainThemes: extractMainThemes(sessions),
-      progress:
-        'You engaged in meaningful conversations this month, exploring important aspects of your well-being.',
-      whatHelped: [
-        'Regular check-ins with Confide',
-        'Expressing thoughts and feelings openly',
-        'Reflecting on experiences',
-      ],
-      nextMonthGoals: [
-        'Continue regular conversations',
-        'Practice techniques discussed',
-        'Track mood patterns',
-      ],
-    };
+    // Generate AI-powered month summary
+    const monthSummary = await generateMonthSummary(
+      sessions.map((s) => ({
+        summary: s.summary || 'No summary available',
+        moodScore: s.moodBefore || undefined,
+        agentType: s.agentType,
+        createdAt: s.createdAt,
+      })),
+      dbUser.companionName,
+      dbUser.profile
+        ? {
+            communicationStyle: dbUser.profile.communicationStyle as Record<string, any>,
+            emotionalProfile: dbUser.profile.emotionalProfile as any,
+            lifeContext: dbUser.profile.lifeContext as any,
+            patterns: dbUser.profile.patterns as string[],
+            progress: dbUser.profile.progress as Record<string, any>,
+            whatWorked: dbUser.profile.whatWorked as string[],
+          }
+        : undefined
+    );
 
     // Generate PDF
     const diaryData: DiaryData = {
@@ -172,7 +181,30 @@ export async function generateDiaryForUser(
     });
 
     console.log(`[DIARY_GENERATED] ${diary.id} for user ${userId}`);
-    return { success: true, diaryId: diary.id };
+
+    // Send monthly letter email (non-blocking — diary success doesn't depend on email)
+    const emailResult = await sendMonthlyLetter({
+      userEmail: dbUser.email,
+      userName: dbUser.email.split('@')[0], // Use email username for now
+      companionName: dbUser.companionName,
+      monthSummary,
+      month,
+      year,
+      diaryUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/journal`,
+    });
+
+    if (emailResult.success) {
+      console.log(`[MONTHLY_LETTER_SENT] Email ID: ${emailResult.emailId} for user ${userId}`);
+    } else {
+      console.error(`[MONTHLY_LETTER_FAILED] ${emailResult.error} for user ${userId}`);
+    }
+
+    return {
+      success: true,
+      diaryId: diary.id,
+      emailSent: emailResult.success,
+      emailError: emailResult.error,
+    };
   } catch (error) {
     console.error('[DIARY_GENERATION_ERROR]', error);
 
@@ -207,17 +239,4 @@ function extractInsightFromSession(session: any): string | undefined {
   // Find journal entries linked to this session
   // For now, return undefined — can enhance later
   return undefined;
-}
-
-function extractMainThemes(sessions: any[]): string[] {
-  // Simplified: extract from session summaries or agent types
-  const themes = new Set<string>();
-
-  sessions.forEach((session) => {
-    if (session.agentType) {
-      themes.add(session.agentType.charAt(0).toUpperCase() + session.agentType.slice(1));
-    }
-  });
-
-  return Array.from(themes).slice(0, 5);
 }

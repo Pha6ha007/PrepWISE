@@ -195,11 +195,11 @@ npm install --save-dev @types/react-pdf
 
 ## Future Enhancements
 
-- [ ] AI-generated month summaries (currently hardcoded)
+- [x] AI-generated month summaries ✅
+- [x] Scheduled auto-generation (1st of each month) ✅
 - [ ] Include journal entries in diary
 - [ ] Custom themes/templates
 - [ ] Email delivery option
-- [ ] Scheduled auto-generation (1st of each month)
 - [ ] Export to other formats (DOCX, EPUB)
 
 ## Monetization

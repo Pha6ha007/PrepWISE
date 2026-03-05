@@ -3,6 +3,7 @@
 
 import { Document, Page, Text, View, StyleSheet, pdf, Font } from '@react-pdf/renderer';
 import { format } from 'date-fns';
+import { MonthSummary } from '@/types';
 
 // ============================================
 // TYPES
@@ -25,12 +26,7 @@ export interface DiaryData {
   month: number; // 1-12
   year: number;
   sessions: DiarySession[];
-  monthSummary: {
-    mainThemes: string[];
-    progress: string;
-    whatHelped: string[];
-    nextMonthGoals: string[];
-  };
+  monthSummary: MonthSummary;
 }
 
 // ============================================
@@ -304,20 +300,30 @@ const SummaryPage = ({ data }: { data: DiaryData }) => {
         </View>
       </View>
 
-      {/* Next Month Goals */}
-      <View style={styles.summarySection}>
-        <Text style={styles.summaryHeading}>Goals for Next Month</Text>
-        <View style={styles.summaryList}>
-          {data.monthSummary.nextMonthGoals.map((goal, index) => (
-            <Text key={index} style={styles.summaryListItem}>→ {goal}</Text>
-          ))}
+      {/* Challenges Remaining */}
+      {data.monthSummary.challengesRemaining && (
+        <View style={styles.summarySection}>
+          <Text style={styles.summaryHeading}>Challenges & What's Next</Text>
+          <Text style={styles.monthSummaryText}>{data.monthSummary.challengesRemaining}</Text>
         </View>
-      </View>
+      )}
 
-      {/* Gratitude */}
+      {/* Next Month Goals */}
+      {data.monthSummary.goalsForNextMonth.length > 0 && (
+        <View style={styles.summarySection}>
+          <Text style={styles.summaryHeading}>Goals for Next Month</Text>
+          <View style={styles.summaryList}>
+            {data.monthSummary.goalsForNextMonth.map((goal, index) => (
+              <Text key={index} style={styles.summaryListItem}>→ {goal}</Text>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {/* Alex's Personal Note (AI-generated) */}
       <View style={styles.gratitude}>
         <Text style={styles.gratitudeText}>
-          "{data.userName}, it's been an honor walking alongside you this month. I'm proud of the courage you've shown. Keep going — I'm here for you." — {data.companionName}
+          "{data.monthSummary.alexNote}" — {data.companionName}
         </Text>
       </View>
 

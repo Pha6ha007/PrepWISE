@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { Send, Loader2, Mic, Keyboard, Volume2, VolumeX, Crown, Plus } from 'lucide-react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { Send, Loader2, Mic, Keyboard, Volume2, VolumeX, Crown, Plus, ClipboardCheck } from 'lucide-react'
 import { toast } from 'sonner'
 import { getExerciseById } from '@/lib/exercises/data'
 import { Button } from '@/components/ui/button'
@@ -42,9 +42,11 @@ interface ChatWindowProps {
 
 export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSessionChange }: ChatWindowProps) {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isGeneratingHomework, setIsGeneratingHomework] = useState(false)
   const [currentSessionId, setCurrentSessionId] = useState(sessionId)
   const [sources, setSources] = useState<any[]>([])
   const [memoryUpdated, setMemoryUpdated] = useState(false)
@@ -645,6 +647,58 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
     }
   }
 
+  const handleAssignHomework = async () => {
+    // Check if we have enough messages for context
+    if (messages.length < 5) {
+      toast.error('Not enough conversation yet', {
+        description: 'Have a bit more conversation before Alex can assign homework.',
+      })
+      return
+    }
+
+    if (!currentSessionId) {
+      toast.error('No active session')
+      return
+    }
+
+    setIsGeneratingHomework(true)
+
+    try {
+      const response = await fetch('/api/homework/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sessionId: currentSessionId,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate homework')
+      }
+
+      const data = await response.json()
+
+      // Show toast with homework preview
+      toast.success('Homework assigned!', {
+        description: data.homework.title,
+        duration: 5000,
+        action: {
+          label: 'View',
+          onClick: () => router.push('/dashboard/progress'),
+        },
+      })
+    } catch (error) {
+      console.error('Failed to generate homework:', error)
+      toast.error('Failed to assign homework', {
+        description: 'Something went wrong. Please try again.',
+      })
+    } finally {
+      setIsGeneratingHomework(false)
+    }
+  }
+
   // Show SuggestionChips when there's only greeting (no user messages yet)
   const shouldShowSuggestionChips = messages.length === 1 && messages[0].role === 'assistant' && !isLoading
 
@@ -663,7 +717,7 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
         <OnboardingTour onComplete={handleCompleteTour} onSkip={handleCompleteTour} />
       ) : (
         <>
-          {/* Header with New Conversation button */}
+          {/* Header with Assign Homework and New Conversation buttons */}
           {currentSessionId && messages.length > 0 && (
             <div className="border-b border-white/20 px-6 py-2 glass backdrop-blur-md">
               <div className="flex items-center justify-between">
@@ -671,15 +725,34 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                   <span className="text-sm text-muted-foreground">Active session</span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleNewConversation}
-                  className="text-xs hover:bg-white/20 transition-all"
-                >
-                  <Plus className="w-4 h-4 mr-1" />
-                  New Conversation
-                </Button>
+                <div className="flex items-center space-x-2">
+                  {/* Assign Homework button - показывать только если >= 5 сообщений */}
+                  {messages.length >= 5 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleAssignHomework}
+                      disabled={isGeneratingHomework}
+                      className="text-xs hover:bg-white/20 transition-all"
+                    >
+                      {isGeneratingHomework ? (
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <ClipboardCheck className="w-4 h-4 mr-1" />
+                      )}
+                      Assign Homework
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleNewConversation}
+                    className="text-xs hover:bg-white/20 transition-all"
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    New Conversation
+                  </Button>
+                </div>
               </div>
             </div>
           )}
