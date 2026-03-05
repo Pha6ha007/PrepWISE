@@ -31,13 +31,12 @@ export default function LandingPage() {
             </Link>
 
             {/* Nav Links */}
-            <div className="flex items-center space-x-1 md:space-x-2 lg:space-x-6">
+            <div className="flex items-center space-x-1 md:space-x-2 lg:space-x-8">
               {/* Desktop Navigation */}
-              <div className="hidden lg:flex items-center space-x-6 text-sm font-medium text-[#6B7280]">
+              <div className="hidden lg:flex items-center space-x-6 text-sm font-medium text-[#6B7280] lg:mr-4">
                 <a href="#pricing" className="hover:text-[#6366F1] transition-smooth">Pricing</a>
-                <a href="mailto:support@confide.app" className="hover:text-[#6366F1] transition-smooth">Contact</a>
-                <Link href="/privacy" className="hover:text-[#6366F1] transition-smooth">Privacy</Link>
-                <Link href="/terms" className="hover:text-[#6366F1] transition-smooth">Terms</Link>
+                <Link href="/support" className="hover:text-[#6366F1] transition-smooth">Support Us</Link>
+                <Link href="/contact" className="hover:text-[#6366F1] transition-smooth">Contact</Link>
               </div>
 
               {/* Auth buttons */}
@@ -819,7 +818,8 @@ export default function LandingPage() {
             <div className="flex items-center space-x-6 text-sm text-[#6B7280]">
               <Link href="/privacy" className="hover:text-[#6366F1] transition-smooth">Privacy</Link>
               <Link href="/terms" className="hover:text-[#6366F1] transition-smooth">Terms</Link>
-              <a href="mailto:support@confide.app" className="hover:text-[#6366F1] transition-smooth">Contact</a>
+              <Link href="/support" className="hover:text-[#6366F1] transition-smooth">Support Us</Link>
+              <Link href="/contact" className="hover:text-[#6366F1] transition-smooth">Contact</Link>
             </div>
           </div>
         </div>
