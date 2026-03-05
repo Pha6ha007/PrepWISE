@@ -1,11 +1,11 @@
 'use client'
 
-// ProgressClient — Client component for Progress page with mood tracking
+// ProgressClient — Client component for Progress page with mood tracking and goals
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BarChart3, TrendingUp, Flame, Calendar as CalendarIcon, Lightbulb, Plus } from 'lucide-react'
+import { BarChart3, TrendingUp, Flame, Calendar as CalendarIcon, Lightbulb, Plus, Target } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import MoodGraph from '@/components/mood/MoodGraph'
@@ -13,6 +13,7 @@ import MoodHeatmap from '@/components/mood/MoodHeatmap'
 import TopReasons from '@/components/mood/TopReasons'
 import InsightCard from '@/components/mood/InsightCard'
 import MoodCheckIn from '@/components/mood/MoodCheckIn'
+import GoalsTab from '@/components/goals/GoalsTab'
 import type { MoodEntryData, MoodStats, MoodInsight } from '@/lib/mood/data'
 import { getMoodEmoji } from '@/lib/mood/data'
 
@@ -21,11 +22,13 @@ interface ProgressClientProps {
   initialEntries: MoodEntryData[]
 }
 
-type Tab = 'graph' | 'calendar' | 'triggers'
+type MainTab = 'mood' | 'goals'
+type MoodTab = 'graph' | 'calendar' | 'triggers'
 
 export default function ProgressClient({ initialStats, initialEntries }: ProgressClientProps) {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<Tab>('graph')
+  const [mainTab, setMainTab] = useState<MainTab>('mood')
+  const [moodTab, setMoodTab] = useState<MoodTab>('graph')
   const [insights, setInsights] = useState<MoodInsight[]>([])
   const [loading, setLoading] = useState(true)
   const [showMoodCheckIn, setShowMoodCheckIn] = useState(false)
@@ -101,41 +104,78 @@ export default function ProgressClient({ initialStats, initialEntries }: Progres
   return (
     <>
       <div className="space-y-8">
-        {/* Header with streak and Log mood button */}
+        {/* Main Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-serif text-4xl font-semibold text-foreground">Your Mood</h1>
-            <p className="text-muted-foreground mt-2 text-lg">Track your emotional journey</p>
+            <h1 className="font-serif text-4xl font-semibold text-foreground">Progress</h1>
+            <p className="text-muted-foreground mt-2 text-lg">Your journey at a glance</p>
           </div>
 
-          <div className="flex items-center gap-4">
-            {initialStats.streak > 0 && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-full shadow-lg"
-              >
-                <Flame className="w-5 h-5" />
-                <span className="font-serif text-2xl font-semibold">{initialStats.streak}</span>
-                <span className="font-medium">day streak</span>
-              </motion.div>
-            )}
+          {/* Streak and Log mood button - only on Mood tab */}
+          {mainTab === 'mood' && (
+            <div className="flex items-center gap-4">
+              {initialStats.streak > 0 && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-full shadow-lg"
+                >
+                  <Flame className="w-5 h-5" />
+                  <span className="font-serif text-2xl font-semibold">{initialStats.streak}</span>
+                  <span className="font-medium">day streak</span>
+                </motion.div>
+              )}
 
-            {hasData && (
-              <Button
-                onClick={() => setShowMoodCheckIn(true)}
-                className="bg-[#6366F1] text-white hover:bg-[#4F46E5] rounded-full"
-                size="sm"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Log mood
-              </Button>
-            )}
-          </div>
+              {hasData && (
+                <Button
+                  onClick={() => setShowMoodCheckIn(true)}
+                  className="bg-[#6366F1] text-white hover:bg-[#4F46E5] rounded-full"
+                  size="sm"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Log mood
+                </Button>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Empty State */}
-        {!hasData && (
+        {/* Main Tabs: Mood | Goals */}
+        <div className="flex items-center gap-4 border-b border-gray-200">
+          <button
+            onClick={() => setMainTab('mood')}
+            className={`pb-4 px-6 font-semibold transition-smooth border-b-2 ${
+              mainTab === 'mood'
+                ? 'border-[#6366F1] text-[#6366F1]'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
+              <span>Mood</span>
+            </div>
+          </button>
+
+          <button
+            onClick={() => setMainTab('goals')}
+            className={`pb-4 px-6 font-semibold transition-smooth border-b-2 ${
+              mainTab === 'goals'
+                ? 'border-[#6366F1] text-[#6366F1]'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Target className="w-5 h-5" />
+              <span>Goals</span>
+            </div>
+          </button>
+        </div>
+
+        {/* Mood Tab Content */}
+        {mainTab === 'mood' && (
+          <>
+            {/* Empty State */}
+            {!hasData && (
           <Card className="glass-button border border-white/20 shadow-large rounded-3xl transition-smooth hover-lift">
             <CardContent className="p-12 text-center">
               <motion.div
@@ -252,9 +292,9 @@ export default function ProgressClient({ initialStats, initialEntries }: Progres
           {/* Tab headers */}
           <div className="flex items-center gap-4 border-b border-gray-200 mb-8">
             <button
-              onClick={() => setActiveTab('graph')}
+              onClick={() => setMoodTab('graph')}
               className={`pb-4 px-4 font-medium transition-smooth border-b-2 ${
-                activeTab === 'graph'
+                moodTab === 'graph'
                   ? 'border-[#6366F1] text-[#6366F1]'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
@@ -266,9 +306,9 @@ export default function ProgressClient({ initialStats, initialEntries }: Progres
             </button>
 
             <button
-              onClick={() => setActiveTab('calendar')}
+              onClick={() => setMoodTab('calendar')}
               className={`pb-4 px-4 font-medium transition-smooth border-b-2 ${
-                activeTab === 'calendar'
+                moodTab === 'calendar'
                   ? 'border-[#6366F1] text-[#6366F1]'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
@@ -280,9 +320,9 @@ export default function ProgressClient({ initialStats, initialEntries }: Progres
             </button>
 
             <button
-              onClick={() => setActiveTab('triggers')}
+              onClick={() => setMoodTab('triggers')}
               className={`pb-4 px-4 font-medium transition-smooth border-b-2 ${
-                activeTab === 'triggers'
+                moodTab === 'triggers'
                   ? 'border-[#6366F1] text-[#6366F1]'
                   : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
@@ -296,9 +336,9 @@ export default function ProgressClient({ initialStats, initialEntries }: Progres
 
           {/* Tab content */}
           <div className="min-h-[400px]">
-            {activeTab === 'graph' && <MoodGraph entries={initialEntries} />}
-            {activeTab === 'calendar' && <MoodHeatmap entries={initialEntries} />}
-            {activeTab === 'triggers' && (
+            {moodTab === 'graph' && <MoodGraph entries={initialEntries} />}
+            {moodTab === 'calendar' && <MoodHeatmap entries={initialEntries} />}
+            {moodTab === 'triggers' && (
               <div className="max-w-2xl mx-auto py-4">
                 <h3 className="font-serif text-xl font-semibold text-foreground mb-6 text-center">
                   Top Triggers
@@ -373,6 +413,11 @@ export default function ProgressClient({ initialStats, initialEntries }: Progres
           </CardContent>
         </Card>
       )}
+          </>
+        )}
+
+        {/* Goals Tab Content */}
+        {mainTab === 'goals' && <GoalsTab />}
       </div>
 
       {/* MoodCheckIn Modal */}

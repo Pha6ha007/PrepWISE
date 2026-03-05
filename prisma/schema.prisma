@@ -37,6 +37,8 @@ model User {
   diaries        Diary[]
   subscription   Subscription?
   moodEntries    MoodEntry[]
+  goals          Goal[]
+  homework       Homework[]
 
   @@map("users")
 }
@@ -184,4 +186,54 @@ model MoodEntry {
   session Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
 
   @@map("mood_entries")
+}
+
+// ============================================
+// GOALS & PROGRESS
+// ============================================
+
+model Goal {
+  id          String      @id @default(uuid()) @db.Uuid
+  userId      String      @map("user_id") @db.Uuid
+  category    String      // anxiety | relationships | selfesteem | sleep | stress | communication | boundaries | grief
+  title       String
+  description String?     @db.Text
+  progress    Int         @default(0) // 0-100
+  isActive    Boolean     @default(true) @map("is_active")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  milestones Milestone[]
+
+  @@map("goals")
+}
+
+model Milestone {
+  id          String    @id @default(uuid()) @db.Uuid
+  goalId      String    @map("goal_id") @db.Uuid
+  text        String
+  done        Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+  order       Int       @default(0)
+
+  goal Goal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@map("milestones")
+}
+
+model Homework {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  title       String
+  description String    @db.Text
+  agent       String    // "Anxiety" | "Family" | "Trauma" | etc.
+  dueDate     DateTime  @map("due_date")
+  done        Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("homework")
 }
