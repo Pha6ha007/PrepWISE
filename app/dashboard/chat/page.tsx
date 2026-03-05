@@ -63,12 +63,12 @@ export default function ChatPage() {
         />
       )}
 
-      {/* Sidebar - hidden on mobile by default, visible on desktop */}
+      {/* Sidebar - hidden on mobile by default, always visible on desktop */}
       <div
         className={`
-          ${sidebarVisible ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          ${sidebarVisible ? 'flex' : 'hidden lg:flex'}
           fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto
-          h-full transition-transform duration-300 ease-in-out
+          h-full transition-all duration-300 ease-in-out
         `}
       >
         <ChatHistorySidebar
