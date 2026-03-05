@@ -37,14 +37,14 @@ export function FirstVisitWelcome({
   ]
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-6">
+    <div className="flex items-center justify-center min-h-screen p-4 sm:p-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
         className={cn(
           'glass border border-white/20 rounded-2xl shadow-large',
-          'max-w-md w-full p-6 space-y-3 backdrop-blur-xl',
+          'max-w-md w-full p-4 sm:p-6 space-y-3 backdrop-blur-xl',
           'overflow-y-auto max-h-[calc(100vh-120px)]'
         )}
       >
