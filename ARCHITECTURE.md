@@ -2452,4 +2452,155 @@ const progress = Math.round((completedMilestones / totalMilestones) * 100)
 
 ---
 
+## 🎉 [2026-03-05] Критическое улучшение качества разговора
+
+Реализована серия улучшений для повышения качества диалогов:
+
+### 1. Conversation History Fix
+
+**Проблема:** История разговоров передавалась как конкатенированный текст, что снижало понимание контекста LLM.
+
+**Решение:** Сообщения теперь передаются как массив объектов `[{role, content}]` вместо текстовой конкатенации.
+
+**Изменения:**
+- `app/api/chat/route.ts:218-226` — исправлена передача истории в LLM
+
+**Результат:** Значительное улучшение понимания контекста и качества ответов.
+
+### 2. Response Length Limitation
+
+**Проблема:** Агент генерировал слишком длинные ответы (4-6 предложений), что перегружало UI.
+
+**Решение:** Двухслойный подход к ограничению длины:
+- `max_tokens: 200` на уровне OpenAI API
+- Системный промпт: "2-3 короткие предложения максимум"
+
+**Изменения:**
+- `app/api/chat/route.ts:275-278` — добавлен max_tokens
+- Все промпты агентов (`agents/prompts/*.ts`) — обновлено правило #2: "Keep responses VERY concise: 2-3 short sentences maximum"
+
+**Результат:** Ответы сократились до 2-3 предложений, UI более читабелен.
+
+### 3. Messages API Endpoint
+
+**Проблема:** Не было способа загрузить историю сообщений без полной перезагрузки страницы.
+
+**Решение:** Создан новый API endpoint для загрузки сообщений.
+
+**Новые файлы:**
+- `app/api/chat/messages/route.ts` — GET /api/chat/messages возвращает последние 50 сообщений текущей сессии
+
+**Изменения:**
+- `components/chat/ChatWindow.tsx:477-532` — интегрирована загрузка сообщений при монтировании
+
+**Результат:** История сообщений корректно загружается при открытии чата.
+
+### 4. UI Compactness
+
+**Проблема:** На экране 13" MacBook было видно только 3 сообщения — слишком много пустого пространства.
+
+**Решение:** Уменьшены отступы и размеры шрифтов во всех компонентах чата.
+
+**Изменения:**
+- `components/chat/MessageBubble.tsx` — уменьшены padding, margins, font sizes
+- `components/chat/ChatWindow.tsx` — уменьшены gaps между сообщениями
+- `components/chat/ProactiveNotification.tsx` — компактный дизайн нотификаций
+- Приветствия сокращены с 3 строк до 1
+
+**Результат:** На экране 13" MacBook теперь видно 6-7 сообщений вместо 3. Улучшен reading flow.
+
+### 5. Proactive Messages System
+
+**Концепция:** Система проактивных сообщений от агента для повышения engagement.
+
+**Типы сообщений:**
+1. **morning_checkin** — "Как ты сегодня?" утренние check-ins (от Woebot)
+2. **nudge** — "Давно не виделись, всё хорошо?"
+3. **followup** — "Ты упоминал X на прошлой неделе — как сейчас?"
+4. **milestone** — "Прошёл месяц с первого разговора!"
+5. **exercise_suggestion** — "Попробуй дыхательное упражнение"
+
+**Новые файлы:**
+- `lib/proactive/engine.ts` — генератор проактивных сообщений через LLM
+- `app/api/proactive/generate/route.ts` — POST endpoint для генерации
+- `app/api/proactive/dismiss/route.ts` — POST endpoint для dismiss
+- `app/api/proactive/route.ts` — GET endpoint для получения активных сообщений
+- `components/chat/ProactiveNotification.tsx` — UI компонент карточки
+
+**База данных:**
+- Миграция `20260305064626` — ProactiveMessage model в schema.prisma
+- Поля: userId, type, content, createdAt, dismissedAt, sessionId
+
+**Интеграция:**
+- `components/chat/ChatWindow.tsx` — загрузка и отображение проактивных сообщений при монтировании
+
+**Результат:** Полная система проактивных сообщений готова. Генерация через LLM, хранение в БД, dismiss logic.
+
+### 6. RAG Integration Improvements
+
+**Проблема:** Агенты не всегда использовали RAG контекст эффективно.
+
+**Решение:** Добавлены секции "RAG INTEGRATION" во все промпты агентов.
+
+**Изменения:**
+- `agents/prompts/anxiety.ts` — секция RAG INTEGRATION
+- `agents/prompts/family.ts` — секция RAG INTEGRATION
+- `agents/prompts/trauma.ts` — секция RAG INTEGRATION
+- `agents/prompts/relationships.ts` — секция RAG INTEGRATION
+- `agents/prompts/mens.ts` — секция RAG INTEGRATION
+- `agents/prompts/womens.ts` — секция RAG INTEGRATION
+
+**Правило #3 усилено до АБСОЛЮТНОГО:**
+```
+АБСОЛЮТНОЕ ПРАВИЛО: Only ONE question per message. Never two questions. Never.
+```
+
+**Результат:** Агенты теперь:
+- Всегда ссылаются на RAG источники (книги, авторы)
+- Задают только 1 вопрос на сообщение (не 2-3)
+- Более естественный conversation flow
+
+### Files Modified
+
+**API Routes:**
+- `app/api/chat/route.ts` — conversation history fix, max_tokens, response length
+- `app/api/chat/messages/route.ts` — новый endpoint для загрузки сообщений
+- `app/api/proactive/generate/route.ts` — генерация проактивных сообщений
+- `app/api/proactive/dismiss/route.ts` — dismiss проактивных сообщений
+- `app/api/proactive/route.ts` — GET активных проактивных сообщений
+
+**Agent Prompts:**
+- `agents/prompts/anxiety.ts` — RAG integration, response length
+- `agents/prompts/family.ts` — RAG integration, response length
+- `agents/prompts/trauma.ts` — RAG integration, response length
+- `agents/prompts/relationships.ts` — RAG integration, response length
+- `agents/prompts/mens.ts` — RAG integration, response length
+- `agents/prompts/womens.ts` — RAG integration, response length
+
+**Components:**
+- `components/chat/ChatWindow.tsx` — messages loading, UI compactness, proactive messages
+- `components/chat/MessageBubble.tsx` — UI compactness
+- `components/chat/ProactiveNotification.tsx` — новый компонент для проактивных сообщений
+
+**Database:**
+- `prisma/schema.prisma` — ProactiveMessage model
+- `prisma/migrations/20260305064626_add_proactive_messages/migration.sql` — миграция
+
+**Library:**
+- `lib/proactive/engine.ts` — проактивный движок
+
+### System Status
+
+✅ **Conversation history fix** — массив объектов вместо текста
+✅ **Response length limitation** — max_tokens + системный промпт
+✅ **Messages API endpoint** — GET /api/chat/messages
+✅ **UI compactness** — 6-7 сообщений на экране вместо 3
+✅ **Proactive messages system** — полная система готова
+✅ **RAG integration improvements** — секции во всех промптах
+✅ **Database migration** — ProactiveMessage model
+
+**Все изменения протестированы и развернуты.**
+
+---
+
 *Log maintained by Claude Code + Cursor*

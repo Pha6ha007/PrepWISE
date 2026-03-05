@@ -618,7 +618,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - [x] Режимы: голос-голос, голос-текст, текст-голос, текст-текст ✅
 
 **Фичи от Woebot:**
-- [ ] Утренние check-ins — "Как ты сегодня?" push уведомления
+- [x] Утренние check-ins — система проактивных сообщений ✅
 - [x] Mood score 1-10 перед началом сессии ✅
 
 **PWA — мобильная версия:**
@@ -1084,11 +1084,19 @@ RULES:
 
 ## ARCHITECTURE.md (обновляй после каждой фичи)
 
-[2026-03] Инициализация проекта
+[2026-03-03] Инициализация проекта
   - Next.js 14 + TypeScript + Supabase + Prisma
   - Paddle вместо Stripe (Merchant of Record)
   - Агенты разработки в .claude/agents/
   - i18n через next-intl заложен с первого дня
+
+[2026-03-05] Критическое улучшение качества разговора ⭐
+  - Conversation history fix — массив объектов вместо текста
+  - Response length limitation — max_tokens + системные промпты
+  - Messages API endpoint — GET /api/chat/messages
+  - UI compactness — 6-7 сообщений на экране вместо 3
+  - Proactive messages system — 5 типов проактивных сообщений
+  - RAG integration improvements — секции во всех промптах
 
 [TODO] Добавлять по мере разработки...
 
