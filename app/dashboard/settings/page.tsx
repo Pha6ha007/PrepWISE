@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Settings, User, MessageCircle, Globe, CreditCard, LogOut } from 'lucide-react'
 import { CompanionNameEditor } from '@/components/settings/CompanionNameEditor'
+import { VoiceCard } from '@/components/settings/VoiceCard'
 
 
 
@@ -116,24 +117,29 @@ export default async function SettingsPage() {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-500 mb-2 block">
-                Your Companion's Name
-              </label>
-              <CompanionNameEditor initialName={dbUser.companionName || 'Alex'} />
-              <p className="text-xs text-gray-500 mt-2">
-                This is how your companion will introduce themselves
-              </p>
-            </div>
-            {dbUser.companionGender && (
-              <div>
-                <label className="text-sm font-medium text-gray-500">Companion Voice</label>
-                <p className="text-base text-gray-900 mt-1 capitalize">{dbUser.companionGender}</p>
-              </div>
-            )}
+        <CardContent className="space-y-6">
+          <div>
+            <label className="text-sm font-medium text-gray-500 mb-2 block">
+              Your Companion's Name
+            </label>
+            <CompanionNameEditor initialName={dbUser.companionName || 'Alex'} />
+            <p className="text-xs text-gray-500 mt-2">
+              This is how your companion will introduce themselves
+            </p>
           </div>
+
+          {dbUser.companionGender && (
+            <div>
+              <label className="text-sm font-medium text-gray-500 mb-3 block">
+                Voice Settings
+              </label>
+              <VoiceCard
+                companionName={dbUser.companionName || 'Alex'}
+                companionGender={dbUser.companionGender as 'male' | 'female'}
+                voiceId={dbUser.voiceId}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 
