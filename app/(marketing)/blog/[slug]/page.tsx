@@ -44,6 +44,12 @@ export async function generateStaticParams() {
   }));
 }
 
+// Helper function to convert date string to ISO format
+function convertDateToISO(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toISOString();
+}
+
 export default function BlogArticlePage({ params }: PageProps) {
   const article = ARTICLES.find((a) => a.slug === params.slug);
 
@@ -51,5 +57,30 @@ export default function BlogArticlePage({ params }: PageProps) {
     notFound();
   }
 
-  return <ArticleView article={article} />;
+  // JSON-LD structured data for SEO
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    description: article.subtitle,
+    datePublished: convertDateToISO(article.date),
+    author: {
+      "@type": "Organization",
+      name: "Confide",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Confide",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ArticleView article={article} />
+    </>
+  );
 }
