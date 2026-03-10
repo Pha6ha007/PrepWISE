@@ -1,11 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Sparkles, DollarSign, Brain, MessageCircle, Check, X, Shield, Lock, AlertTriangle, FileText, Star, Zap, TrendingUp, Award } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Sparkles, DollarSign, Brain, MessageCircle, Check, X, Shield, Lock, AlertTriangle, FileText, Star, Zap, TrendingUp, Award, Menu } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Animated Mesh Gradient Background */}
@@ -40,6 +43,15 @@ export default function LandingPage() {
                 <Link href="/contact" className="hover:text-[#6366F1] transition-smooth">Contact</Link>
               </div>
 
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2 hover:bg-white/30 rounded-lg transition-smooth backdrop-blur-sm mr-2"
+                aria-label="Toggle menu"
+              >
+                <Menu className="w-6 h-6 text-[#1F2937]" />
+              </button>
+
               {/* Auth buttons */}
               <Link href="/login">
                 <Button variant="ghost" className="text-[#1F2937] hover:bg-white/30 transition-smooth backdrop-blur-sm text-sm md:text-base px-3 md:px-4">
@@ -56,6 +68,52 @@ export default function LandingPage() {
           </div>
         </nav>
       </header>
+
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="lg:hidden fixed top-[72px] left-0 right-0 z-40 glass border-b border-white/20 shadow-lg"
+          >
+            <nav className="max-w-7xl mx-auto px-4 py-4">
+              <div className="flex flex-col space-y-3">
+                <Link
+                  href="/blog"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-[#1F2937] hover:text-[#6366F1] font-medium py-2 px-4 hover:bg-white/30 rounded-lg transition-smooth"
+                >
+                  Blog
+                </Link>
+                <a
+                  href="#pricing"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-[#1F2937] hover:text-[#6366F1] font-medium py-2 px-4 hover:bg-white/30 rounded-lg transition-smooth"
+                >
+                  Pricing
+                </a>
+                <Link
+                  href="/support"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-[#1F2937] hover:text-[#6366F1] font-medium py-2 px-4 hover:bg-white/30 rounded-lg transition-smooth"
+                >
+                  Support Us
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-[#1F2937] hover:text-[#6366F1] font-medium py-2 px-4 hover:bg-white/30 rounded-lg transition-smooth"
+                >
+                  Contact
+                </Link>
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <main className="relative">
