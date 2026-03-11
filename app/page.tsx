@@ -2,12 +2,20 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Sparkles, DollarSign, Brain, MessageCircle, Check, X, Shield, Lock, AlertTriangle, FileText, Star, Zap, TrendingUp, Award, Menu } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { PaddleCheckout } from '@/components/billing/PaddleCheckout'
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const router = useRouter()
+
+  const handleCheckoutSuccess = () => {
+    router.refresh()
+    router.push('/dashboard')
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -666,13 +674,14 @@ export default function LandingPage() {
                 </li>
               </ul>
 
-              <Link href="/register" className="block">
-                <button className="w-full group relative overflow-hidden py-4 px-6 rounded-xl font-bold text-white transition-all shadow-lg hover:shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#6366F1] to-[#EC4899]" />
-                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300" />
-                  <span className="relative z-10">Start free trial</span>
-                </button>
-              </Link>
+              <PaddleCheckout
+                priceId={process.env.NEXT_PUBLIC_PADDLE_PRO_PRICE_ID!}
+                planName="Pro"
+                onSuccess={handleCheckoutSuccess}
+                className="w-full group relative overflow-hidden py-4 px-6 rounded-xl font-bold text-white transition-all shadow-lg hover:shadow-xl bg-gradient-to-r from-[#6366F1] to-[#EC4899]"
+              >
+                Start free trial
+              </PaddleCheckout>
             </motion.div>
 
             {/* PREMIUM Plan */}
@@ -715,11 +724,14 @@ export default function LandingPage() {
                 </li>
               </ul>
 
-              <Link href="/register" className="block">
-                <button className="w-full py-4 px-6 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] hover:shadow-lg transition-all">
-                  Get Premium
-                </button>
-              </Link>
+              <PaddleCheckout
+                priceId={process.env.NEXT_PUBLIC_PADDLE_PREMIUM_PRICE_ID!}
+                planName="Premium"
+                onSuccess={handleCheckoutSuccess}
+                className="w-full py-4 px-6 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] hover:shadow-lg transition-all"
+              >
+                Get Premium
+              </PaddleCheckout>
             </motion.div>
           </div>
 
