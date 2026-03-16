@@ -16,6 +16,7 @@ import { assessCrisisRisk, getCrisisResponse, logCrisisEvent } from '@/agents/cr
 import { checkRateLimit } from '@/lib/utils/rate-limit'
 import { retrieveContext, formatContextForPrompt } from '@/lib/pinecone/retrieval'
 import { getNamespaceForAgent } from '@/lib/pinecone/namespace-mapping'
+import { searchUserMemories, formatMemoriesForPrompt } from '@/lib/memory/dedup-engine'
 import { ChatResponse, ErrorResponse, AgentType } from '@/types'
 import { routeToAgent, shouldReroute } from '@/lib/agents/orchestrator'
 import { checkResponseSafety } from '@/lib/safety/response-checker'
@@ -337,6 +338,18 @@ export async function POST(request: NextRequest) {
     const ragContext = formatContextForPrompt(retrievedChunks)
 
     // ============================================
+    // 10.1. USER MEMORY RETRIEVAL (smart dedup layer)
+    // ============================================
+    let userMemoryContext = ''
+    try {
+      const userMemories = await searchUserMemories(user.id, userMessage, 5)
+      userMemoryContext = formatMemoriesForPrompt(userMemories)
+    } catch (memError) {
+      // Don't block chat if memory search fails
+      console.error('[Memory Search] Error:', memError)
+    }
+
+    // ============================================
     // 10.5. TIME-AWARE CONTEXT
     // ============================================
     // Build temporal context for system prompt
@@ -416,7 +429,7 @@ CRITICAL REMINDER — FOLLOW THESE OR THE RESPONSE FAILS:
 - If user wrote "hey" — reply in 5 words max.
 `
 
-    const finalSystemPrompt = systemPrompt + timeContext + enforcedRules
+    const finalSystemPrompt = systemPrompt + (userMemoryContext ? '\n' + userMemoryContext : '') + timeContext + enforcedRules
 
     // FIX: Передаём conversation history как отдельные messages для лучшего качества
     const completion = await openai.chat.completions.create({

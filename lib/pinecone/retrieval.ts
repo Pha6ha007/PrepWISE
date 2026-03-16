@@ -50,6 +50,8 @@ async function expandQuery(userQuery: string, namespace: Namespace): Promise<str
       'Focus on female experiences, maternal identity, emotional labor, gaslighting, self-care, gender roles',
     counseling_qa:
       'Focus on practical counseling advice, therapeutic techniques, therapist responses, mental health Q&A',
+    user_memories:
+      'Focus on personal user memories, facts about the user, their history, preferences, and context',
   }
 
   const contextHint = namespaceContext[namespace] || 'Focus on general psychological concepts'

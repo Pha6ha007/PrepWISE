@@ -14,6 +14,7 @@ export const NAMESPACES = {
   MENS: 'mens',
   WOMENS: 'womens',
   COUNSELING_QA: 'counseling_qa',
+  USER_MEMORIES: 'user_memories',
 } as const
 
 export type Namespace = (typeof NAMESPACES)[keyof typeof NAMESPACES]

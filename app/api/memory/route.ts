@@ -8,6 +8,7 @@ import {
   mergeProfileWithExtraction,
 } from '@/agents/prompts/memory'
 import { analyzeUserStyle, mergeStyleMetrics } from '@/lib/memory/style-analyzer'
+import { processMemoriesWithDedup, type DedupResult } from '@/lib/memory/dedup-engine'
 import { ErrorResponse } from '@/types'
 
 
@@ -198,6 +199,28 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
+    // 10.5. SMART MEMORY DEDUP — store discrete facts in Pinecone
+    // ============================================
+    // Flatten the extraction into discrete facts for deduplication
+    let dedupResults: DedupResult[] = []
+    try {
+      const facts = extractFactsFromMemory(extraction)
+      if (facts.length > 0) {
+        dedupResults = await processMemoriesWithDedup(user.id, facts)
+
+        if (process.env.NODE_ENV === 'development') {
+          const added = dedupResults.filter(r => r.action === 'ADD').length
+          const updated = dedupResults.filter(r => r.action === 'UPDATE').length
+          const skipped = dedupResults.filter(r => r.action === 'NOOP').length
+          console.log(`[Memory Dedup] ${facts.length} facts → ADD:${added} UPDATE:${updated} NOOP:${skipped}`)
+        }
+      }
+    } catch (dedupError) {
+      // Don't fail the whole memory route if dedup fails
+      console.error('[Memory Dedup] Error during deduplication:', dedupError)
+    }
+
+    // ============================================
     // 11. ГЕНЕРИРОВАТЬ SESSION SUMMARY
     // ============================================
     const summaryPrompt =
@@ -235,6 +258,12 @@ export async function POST(request: NextRequest) {
       summary,
       extraction,
       profileUpdated: true,
+      memoryDedup: {
+        total: dedupResults.length,
+        added: dedupResults.filter(r => r.action === 'ADD').length,
+        updated: dedupResults.filter(r => r.action === 'UPDATE').length,
+        skipped: dedupResults.filter(r => r.action === 'NOOP').length,
+      },
     })
   } catch (error) {
     console.error('Memory API error:', error)
@@ -247,4 +276,81 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+// ── Helpers ─────────────────────────────────────────────────────
+
+/**
+ * Flatten Memory Agent extraction into discrete facts for dedup engine.
+ * Each fact is a standalone statement that can be embedded and compared.
+ */
+function extractFactsFromMemory(extraction: any): string[] {
+  const facts: string[] = []
+
+  // People mentioned
+  if (Array.isArray(extraction.new_people)) {
+    for (const person of extraction.new_people) {
+      if (person && typeof person === 'string') {
+        facts.push(`Important person: ${person}`)
+      }
+    }
+  }
+
+  // Triggers
+  if (Array.isArray(extraction.updated_triggers)) {
+    for (const trigger of extraction.updated_triggers) {
+      if (trigger && typeof trigger === 'string') {
+        facts.push(`Anxiety trigger: ${trigger}`)
+      }
+    }
+  }
+
+  // Communication style
+  if (extraction.communication_style_notes && typeof extraction.communication_style_notes === 'string') {
+    facts.push(`Communication style: ${extraction.communication_style_notes}`)
+  }
+
+  // What worked
+  if (extraction.what_worked && typeof extraction.what_worked === 'string') {
+    facts.push(`What helps: ${extraction.what_worked}`)
+  }
+
+  // Progress
+  if (extraction.progress_notes && typeof extraction.progress_notes === 'string') {
+    facts.push(`Progress: ${extraction.progress_notes}`)
+  }
+
+  // Key themes
+  if (Array.isArray(extraction.key_themes)) {
+    for (const theme of extraction.key_themes) {
+      if (theme && typeof theme === 'string') {
+        facts.push(`Key theme discussed: ${theme}`)
+      }
+    }
+  }
+
+  // Follow-up
+  if (extraction.follow_up && typeof extraction.follow_up === 'string') {
+    facts.push(`Follow-up needed: ${extraction.follow_up}`)
+  }
+
+  // What didn't work
+  if (Array.isArray(extraction.what_didnt_work)) {
+    for (const item of extraction.what_didnt_work) {
+      if (item && typeof item === 'string') {
+        facts.push(`What didn't help: ${item}`)
+      }
+    }
+  }
+
+  // Emotional anchors
+  if (Array.isArray(extraction.emotional_anchors)) {
+    for (const anchor of extraction.emotional_anchors) {
+      if (anchor && typeof anchor === 'string') {
+        facts.push(`Resonated with: ${anchor}`)
+      }
+    }
+  }
+
+  return facts
 }
