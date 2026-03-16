@@ -25,21 +25,33 @@ export const AGENT_NAMESPACE_MAP: Record<AgentType, Namespace> = {
 }
 
 /**
+ * Agents that get counseling_qa as a secondary namespace.
+ * Crisis is excluded — crisis protocol is hardcoded and isolated.
+ */
+const AGENTS_WITH_COUNSELING_QA: Set<AgentType> = new Set([
+  'anxiety', 'family', 'trauma', 'relationships', 'mens', 'womens', 'general',
+])
+
+/**
  * Get the Pinecone namespace for a given agent type
  *
  * @param agentType - The specialist agent type
  * @returns The corresponding Pinecone namespace
- *
- * @example
- * ```typescript
- * const namespace = getNamespaceForAgent('anxiety')
- * // Returns: 'anxiety_cbt'
- *
- * const chunks = await retrieveContext(query, namespace, 5)
- * ```
  */
 export function getNamespaceForAgent(agentType: AgentType): Namespace {
   return AGENT_NAMESPACE_MAP[agentType] || NAMESPACES.GENERAL
+}
+
+/**
+ * Get the secondary namespace for a given agent type.
+ * Returns counseling_qa for all specialist agents (real therapist Q&A),
+ * or null for crisis (stays isolated).
+ *
+ * @param agentType - The specialist agent type
+ * @returns counseling_qa namespace or null
+ */
+export function getSecondaryNamespace(agentType: AgentType): Namespace | null {
+  return AGENTS_WITH_COUNSELING_QA.has(agentType) ? NAMESPACES.COUNSELING_QA : null
 }
 
 /**

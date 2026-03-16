@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { getPineconeIndex, type Namespace } from './client'
+import { NAMESPACES } from './constants'
 import { rerankChunks, type RetrievedChunk, type RerankedChunk } from './reranker'
 
 // Lazy initialization - создаём клиент только при первом обращении
@@ -102,20 +103,23 @@ Output: relationship conflict marriage problems communication breakdown emotiona
  *
  * Процесс:
  * 1. Query Expansion — расширить запрос для лучшего semantic search
- * 2. Pinecone Retrieval — получить top-15 candidates
- * 3. Cross-Encoder Reranking — LLM оценивает relevance, возвращает top-5
+ * 2. Pinecone Retrieval — query primary + secondary namespaces in parallel
+ * 3. Merge & Deduplicate — combine results, remove duplicate IDs
+ * 4. Cross-Encoder Reranking — LLM оценивает relevance, возвращает top-5
  *
  * @param query - Запрос пользователя
- * @param namespace - Namespace для поиска (anxiety_cbt, family, trauma, etc)
+ * @param namespace - Primary namespace (anxiety_cbt, family, trauma, etc)
  * @param topK - Сколько чанков вернуть после reranking (по умолчанию 5)
  * @param useReranking - Включить reranking (по умолчанию true)
+ * @param secondaryNamespace - Optional secondary namespace to query in parallel
  * @returns Массив reranked чанков с metadata
  */
 export async function retrieveContext(
   query: string,
   namespace: Namespace,
   topK: number = 5,
-  useReranking: boolean = true
+  useReranking: boolean = true,
+  secondaryNamespace?: Namespace | null
 ): Promise<RerankedChunk[]> {
   try {
     // 1. Расширить запрос для улучшения semantic search
@@ -126,59 +130,103 @@ export async function retrieveContext(
       console.log('[RAG Retrieval]')
       console.log('  Original query:', query)
       console.log('  Expanded query:', expandedQuery)
-      console.log('  Namespace:', namespace)
+      console.log('  Primary namespace:', namespace)
+      if (secondaryNamespace) {
+        console.log('  Secondary namespace:', secondaryNamespace)
+      }
     }
 
     // 2. Создать embedding расширенного запроса через OpenAI
     const openai = getOpenAIClient()
     const embeddingResponse = await openai.embeddings.create({
       model: EMBEDDING_MODEL,
-      input: expandedQuery, // ← Используем расширенный запрос вместо оригинального
+      input: expandedQuery,
     })
 
     const queryEmbedding = embeddingResponse.data[0].embedding
 
-    // 3. Поиск в Pinecone по namespace
-    // Получаем top-15 candidates для reranking (или topK если reranking выключен)
+    // 3. Parallel Pinecone queries — primary + secondary namespace
     const retrievalTopK = useReranking ? Math.max(topK * 3, 15) : topK
-
     const index = getPineconeIndex()
-    const queryResponse = await index.namespace(namespace).query({
-      vector: queryEmbedding,
-      topK: retrievalTopK,
-      includeMetadata: true,
-    })
 
-    // 4. Преобразовать результаты
-    const chunks: RetrievedChunk[] = queryResponse.matches
-      .filter((match) => match.metadata && match.metadata.text)
-      .map((match) => ({
-        id: match.id,
-        score: match.score || 0,
-        text: match.metadata!.text as string,
-        metadata: {
-          book_title: (match.metadata!.book_title as string) || 'Unknown',
-          author: (match.metadata!.author as string) || 'Unknown',
-          chapter: match.metadata!.chapter as string | undefined,
-          namespace: (match.metadata!.namespace as string) || namespace,
-        },
-      }))
+    // Build parallel queries
+    const queries: Promise<{ matches: any[]; source: 'primary' | 'counseling_qa' }>[] = [
+      index.namespace(namespace).query({
+        vector: queryEmbedding,
+        topK: retrievalTopK,
+        includeMetadata: true,
+      }).then(r => ({ matches: r.matches || [], source: 'primary' as const })),
+    ]
 
-    // 5. Rerank если включено
-    if (useReranking && chunks.length > topK) {
+    if (secondaryNamespace && secondaryNamespace !== namespace) {
+      // Secondary gets fewer candidates — it supplements, doesn't dominate
+      const secondaryTopK = Math.max(Math.floor(retrievalTopK * 0.6), 8)
+      queries.push(
+        index.namespace(secondaryNamespace).query({
+          vector: queryEmbedding,
+          topK: secondaryTopK,
+          includeMetadata: true,
+        }).then(r => ({ matches: r.matches || [], source: 'counseling_qa' as const }))
+      )
+    }
+
+    const results = await Promise.all(queries)
+
+    // 4. Merge and deduplicate by vector ID
+    const seenIds = new Set<string>()
+    const allChunks: RetrievedChunk[] = []
+
+    for (const { matches, source } of results) {
+      for (const match of matches) {
+        if (!match.metadata?.text || seenIds.has(match.id)) continue
+        seenIds.add(match.id)
+
+        const isCounselingQA = source === 'counseling_qa' ||
+          (match.metadata.source === 'counsel-chat') ||
+          (match.metadata.namespace === NAMESPACES.COUNSELING_QA)
+
+        allChunks.push({
+          id: match.id,
+          score: match.score || 0,
+          text: match.metadata.text as string,
+          metadata: {
+            book_title: isCounselingQA
+              ? 'Real Therapist Response'
+              : ((match.metadata.book_title as string) || 'Unknown'),
+            author: isCounselingQA
+              ? 'Licensed Counselor'
+              : ((match.metadata.author as string) || 'Unknown'),
+            chapter: match.metadata.chapter as string | undefined,
+            namespace: (match.metadata.namespace as string) || (isCounselingQA ? NAMESPACES.COUNSELING_QA : namespace),
+          },
+        })
+      }
+    }
+
+    if (process.env.NODE_ENV === 'development' && secondaryNamespace) {
+      const primaryCount = results[0].matches.length
+      const secondaryCount = results[1]?.matches.length || 0
+      console.log(`[RAG] Merged: ${primaryCount} primary + ${secondaryCount} counseling_qa → ${allChunks.length} unique`)
+    }
+
+    // 5. Rerank combined set
+    if (useReranking && allChunks.length > topK) {
       if (process.env.NODE_ENV === 'development') {
-        console.log(`[RAG] Reranking ${chunks.length} candidates → top ${topK}`)
+        console.log(`[RAG] Reranking ${allChunks.length} candidates → top ${topK}`)
       }
 
-      const rerankedChunks = await rerankChunks(query, chunks, topK)
+      const rerankedChunks = await rerankChunks(query, allChunks, topK)
       return rerankedChunks
     }
 
-    // Без reranking — возвращаем как есть с rerankScore = pinecone score
-    return chunks.slice(0, topK).map((chunk) => ({
-      ...chunk,
-      rerankScore: chunk.score * 10, // Normalize to 0-10 scale
-    }))
+    // Without reranking — return top-K by Pinecone score
+    return allChunks
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK)
+      .map((chunk) => ({
+        ...chunk,
+        rerankScore: chunk.score * 10,
+      }))
   } catch (error) {
     console.error('Failed to retrieve context from Pinecone:', error)
     return []
@@ -186,7 +234,8 @@ export async function retrieveContext(
 }
 
 /**
- * Форматировать retrieved chunks в строку для system prompt
+ * Форматировать retrieved chunks в строку для system prompt.
+ * Labels therapist Q&A differently from book sources.
  */
 export function formatContextForPrompt(chunks: RetrievedChunk[]): string {
   if (chunks.length === 0) {
@@ -194,7 +243,15 @@ export function formatContextForPrompt(chunks: RetrievedChunk[]): string {
   }
 
   const contextParts = chunks.map((chunk, index) => {
-    const source = `[${chunk.metadata.book_title} by ${chunk.metadata.author}]`
+    const isCounselingQA =
+      chunk.metadata.namespace === NAMESPACES.COUNSELING_QA ||
+      chunk.metadata.book_title === 'Real Therapist Response'
+
+    if (isCounselingQA) {
+      return `${index + 1}. [Real therapist response]\n${chunk.text}`
+    }
+
+    const source = `[From "${chunk.metadata.book_title}" by ${chunk.metadata.author}]`
     return `${index + 1}. ${source}\n${chunk.text}`
   })
 

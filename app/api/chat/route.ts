@@ -15,7 +15,7 @@ import {
 import { assessCrisisRisk, getCrisisResponse, logCrisisEvent } from '@/agents/crisis/protocol'
 import { checkRateLimit } from '@/lib/utils/rate-limit'
 import { retrieveContext, formatContextForPrompt } from '@/lib/pinecone/retrieval'
-import { getNamespaceForAgent } from '@/lib/pinecone/namespace-mapping'
+import { getNamespaceForAgent, getSecondaryNamespace } from '@/lib/pinecone/namespace-mapping'
 import { searchUserMemories, formatMemoriesForPrompt } from '@/lib/memory/dedup-engine'
 import { formatProceduralForPrompt, type ProceduralMemory } from '@/lib/memory/procedural-memory'
 import { ChatResponse, ErrorResponse, AgentType } from '@/types'
@@ -331,9 +331,10 @@ export async function POST(request: NextRequest) {
     // ============================================
     // NOTE: Namespace определяется ПОСЛЕ возможного handoff в шаге 9.5
     const agentNamespace = getNamespaceForAgent(session.agentType as AgentType)
+    const secondaryNs = getSecondaryNamespace(session.agentType as AgentType)
 
-    // Получить top-5 релевантных чанков из Pinecone
-    const retrievedChunks = await retrieveContext(userMessage, agentNamespace, 5)
+    // Получить top-5 релевантных чанков из Pinecone (primary + counseling_qa in parallel)
+    const retrievedChunks = await retrieveContext(userMessage, agentNamespace, 5, true, secondaryNs)
 
     // Форматировать для system prompt
     const ragContext = formatContextForPrompt(retrievedChunks)
