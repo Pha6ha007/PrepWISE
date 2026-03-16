@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Mic, MicOff, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -9,6 +9,11 @@ interface VoiceRecorderProps {
   onTranscriptionComplete: (text: string) => void
   disabled?: boolean
 }
+
+// Silence detection constants
+const SILENCE_THRESHOLD = 15 // RMS level below which audio is considered silence (0-255 scale)
+const SILENCE_DURATION_MS = 1500 // Auto-stop after 1.5s of silence
+const MONITOR_INTERVAL_MS = 100 // Check audio levels every 100ms
 
 export function VoiceRecorder({
   onTranscriptionComplete,
@@ -24,23 +29,99 @@ export function VoiceRecorder({
   const streamRef = useRef<MediaStream | null>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Silence detection refs
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const silenceMonitorRef = useRef<NodeJS.Timeout | null>(null)
+  const silenceStartRef = useRef<number | null>(null)
+  const isStoppingRef = useRef(false)
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
-      }
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-      }
+      cleanupAudioResources()
     }
   }, [])
 
+  const cleanupAudioResources = () => {
+    if (silenceMonitorRef.current) {
+      clearInterval(silenceMonitorRef.current)
+      silenceMonitorRef.current = null
+    }
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close().catch(() => {})
+      audioContextRef.current = null
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current = null
+    }
+    analyserRef.current = null
+    silenceStartRef.current = null
+    isStoppingRef.current = false
+  }
+
+  /**
+   * Compute RMS (root mean square) of frequency data from AnalyserNode.
+   * Returns a value 0-255 representing audio level.
+   */
+  const computeRMS = useCallback((): number => {
+    if (!analyserRef.current) return 0
+
+    const analyser = analyserRef.current
+    const dataArray = new Uint8Array(analyser.frequencyBinCount)
+    analyser.getByteFrequencyData(dataArray)
+
+    // Compute RMS of frequency data
+    let sum = 0
+    for (let i = 0; i < dataArray.length; i++) {
+      sum += dataArray[i] * dataArray[i]
+    }
+    return Math.sqrt(sum / dataArray.length)
+  }, [])
+
+  /**
+   * Start the silence monitoring loop.
+   * Checks audio levels every MONITOR_INTERVAL_MS.
+   * If silence persists for SILENCE_DURATION_MS, auto-stops recording.
+   */
+  const startSilenceMonitor = useCallback(() => {
+    silenceStartRef.current = null
+
+    silenceMonitorRef.current = setInterval(() => {
+      const rms = computeRMS()
+
+      if (rms < SILENCE_THRESHOLD) {
+        // Audio is silent
+        if (silenceStartRef.current === null) {
+          silenceStartRef.current = Date.now()
+        } else {
+          const silenceDuration = Date.now() - silenceStartRef.current
+          if (silenceDuration >= SILENCE_DURATION_MS && !isStoppingRef.current) {
+            // Auto-stop after sustained silence
+            isStoppingRef.current = true
+            stopRecording()
+          }
+        }
+      } else {
+        // Audio is active — reset silence timer
+        silenceStartRef.current = null
+      }
+    }, MONITOR_INTERVAL_MS)
+  }, [computeRMS])
+
   const startRecording = async () => {
+    if (isStoppingRef.current) return
+
     try {
       setError(null)
       audioChunksRef.current = []
       setRecordingDuration(0)
+      isStoppingRef.current = false
 
       // Request microphone access
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -52,6 +133,17 @@ export function VoiceRecorder({
       })
 
       streamRef.current = stream
+
+      // Set up Web Audio API for silence detection
+      const audioContext = new AudioContext()
+      audioContextRef.current = audioContext
+
+      const source = audioContext.createMediaStreamSource(stream)
+      const analyser = audioContext.createAnalyser()
+      analyser.fftSize = 2048
+      analyser.smoothingTimeConstant = 0.8
+      source.connect(analyser)
+      analyserRef.current = analyser
 
       // Create MediaRecorder
       const mimeType = MediaRecorder.isTypeSupported('audio/webm')
@@ -81,16 +173,26 @@ export function VoiceRecorder({
       timerRef.current = setInterval(() => {
         setRecordingDuration((prev) => prev + 1)
       }, 1000)
+
+      // Start silence monitoring
+      startSilenceMonitor()
     } catch (err) {
       console.error('Error starting recording:', err)
       setError('Could not access microphone. Please check permissions.')
+      cleanupAudioResources()
     }
   }
 
   const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       mediaRecorderRef.current.stop()
       setIsRecording(false)
+
+      // Stop silence monitor
+      if (silenceMonitorRef.current) {
+        clearInterval(silenceMonitorRef.current)
+        silenceMonitorRef.current = null
+      }
 
       // Stop all tracks
       if (streamRef.current) {
@@ -100,6 +202,11 @@ export function VoiceRecorder({
       // Clear timer
       if (timerRef.current) {
         clearInterval(timerRef.current)
+      }
+
+      // Close AudioContext
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close().catch(() => {})
       }
     }
   }
@@ -147,6 +254,7 @@ export function VoiceRecorder({
     } finally {
       setIsTranscribing(false)
       setRecordingDuration(0)
+      isStoppingRef.current = false
     }
   }
 
@@ -227,12 +335,12 @@ export function VoiceRecorder({
           <p className="text-sm text-muted-foreground">Transcribing...</p>
         ) : isRecording ? (
           <div className="space-y-1">
-            <p className="text-sm font-medium text-red-600">Recording...</p>
+            <p className="text-sm font-medium text-red-600">Listening...</p>
             <p className="text-xs text-muted-foreground">
               {formatDuration(recordingDuration)}
             </p>
             <p className="text-xs text-muted-foreground">
-              Release to send
+              Auto-stops on silence · or release to send
             </p>
           </div>
         ) : (

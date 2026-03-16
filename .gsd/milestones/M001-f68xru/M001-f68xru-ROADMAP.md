@@ -47,7 +47,7 @@ This milestone is complete only when all are true:
 
 ## Slices
 
-- [ ] **S01: Counsel-Chat Dataset Ingestion** `risk:medium` `depends:[]`
+- [x] **S01: Counsel-Chat Dataset Ingestion** `risk:medium` `depends:[]`
   > After this: running `npx tsx scripts/ingest-counseling-datasets.ts` downloads counsel-chat CSV, creates Q&A pair chunks with embeddings, upserts to Pinecone `counseling_qa` namespace, and saves metadata to Prisma KnowledgeBase table.
 
 - [ ] **S02: Voice Silence Auto-Stop** `risk:medium` `depends:[]`

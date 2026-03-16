@@ -15,7 +15,7 @@
 
 ## Tasks
 
-- [ ] **T01: Ingestion script and namespace registration**
+- [x] **T01: Ingestion script and namespace registration**
   Create scripts/ingest-counseling-datasets.ts, register counseling_qa namespace, implement full pipeline.
 
 ## Files Likely Touched
