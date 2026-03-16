@@ -426,6 +426,7 @@ export default function LandingPage() {
                     <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Price</th>
                     <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Memory</th>
                     <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Voice</th>
+                    <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Knowledge</th>
                     <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Agents</th>
                     <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">24/7</th>
                     <th className="px-6 py-4 text-center font-serif text-lg text-[#1F2937]">Crisis</th>
@@ -445,6 +446,7 @@ export default function LandingPage() {
                     <td className="px-6 py-4 text-center font-bold text-[#6366F1]">$19/mo</td>
                     <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
                     <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center text-xs font-medium text-[#6366F1]">Books + Q&A</td>
                     <td className="px-6 py-4 text-center font-semibold text-[#1F2937]">6</td>
                     <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
                     <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
@@ -455,6 +457,7 @@ export default function LandingPage() {
                     <td className="px-6 py-4 text-[#4B5563]">BetterHelp</td>
                     <td className="px-6 py-4 text-center text-[#4B5563]">$240/mo</td>
                     <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
                     <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
                     <td className="px-6 py-4 text-center text-[#4B5563]">Human</td>
                     <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
@@ -467,6 +470,7 @@ export default function LandingPage() {
                     <td className="px-6 py-4 text-center text-[#4B5563]">$6/mo</td>
                     <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
                     <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
                     <td className="px-6 py-4 text-center text-[#4B5563]">1</td>
                     <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
                     <td className="px-6 py-4 text-center"><Check className="w-5 h-5 text-green-600 mx-auto" /></td>
@@ -476,6 +480,7 @@ export default function LandingPage() {
                   <tr>
                     <td className="px-6 py-4 text-[#4B5563]">Woebot</td>
                     <td className="px-6 py-4 text-center text-[#4B5563]">Free</td>
+                    <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
                     <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
                     <td className="px-6 py-4 text-center"><X className="w-5 h-5 text-red-400 mx-auto" /></td>
                     <td className="px-6 py-4 text-center text-[#4B5563]">1</td>
@@ -666,7 +671,11 @@ export default function LandingPage() {
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-[#6366F1] mr-3 flex-shrink-0 mt-0.5" />
-                  <span className="text-[#4B5563] font-medium">Memory that grows</span>
+                  <span className="text-[#4B5563] font-medium">Smart memory that evolves</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#6366F1] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563] font-medium">Real therapist Q&A knowledge</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-[#6366F1] mr-3 flex-shrink-0 mt-0.5" />
@@ -712,11 +721,31 @@ export default function LandingPage() {
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Streaming voice responses</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Smart memory deduplication</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Adaptive communication style</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">Books + therapist Q&A knowledge</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
                   <span className="text-[#4B5563]">Full analytics & insights</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
                   <span className="text-[#4B5563]">Monthly PDF diary</span>
+                </li>
+                <li className="flex items-start">
+                  <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
+                  <span className="text-[#4B5563]">4-level crisis detection</span>
                 </li>
                 <li className="flex items-start">
                   <Check className="w-5 h-5 text-[#F59E0B] mr-3 flex-shrink-0 mt-0.5" />
