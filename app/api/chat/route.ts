@@ -12,7 +12,7 @@ import {
   buildMensPrompt,
   buildWomensPrompt,
 } from '@/agents/prompts'
-import { detectCrisis, getCrisisResponse, logCrisisEvent } from '@/agents/crisis/protocol'
+import { assessCrisisRisk, getCrisisResponse, logCrisisEvent } from '@/agents/crisis/protocol'
 import { checkRateLimit } from '@/lib/utils/rate-limit'
 import { retrieveContext, formatContextForPrompt } from '@/lib/pinecone/retrieval'
 import { getNamespaceForAgent } from '@/lib/pinecone/namespace-mapping'
@@ -129,20 +129,38 @@ export async function POST(request: NextRequest) {
     }
 
     // ============================================
-    // 5. CRISIS DETECTION (параллельно, hardcoded)
+    // 5. CRISIS DETECTION — PsyGUARD 4-level risk taxonomy
     // ============================================
-    const isCrisis = detectCrisis(userMessage)
+    const crisisAssessment = assessCrisisRisk(userMessage)
 
-    if (isCrisis) {
-      // Логируем без содержания
-      await logCrisisEvent(user.id, sessionId || 'no-session')
+    if (crisisAssessment.level !== 'none') {
+      // Log without message content
+      await logCrisisEvent(
+        user.id,
+        sessionId || 'no-session',
+        crisisAssessment.level,
+        crisisAssessment.category || undefined
+      )
 
-      // Возвращаем hardcoded ответ
-      const crisisResponse = getCrisisResponse(dbUser.language as 'en' | 'ru')
+      // Return graduated hardcoded response
+      const crisisResponse = getCrisisResponse(
+        crisisAssessment.level,
+        dbUser.language as 'en' | 'ru'
+      )
+
+      // Log severity for monitoring
+      if (crisisAssessment.level === 'imminent' || crisisAssessment.level === 'planning') {
+        console.warn(
+          `[CRISIS] ${crisisAssessment.level.toUpperCase()} risk for user ${user.id}`,
+          `confidence=${crisisAssessment.confidence.toFixed(2)}`,
+          `triggers=${crisisAssessment.triggers.length}`
+        )
+      }
 
       return NextResponse.json({
         message: crisisResponse.message,
         isCrisis: true,
+        crisisLevel: crisisAssessment.level,
         resources: crisisResponse.resources,
         messageId: crypto.randomUUID(),
         sessionId: sessionId || crypto.randomUUID(),

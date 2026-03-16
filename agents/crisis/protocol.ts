@@ -7,67 +7,19 @@
  * - Работает параллельно основному агенту
  * - При обнаружении кризиса НЕМЕДЛЕННО прерывает основной поток
  *
+ * PsyGUARD Upgrade (март 2026):
+ * - 4 уровня риска: none / ideation / planning / imminent
+ * - Градуированные ответы по уровню тяжести
+ * - Мягкий ответ на пассивные мысли, жёсткий на реальную опасность
+ *
  * НИКОГДА не изменять без явного указания!
  */
 
-import { CrisisResource, CrisisResponse } from '@/types'
+import { CrisisResource, CrisisResponse, RiskLevel } from '@/types'
+import { assessRisk, type RiskAssessment } from './risk-taxonomy'
 
-// Кризисные триггеры (EN + RU)
-const CRISIS_TRIGGERS = {
-  suicide: [
-    // English
-    'suicide',
-    'kill myself',
-    'end my life',
-    'want to die',
-    'better off dead',
-    'no reason to live',
-    'planning to die',
-    'taking my own life',
-    'ending it all',
+// ── Crisis resources by language ───────────────────────────────
 
-    // Russian
-    'суицид',
-    'покончить с собой',
-    'хочу умереть',
-    'не хочу жить',
-    'лучше умереть',
-    'нет смысла жить',
-    'планирую умереть',
-    'покончу с жизнью',
-  ],
-
-  selfHarm: [
-    // English
-    'cut myself',
-    'hurt myself',
-    'self harm',
-    'self-harm',
-    'cutting',
-    'burning myself',
-
-    // Russian
-    'порежу себя',
-    'причиню боль',
-    'самоповреждение',
-    'режу себя',
-  ],
-
-  violence: [
-    // English
-    'hurt someone',
-    'kill someone',
-    'harm others',
-    'attack someone',
-
-    // Russian
-    'причинить вред',
-    'убить кого-то',
-    'напасть на',
-  ],
-}
-
-// Кризисные ресурсы по странам
 const CRISIS_RESOURCES: Record<string, CrisisResource[]> = {
   en: [
     {
@@ -75,6 +27,12 @@ const CRISIS_RESOURCES: Record<string, CrisisResource[]> = {
       name: '988 Suicide & Crisis Lifeline',
       phone: '988 (call or text)',
       description: '24/7 free and confidential support',
+    },
+    {
+      country: 'USA',
+      name: 'Crisis Text Line',
+      phone: 'Text HOME to 741741',
+      description: '24/7 text-based crisis support',
     },
     {
       country: 'UK',
@@ -124,65 +82,151 @@ const CRISIS_RESOURCES: Record<string, CrisisResource[]> = {
   ],
 }
 
-// Hardcoded ответы на кризис
-const CRISIS_MESSAGES = {
-  en: `I'm really concerned about what you've shared. Your safety is the top priority right now.
+// ── Graduated hardcoded messages ───────────────────────────────
+// NEVER generate these with LLM. They are safety-critical.
 
-Please reach out to a crisis counselor immediately — they are trained professionals who can provide the support you need right now.
+const GRADUATED_MESSAGES: Record<'ideation' | 'planning' | 'imminent', Record<string, string>> = {
+  // Level 1: Passive ideation — warm, validating, gently suggests support
+  ideation: {
+    en: `I hear you. What you're feeling sounds really heavy, and I want you to know that matters.
 
-This is not a replacement for talking to them, but I'm here and I care about your wellbeing.`,
+Sometimes when everything feels overwhelming, those thoughts can show up — and that's a sign you need more support than I can offer alone.
 
-  ru: `Я очень обеспокоен тем, что вы сказали. Ваша безопасность — главный приоритет прямо сейчас.
+Would you consider reaching out to someone who specializes in this?`,
 
-Пожалуйста, немедленно обратитесь к специалистам кризисной помощи — это профессионалы, которые могут оказать вам необходимую поддержку.
+    ru: `Слышу тебя. То, что ты чувствуешь, звучит очень тяжело — и мне важно, чтобы ты знал(а), что это имеет значение.
 
-Это не замена разговору с ними, но я здесь и забочусь о вашем благополучии.`,
+Иногда, когда всё становится невыносимым, такие мысли появляются — и это сигнал, что тебе нужна поддержка, которую я один не могу дать.
+
+Готов(а) ли ты обратиться к тому, кто специализируется на этом?`,
+  },
+
+  // Level 2: Active planning — urgent, directive, resources prominent
+  planning: {
+    en: `I'm really concerned about what you've shared. This sounds serious, and I want to make sure you're safe.
+
+Please reach out to a crisis counselor right now — they are trained professionals who can help:
+
+🆘 988 Suicide & Crisis Lifeline — call or text 988
+🆘 Crisis Text Line — text HOME to 741741
+
+You don't have to carry this alone.`,
+
+    ru: `Я очень обеспокоен тем, что ты сказал(а). Это звучит серьёзно, и я хочу убедиться, что ты в безопасности.
+
+Пожалуйста, обратись к специалистам кризисной помощи прямо сейчас:
+
+🆘 Телефон доверия: 8-800-2000-122 (бесплатно, 24/7)
+🆘 Скорая психологическая помощь: 051
+
+Ты не обязан(а) справляться с этим в одиночку.`,
+  },
+
+  // Level 3: Imminent danger — maximum urgency, emergency numbers, minimal text
+  imminent: {
+    en: `Your life matters. Please call for help right now:
+
+🆘 988 Suicide & Crisis Lifeline — call 988
+🆘 Emergency — call 911
+🆘 Crisis Text Line — text HOME to 741741
+
+If you've already taken action to harm yourself, call 911 immediately.
+
+Someone is waiting to help you. Please reach out now.`,
+
+    ru: `Твоя жизнь важна. Пожалуйста, позвони за помощью прямо сейчас:
+
+🆘 Скорая помощь: 103
+🆘 Телефон доверия: 8-800-2000-122
+🆘 Экстренная помощь: 112
+
+Если ты уже причинил(а) себе вред, вызови скорую помощь немедленно — 103.
+
+Кто-то ждёт, чтобы помочь тебе. Пожалуйста, позвони сейчас.`,
+  },
 }
 
+// ── Public API ─────────────────────────────────────────────────
+
 /**
- * Проверить сообщение на кризисные триггеры
+ * Check message for crisis triggers using PsyGUARD risk taxonomy.
  *
- * @param message - Текст сообщения пользователя
- * @returns true если обнаружен кризис
+ * @param message - User message text
+ * @returns true if any risk level detected (ideation, planning, or imminent)
  */
 export function detectCrisis(message: string): boolean {
-  const lowerMessage = message.toLowerCase()
-
-  // Проверяем все категории триггеров
-  const allTriggers = [
-    ...CRISIS_TRIGGERS.suicide,
-    ...CRISIS_TRIGGERS.selfHarm,
-    ...CRISIS_TRIGGERS.violence,
-  ]
-
-  return allTriggers.some((trigger) => lowerMessage.includes(trigger.toLowerCase()))
+  const assessment = assessRisk(message)
+  return assessment.level !== 'none'
 }
 
 /**
- * Получить кризисный ответ с ресурсами
+ * Full risk assessment — returns level, confidence, and triggers.
+ * Use this when you need the graduated response.
  *
- * @param language - Язык пользователя (en | ru)
- * @returns Полный кризисный ответ
+ * @param message - User message text
+ * @returns RiskAssessment from risk-taxonomy module
  */
-export function getCrisisResponse(language: 'en' | 'ru' = 'en'): CrisisResponse {
+export function assessCrisisRisk(message: string): RiskAssessment {
+  return assessRisk(message)
+}
+
+/**
+ * Get graduated crisis response based on risk level.
+ *
+ * @param level - Risk level from assessRisk()
+ * @param language - User language (en | ru)
+ * @returns Full crisis response with message and resources, or null if level is 'none'
+ */
+export function getCrisisResponse(
+  level: RiskLevel | 'en' | 'ru' = 'en',
+  language?: 'en' | 'ru'
+): CrisisResponse {
+  // Backwards compatibility: old callers pass language as first arg
+  let resolvedLevel: RiskLevel
+  let resolvedLang: 'en' | 'ru'
+
+  if (level === 'en' || level === 'ru') {
+    // Old API: getCrisisResponse('en') — default to 'imminent' for safety
+    resolvedLevel = 'imminent'
+    resolvedLang = level
+  } else {
+    resolvedLevel = level
+    resolvedLang = language || 'en'
+  }
+
+  // Safety: if 'none' somehow gets here, treat as ideation
+  if (resolvedLevel === 'none') {
+    resolvedLevel = 'ideation'
+  }
+
   return {
     isCrisis: true,
-    message: CRISIS_MESSAGES[language],
-    resources: CRISIS_RESOURCES[language],
+    level: resolvedLevel,
+    message: GRADUATED_MESSAGES[resolvedLevel][resolvedLang],
+    resources: CRISIS_RESOURCES[resolvedLang],
   }
 }
 
 /**
- * Логировать кризисное событие (БЕЗ содержания сообщения!)
+ * Log crisis event (WITHOUT message content!)
  *
- * @param userId - ID пользователя
- * @param sessionId - ID сессии
+ * @param userId - User ID
+ * @param sessionId - Session ID
+ * @param level - Risk level detected
+ * @param category - Type of crisis (suicide, self_harm, violence)
  */
-export async function logCrisisEvent(userId: string, sessionId: string) {
-  // TODO: Когда подключим мониторинг - отправлять в PostHog
+export async function logCrisisEvent(
+  userId: string,
+  sessionId: string,
+  level?: RiskLevel,
+  category?: string
+) {
+  // TODO: When monitoring is connected — send to PostHog
   console.warn('[CRISIS DETECTED]', {
     userId,
     sessionId,
+    level: level || 'unknown',
+    category: category || 'unknown',
     timestamp: new Date().toISOString(),
     // ВАЖНО: НЕ логировать содержание сообщения!
   })

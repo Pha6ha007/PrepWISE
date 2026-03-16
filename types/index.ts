@@ -160,6 +160,8 @@ export interface RateLimit {
 }
 
 // Crisis Detection
+export type RiskLevel = 'none' | 'ideation' | 'planning' | 'imminent'
+
 export interface CrisisResource {
   country: string
   name: string
@@ -169,6 +171,7 @@ export interface CrisisResource {
 
 export interface CrisisResponse {
   isCrisis: true
+  level: RiskLevel
   message: string
   resources: CrisisResource[]
 }
