@@ -2,14 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Send, Loader2, Mic, Keyboard, Volume2, VolumeX, Crown, Plus, ClipboardCheck } from 'lucide-react'
+import { Send, Loader2, Mic, Keyboard, Crown, Plus, ClipboardCheck } from 'lucide-react'
 import { toast } from 'sonner'
 import { getExerciseById } from '@/lib/exercises/data'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
-import { Tooltip } from '@/components/ui/tooltip'
 import { MessageBubble } from './MessageBubble'
 import { TypingIndicator } from './TypingIndicator'
 import { SourcesPanel } from './SourcesPanel'
@@ -19,6 +17,7 @@ import { FirstVisitWelcome } from './FirstVisitWelcome'
 import { OnboardingTour } from './OnboardingTour'
 import { VoiceRecorder } from '@/components/voice/VoiceRecorder'
 import { AudioPlayer } from '@/components/voice/AudioPlayer'
+import { ResponseModeSelector, getStoredResponseMode, setStoredResponseMode, type ResponseMode } from '@/components/voice/ResponseModeSelector'
 import { TooltipSimple } from '@/components/ui/tooltip-simple'
 import { ProactiveNotification } from './ProactiveNotification'
 import { AllianceSurvey } from './AllianceSurvey'
@@ -54,7 +53,7 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
   const [isLoadingGreeting, setIsLoadingGreeting] = useState(false)
   const [greetingLoaded, setGreetingLoaded] = useState(false)
   const [isVoiceMode, setIsVoiceMode] = useState(false) // Voice input
-  const [agentVoiceEnabled, setAgentVoiceEnabled] = useState(false) // Voice output
+  const [responseMode, setResponseMode] = useState<ResponseMode>('text') // Response mode (text/voice/both)
   const [userPlan, setUserPlan] = useState<'free' | 'pro' | 'premium'>('free')
   const [preferredName, setPreferredName] = useState<string | undefined>(undefined)
   const [showBeforeMoodCheckIn, setShowBeforeMoodCheckIn] = useState(false) // Before session mood check-in
@@ -91,6 +90,11 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
     }
 
     fetchUserData()
+  }, [])
+
+  // Initialize response mode from localStorage
+  useEffect(() => {
+    setResponseMode(getStoredResponseMode())
   }, [])
 
   // Load messages when activeSessionId changes (session switching from sidebar)
@@ -379,7 +383,7 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
         body: JSON.stringify({
           message: userMessage,
           sessionId: currentSessionId,
-          enableVoiceResponse: agentVoiceEnabled, // Передаём флаг голосового ответа
+          enableVoiceResponse: responseMode === 'voice' || responseMode === 'both', // Based on response mode
         }),
       })
 
@@ -415,7 +419,7 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
       }
 
       // Auto-play audio если пришёл audioUrl и голос включён
-      if (data.audioUrl && agentVoiceEnabled) {
+      if (data.audioUrl && (responseMode === 'voice' || responseMode === 'both')) {
         try {
           const audio = new Audio(data.audioUrl)
           audio.play().catch((error) => {
@@ -463,11 +467,9 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
     setIsVoiceMode(!isVoiceMode)
   }
 
-  const toggleAgentVoice = () => {
-    if (!isVoiceAvailable) {
-      return
-    }
-    setAgentVoiceEnabled(!agentVoiceEnabled)
+  const handleResponseModeChange = (mode: ResponseMode) => {
+    setResponseMode(mode)
+    setStoredResponseMode(mode)
   }
 
   const handleBeforeMoodCheckInComplete = async (result: {
@@ -802,29 +804,19 @@ export function ChatWindow({ sessionId, onSessionCreated, activeSessionId, onSes
           {/* Voice Controls — только для PRO/PREMIUM */}
           {isVoiceAvailable && (
             <div className="flex items-center justify-between px-4 py-3 glass-button border border-white/20 rounded-xl shadow-card">
-              {/* Agent Voice Toggle */}
+              {/* Response Mode Selector */}
               <div className="flex items-center space-x-3">
-                <Switch
-                  checked={agentVoiceEnabled}
-                  onCheckedChange={toggleAgentVoice}
+                <ResponseModeSelector
+                  mode={responseMode}
+                  onModeChange={handleResponseModeChange}
                 />
-                <div className="flex items-center space-x-2">
-                  {agentVoiceEnabled ? (
-                    <Volume2 className="w-4 h-4 text-primary" />
-                  ) : (
-                    <VolumeX className="w-4 h-4 text-muted-foreground" />
-                  )}
-                  <span className="text-sm font-medium text-foreground">
-                    Agent replies with voice
-                  </span>
-                  {/* Premium Badge */}
-                  {isPremium && (
-                    <Badge variant="premium" className="ml-2">
-                      <Crown className="w-3 h-3 mr-1" />
-                      Custom Voice
-                    </Badge>
-                  )}
-                </div>
+                {/* Premium Badge */}
+                {isPremium && (
+                  <Badge variant="premium" className="ml-2">
+                    <Crown className="w-3 h-3 mr-1" />
+                    Custom Voice
+                  </Badge>
+                )}
               </div>
 
               {/* Voice Input Toggle */}

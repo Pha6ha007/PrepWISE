@@ -14,7 +14,7 @@
 
 ## Tasks
 
-- [ ] **T01: Silence detection in VoiceRecorder**
+- [x] **T01: Silence detection in VoiceRecorder**
   Add Web Audio API AnalyserNode to VoiceRecorder, implement silence detection with 1.5s threshold, auto-stop recording.
 
 ## Files Likely Touched
