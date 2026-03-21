@@ -76,3 +76,7 @@ vendor/
 coverage/
 .cache/
 tmp/
+
+# Playwright
+test-results/
+playwright-report/
