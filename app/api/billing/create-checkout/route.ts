@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { dodo, DODO_PRODUCTS } from '@/lib/dodo/client'
 
 const RequestSchema = z.object({
-  priceId: z.string().min(1),
+  productId: z.string().min(1),
 })
 
-// Возвращает priceId + customerId для Paddle.js overlay checkout на клиенте
+// Создаёт Dodo Payments subscription и возвращает checkout URL
 export async function POST(request: NextRequest) {
   // 1. Auth check
   const supabase = await createClient()
@@ -26,15 +27,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   }
 
-  const { priceId } = parsed.data
+  const { productId } = parsed.data
 
-  // 3. Проверить что priceId валидный (один из наших)
-  const validPriceIds = [
-    process.env.NEXT_PUBLIC_PADDLE_PRO_PRICE_ID,
-    process.env.NEXT_PUBLIC_PADDLE_PREMIUM_PRICE_ID,
-  ]
-  if (!validPriceIds.includes(priceId)) {
-    return NextResponse.json({ error: 'Invalid price' }, { status: 400 })
+  // 3. Проверить что productId валидный (один из наших)
+  const validProductIds = [DODO_PRODUCTS.pro, DODO_PRODUCTS.premium]
+  if (!validProductIds.includes(productId)) {
+    return NextResponse.json({ error: 'Invalid product' }, { status: 400 })
   }
 
   // 4. Получить данные пользователя из БД
@@ -59,11 +57,37 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  // 6. Вернуть данные для Paddle.js checkout overlay
-  // customData передаёт userId в webhook — НИКОГДА не передаём через email
-  return NextResponse.json({
-    priceId,
-    customerEmail: dbUser.email,
-    customData: { userId: user.id },
-  })
+  // 6. Создать Dodo Payments subscription через API
+  try {
+    const dodoSubscription = await dodo.subscriptions.create({
+      billing: {
+        city: 'N/A',
+        country: 'US',
+        state: 'N/A',
+        street: 'N/A',
+        zipcode: '00000',
+      },
+      customer: {
+        email: dbUser.email,
+        name: dbUser.email.split('@')[0],
+      },
+      product_id: productId,
+      quantity: 1,
+      metadata: { userId: user.id },
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/chat?upgraded=true`,
+      payment_link: true,
+    })
+
+    // Возвращаем URL для редиректа на hosted checkout
+    return NextResponse.json({
+      checkoutUrl: dodoSubscription.payment_link,
+      subscriptionId: dodoSubscription.subscription_id,
+    })
+  } catch (err: any) {
+    console.error('Dodo checkout creation error:', err)
+    return NextResponse.json(
+      { error: 'Failed to create checkout session' },
+      { status: 500 }
+    )
+  }
 }

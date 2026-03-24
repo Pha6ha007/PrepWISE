@@ -106,7 +106,7 @@ export default function RefundPage() {
             </div>
           </motion.div>
 
-          {/* Paddle Merchant */}
+          {/* Dodo Payments Merchant */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -118,9 +118,9 @@ export default function RefundPage() {
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="font-serif text-xl font-bold text-[#1F2937] mb-2">Processed by Paddle</h3>
+                <h3 className="font-serif text-xl font-bold text-[#1F2937] mb-2">Processed by Dodo Payments</h3>
                 <p className="text-[#6B7280] leading-relaxed">
-                  All payments and refunds are securely handled by Paddle, our Merchant of Record. You'll receive your refund directly from them.
+                  All payments and refunds are securely handled by Dodo Payments, our Merchant of Record. You&apos;ll receive your refund directly from them.
                 </p>
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function RefundPage() {
                 Processing Time
               </h3>
               <p className="text-[#6B7280] leading-relaxed">
-                Once approved, refunds are processed by Paddle within <strong className="text-[#1F2937]">5-10 business days</strong>.
+                Once approved, refunds are processed by Dodo Payments within <strong className="text-[#1F2937]">5-10 business days</strong>.
                 The exact timing depends on your payment method and bank.
               </p>
             </div>
@@ -204,7 +204,7 @@ export default function RefundPage() {
                 </li>
                 <li>Include your account email address</li>
                 <li>We'll process your request within 24 hours</li>
-                <li>Paddle will handle the refund to your original payment method</li>
+                <li>Dodo Payments will handle the refund to your original payment method</li>
               </ol>
             </div>
 

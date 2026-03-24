@@ -113,12 +113,12 @@ export interface JournalEntry {
 export interface Subscription {
   id: string
   userId: string
-  paddleCustomerId?: string
-  paddleSubscriptionId?: string
+  dodoCustomerId?: string
+  dodoSubscriptionId?: string
   plan: 'free' | 'pro' | 'premium'
-  status: 'active' | 'canceled' | 'past_due' | 'trialing'
+  status: 'active' | 'cancelled' | 'on_hold' | 'expired'
   expiresAt?: Date
-  createdAt: Date
+  createdAt?: Date
 }
 
 // RAG / Knowledge Base Types

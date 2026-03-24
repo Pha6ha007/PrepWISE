@@ -128,16 +128,16 @@ model JournalEntry {
 }
 
 // ============================================
-// SUBSCRIPTIONS (Paddle)
+// SUBSCRIPTIONS (Dodo Payments)
 // ============================================
 
 model Subscription {
   id                   String    @id @default(uuid()) @db.Uuid
   userId               String    @unique @map("user_id") @db.Uuid
-  paddleCustomerId     String    @map("paddle_customer_id")
-  paddleSubscriptionId String    @map("paddle_subscription_id")
+  dodoCustomerId       String    @map("dodo_customer_id")
+  dodoSubscriptionId   String    @map("dodo_subscription_id")
   plan                 String    // free | pro | premium
-  status               String    // active | cancelled | expired
+  status               String    // active | cancelled | on_hold | expired
   expiresAt            DateTime? @map("expires_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

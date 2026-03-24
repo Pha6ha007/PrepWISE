@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Sparkles, DollarSign, Brain, MessageCircle, Check, X, Shield, Lock, AlertTriangle, FileText, Star, Zap, TrendingUp, Award, Menu } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PaddleCheckout } from '@/components/billing/PaddleCheckout'
+import { DodoCheckout } from '@/components/billing/DodoCheckout'
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -679,14 +679,14 @@ export default function LandingPage() {
                 </ul>
               </div>
 
-              <PaddleCheckout
-                priceId={process.env.NEXT_PUBLIC_PADDLE_PRO_PRICE_ID!}
+              <DodoCheckout
+                productId={process.env.NEXT_PUBLIC_DODO_PRODUCT_PRO_ID!}
                 planName="Pro"
                 onSuccess={handleCheckoutSuccess}
                 className="w-full group relative overflow-hidden py-4 px-6 rounded-xl font-bold text-white transition-all shadow-lg hover:shadow-xl bg-gradient-to-r from-[#6366F1] to-[#EC4899] mt-auto"
               >
                 Start free trial
-              </PaddleCheckout>
+              </DodoCheckout>
             </motion.div>
 
             {/* PREMIUM Plan */}
@@ -751,14 +751,14 @@ export default function LandingPage() {
                 </ul>
               </div>
 
-              <PaddleCheckout
-                priceId={process.env.NEXT_PUBLIC_PADDLE_PREMIUM_PRICE_ID!}
+              <DodoCheckout
+                productId={process.env.NEXT_PUBLIC_DODO_PRODUCT_PREMIUM_ID!}
                 planName="Premium"
                 onSuccess={handleCheckoutSuccess}
                 className="w-full py-4 px-6 rounded-xl font-semibold text-white bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] hover:shadow-lg transition-all mt-auto"
               >
                 Get Premium
-              </PaddleCheckout>
+              </DodoCheckout>
             </motion.div>
           </div>
 

@@ -264,7 +264,7 @@ export default function TermsPage() {
                       <div>
                         <h3 className="font-semibold text-[#1F2937] mb-2">Billing</h3>
                         <p className="text-[#4B5563] leading-relaxed">
-                          All payments are processed securely by <strong>Paddle</strong> (our Merchant of Record). Subscriptions renew automatically unless canceled. You will be billed at the start of each billing cycle (monthly or annually).
+                          All payments are processed securely by <strong>Dodo Payments</strong> (our Merchant of Record). Subscriptions renew automatically unless canceled. You will be billed at the start of each billing cycle (monthly or annually).
                         </p>
                       </div>
 

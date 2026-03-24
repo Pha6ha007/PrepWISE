@@ -104,7 +104,7 @@ export default function PrivacyPage() {
                       </div>
                       <div className="glass p-4 rounded-xl border border-white/20">
                         <h3 className="font-semibold text-[#1F2937] mb-2">Payment Information</h3>
-                        <p className="text-[#4B5563] text-base">Processed securely by Paddle (our payment processor) — we never store your credit card details</p>
+                        <p className="text-[#4B5563] text-base">Processed securely by Dodo Payments (our payment processor) — we never store your credit card details</p>
                       </div>
                     </div>
                   </div>
@@ -188,8 +188,8 @@ export default function PrivacyPage() {
                     <p className="text-[#4B5563] text-sm">Anonymous usage analytics (page views, clicks) to improve the platform — no conversation content.</p>
                   </div>
                   <div className="glass p-4 rounded-xl border border-white/20">
-                    <h3 className="font-semibold text-[#1F2937] mb-1">Paddle</h3>
-                    <p className="text-[#4B5563] text-sm">Payment processing. They handle billing, taxes, and subscriptions securely.</p>
+                    <h3 className="font-semibold text-[#1F2937] mb-1">Dodo Payments</h3>
+                    <p className="text-[#4B5563] text-sm">Payment processing. They handle billing, taxes, and subscriptions securely as our Merchant of Record.</p>
                   </div>
                 </div>
               </section>
