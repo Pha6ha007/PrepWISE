@@ -8,7 +8,6 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 // ============================================
@@ -42,6 +41,18 @@ model User {
   proactiveMessages ProactiveMessage[]
   allianceSurveys   AllianceSurvey[]
   safetyLogs        SafetyLog[]
+
+  // Free trial (7-day, no credit card)
+  trialStartDate DateTime? @map("trial_start_date")
+  trialEndDate   DateTime? @map("trial_end_date")
+
+  // Prepwise GMAT relations
+  gmatSessions   GmatSession[]
+  topicProgress  TopicProgress[]
+  errorLogs      ErrorLog[]
+  mockTests       MockTest[]
+  studyJournal    StudyJournalEntry[]
+  gmatProfile    Json?          @map("gmat_profile") // GmatLearnerProfile from Memory Agent
 
   @@map("users")
 }
@@ -132,13 +143,14 @@ model JournalEntry {
 // ============================================
 
 model Subscription {
-  id                   String    @id @default(uuid()) @db.Uuid
-  userId               String    @unique @map("user_id") @db.Uuid
-  dodoCustomerId       String    @map("dodo_customer_id")
-  dodoSubscriptionId   String    @map("dodo_subscription_id")
-  plan                 String    // free | pro | premium
-  status               String    // active | cancelled | on_hold | expired
-  expiresAt            DateTime? @map("expires_at")
+  id                     String    @id @default(uuid()) @db.Uuid
+  userId                 String    @unique @map("user_id") @db.Uuid
+  paddleCustomerId       String    @map("paddle_customer_id")
+  paddleSubscriptionId   String    @map("paddle_subscription_id")
+  plan                   String    // free | starter | pro | intensive
+  status                 String    // active | cancelled | on_hold | expired | trialing | past_due
+  trialEndsAt            DateTime? @map("trial_ends_at")
+  expiresAt              DateTime? @map("expires_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -324,4 +336,158 @@ model RateLimit {
   @@unique([userId, endpoint])
   @@index([windowStart]) // для быстрой очистки старых записей
   @@map("rate_limits")
+}
+
+// ============================================
+// PREPWISE — GMAT SESSIONS
+// ============================================
+
+model GmatSession {
+  id             String    @id @default(cuid())
+  userId         String    @map("user_id") @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  startedAt      DateTime  @default(now()) @map("started_at")
+  endedAt        DateTime? @map("ended_at")
+  durationMins   Int?      @map("duration_mins")
+
+  agentUsed      String    @map("agent_used") // "quantitative" | "verbal" | "data_insights" | "writing" | "strategy"
+  topicsCovered  String[]  @map("topics_covered")
+  questionsAsked Int       @default(0) @map("questions_asked")
+  correctAnswers Int       @default(0) @map("correct_answers")
+
+  transcript     String?   @db.Text
+  memoryUpdated  Boolean   @default(false) @map("memory_updated")
+
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("gmat_sessions")
+}
+
+// ============================================
+// PREPWISE — TOPIC PROGRESS
+// ============================================
+
+model TopicProgress {
+  id              String    @id @default(cuid())
+  userId          String    @map("user_id") @db.Uuid
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  section         String    // "quant" | "verbal" | "data-insights" | "awa"
+  topic           String    // "algebra" | "critical-reasoning" | etc.
+  subtopic        String?
+
+  totalAttempts   Int       @default(0) @map("total_attempts")
+  correctAttempts Int       @default(0) @map("correct_attempts")
+  accuracy        Float     @default(0.0) // 0.0 - 1.0
+
+  lastPracticed   DateTime? @map("last_practiced")
+  masteryLevel    String    @default("not_started") @map("mastery_level") // "not_started" | "learning" | "practicing" | "mastered"
+
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, section, topic, subtopic])
+  @@index([userId])
+  @@map("topic_progress")
+}
+
+// ============================================
+// PREPWISE — ERROR LOG
+// ============================================
+
+model ErrorLog {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id") @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId       String?  @map("session_id")
+
+  section         String   // "quant" | "verbal" | "data-insights" | "awa"
+  topic           String
+  questionType    String   @map("question_type") // "PS" | "DS" | "CR" | "RC" | "SC" | "TPA" | "MSR" | "GI" | "TA"
+  difficulty      String   // "easy" | "medium" | "hard" | "700+"
+
+  errorType       String   @map("error_type") // "concept" | "careless" | "time_pressure" | "misread"
+  errorDetail     String   @map("error_detail") @db.Text
+  correctApproach String?  @map("correct_approach") @db.Text
+
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([userId, section])
+  @@map("error_logs")
+}
+
+// ============================================
+// PREPWISE — MOCK TESTS
+// ============================================
+
+model MockTest {
+  id                String   @id @default(cuid())
+  userId            String   @map("user_id") @db.Uuid
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  takenAt           DateTime @default(now()) @map("taken_at")
+  durationMins      Int      @map("duration_mins")
+
+  quantScore        Int?     @map("quant_score") // 60-90 scale
+  verbalScore       Int?     @map("verbal_score")
+  dataInsightsScore Int?     @map("data_insights_score")
+  totalScore        Int?     @map("total_score") // 205-805 scale
+
+  quantAccuracy     Float?   @map("quant_accuracy")
+  verbalAccuracy    Float?   @map("verbal_accuracy")
+  diAccuracy        Float?   @map("di_accuracy")
+
+  notes             String?  @db.Text
+
+  @@index([userId])
+  @@map("mock_tests")
+}
+
+// ============================================
+// PREPWISE — STUDY JOURNAL
+// ============================================
+
+model StudyJournalEntry {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id") @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date            DateTime @db.Date // One entry per day
+  
+  // Daily stats (auto-calculated from sessions)
+  totalMinutes    Int      @default(0) @map("total_minutes")
+  sessionsCount   Int      @default(0) @map("sessions_count")
+  questionsTotal  Int      @default(0) @map("questions_total")
+  questionsCorrect Int     @default(0) @map("questions_correct")
+  accuracy        Float    @default(0.0)
+
+  // Topics covered today
+  topicsCovered   String[] @map("topics_covered")
+  sectionsWorked  String[] @map("sections_worked") // "quant" | "verbal" | "data-insights" | "awa"
+
+  // Errors & patterns
+  errorsCount     Int      @default(0) @map("errors_count")
+  errorTypes      Json     @default("{}") @map("error_types") // {concept: 2, careless: 1, ...}
+
+  // Sam's insight (auto-generated after last session of the day)
+  samInsight      String?  @map("sam_insight") @db.Text // "You improved on DS today. Focus on geometry tomorrow."
+  
+  // Milestones hit today
+  milestones      String[] // "First 100 questions", "Quant accuracy > 80%", etc.
+
+  // Mood / self-reflection (optional, user-submitted)
+  userNote        String?  @map("user_note") @db.Text
+  confidenceLevel Int?     @map("confidence_level") // 1-5 self-rated confidence
+
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([userId, date])
+  @@map("study_journal")
 }

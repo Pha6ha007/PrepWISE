@@ -1,290 +1,168 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Settings, User, MessageCircle, Globe, CreditCard, LogOut } from 'lucide-react'
-import { CompanionNameEditor } from '@/components/settings/CompanionNameEditor'
-import { VoiceCard } from '@/components/settings/VoiceCard'
-
-
-
-async function signOut() {
-  'use server'
-  const supabase = await createClient()
-  await supabase.auth.signOut()
-  redirect('/login')
-}
+import { getTrialStatus, getTrialDaysRemaining } from '@/lib/billing/trial'
 
 export default async function SettingsPage() {
-  // Auth check
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let dbUser: any = null
+  let profile: any = null
+  let subscription: any = null
 
-  if (!user) {
-    redirect('/login')
+  try {
+    const { createClient } = await import('@/lib/supabase/server')
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (user) {
+      const { prisma } = await import('@/lib/prisma')
+      dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        include: { subscription: true },
+      })
+      profile = dbUser?.gmatProfile || null
+      subscription = dbUser?.subscription || null
+    }
+  } catch {
+    // Supabase/DB not configured
   }
 
-  // Получить полный профиль из БД
-  const dbUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { profile: true },
+  const email = dbUser?.email || 'Not connected'
+  const preferredName = dbUser?.preferredName || 'Not set'
+  const plan = dbUser?.plan || 'free'
+
+  const trialStatus = getTrialStatus({
+    trialStartDate: dbUser?.trialStartDate,
+    trialEndDate: dbUser?.trialEndDate,
+    plan,
   })
-
-  if (!dbUser) {
-    redirect('/login')
-  }
-
-  const planLabels = {
-    free: 'Free',
-    pro: 'Pro',
-    premium: 'Premium',
-  }
-
-  const languageLabels = {
-    en: 'English',
-    ru: 'Русский',
-  }
+  const trialDaysRemaining = getTrialDaysRemaining({ trialEndDate: dbUser?.trialEndDate })
 
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-8 animate-fade-in-up">
-      {/* Header */}
+    <div className="max-w-3xl mx-auto p-6 lg:p-8 space-y-6">
       <div>
-        <h1 className="font-serif text-4xl font-semibold text-foreground">Settings</h1>
-        <p className="text-muted-foreground mt-2 text-lg">Manage your account and preferences</p>
+        <h1 className="text-2xl font-bold text-white">Settings</h1>
+        <p className="text-slate-400 mt-1">Manage your Prepwise account and preferences</p>
       </div>
 
-      {/* Account Information */}
-      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
+      {/* Account */}
+      <Card className="bg-[#151C2C]/80 border-white/[0.06]">
         <CardHeader>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center shadow-lg">
-              <User className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <CardTitle className="font-serif text-2xl">Account Information</CardTitle>
-              <CardDescription className="text-base mt-1">Your basic account details</CardDescription>
-            </div>
-          </div>
+          <CardTitle className="text-xl text-white">Account</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm font-medium text-slate-300">Email</p>
+            <p className="text-sm text-slate-500">{email}</p>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-slate-300">Display name</p>
+            <p className="text-sm text-slate-500">{preferredName}</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* GMAT Profile */}
+      <Card className="bg-[#151C2C]/80 border-white/[0.06]">
+        <CardHeader>
+          <CardTitle className="text-xl text-white">GMAT Profile</CardTitle>
+          <CardDescription className="text-slate-400">Your learning preferences and goals</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-500">Email</label>
-              <p className="text-base text-gray-900 mt-1">{dbUser.email}</p>
+              <p className="text-sm font-medium text-slate-300">Target score</p>
+              <p className="text-sm text-slate-500">{profile?.targetScore || 'Not set'}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-500">Account Created</label>
-              <p className="text-base text-gray-900 mt-1">
-                {new Date(dbUser.createdAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </p>
+              <p className="text-sm font-medium text-slate-300">Study hours/week</p>
+              <p className="text-sm text-slate-500">{profile?.studyHoursPerWeek ? `${profile.studyHoursPerWeek}h` : 'Not set'}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-300">Test date</p>
+              <p className="text-sm text-slate-500">{profile?.testDate || 'Flexible'}</p>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-300">Learning style</p>
+              <p className="text-sm text-slate-500">{profile?.learningStyle || 'Sam is still learning yours'}</p>
             </div>
           </div>
 
-          {dbUser.preferredName && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
-              <div>
-                <label className="text-sm font-medium text-gray-500">Your Name</label>
-                <p className="text-base text-gray-900 mt-1">{dbUser.preferredName}</p>
+          {profile?.weakTopics?.length > 0 && (
+            <div>
+              <p className="text-sm font-medium text-slate-300 mb-2">Focus areas</p>
+              <div className="flex flex-wrap gap-2">
+                {profile.weakTopics.map((topic: string) => (
+                  <span key={topic} className="text-xs bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2 py-1 rounded-full">
+                    {topic}
+                  </span>
+                ))}
               </div>
-              {dbUser.ageGroup && (
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Age Group</label>
-                  <p className="text-base text-gray-900 mt-1">{dbUser.ageGroup}</p>
-                </div>
-              )}
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Companion Settings */}
-      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
-        <CardHeader>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#F59E0B] to-[#FBBF24] rounded-xl flex items-center justify-center shadow-lg">
-              <MessageCircle className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <CardTitle className="font-serif text-2xl">Companion Settings</CardTitle>
-              <CardDescription className="text-base mt-1">Your AI companion preferences</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <label className="text-sm font-medium text-gray-500 mb-2 block">
-              Your Companion's Name
-            </label>
-            <CompanionNameEditor initialName={dbUser.companionName || 'Alex'} />
-            <p className="text-xs text-gray-500 mt-2">
-              This is how your companion will introduce themselves
-            </p>
-          </div>
-
-          {dbUser.companionGender && (
-            <div>
-              <label className="text-sm font-medium text-gray-500 mb-3 block">
-                Voice Settings
-              </label>
-              <VoiceCard
-                companionName={dbUser.companionName || 'Alex'}
-                companionGender={dbUser.companionGender as 'male' | 'female'}
-                voiceId={dbUser.voiceId}
-              />
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Preferences */}
-      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
-        <CardHeader>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Globe className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <CardTitle className="font-serif text-2xl">Preferences</CardTitle>
-              <CardDescription className="text-base mt-1">Language and regional settings</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Language</label>
-            <p className="text-base text-gray-900 mt-1">
-              {languageLabels[dbUser.language as keyof typeof languageLabels] || dbUser.language}
-            </p>
-          </div>
         </CardContent>
       </Card>
 
       {/* Subscription */}
-      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
+      <Card className="bg-[#151C2C]/80 border-white/[0.06]">
         <CardHeader>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-              <CreditCard className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <CardTitle className="font-serif text-2xl">Subscription</CardTitle>
-              <CardDescription className="text-base mt-1">Your current plan and billing</CardDescription>
-            </div>
-          </div>
+          <CardTitle className="text-xl text-white">Subscription</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-gray-500">Current Plan</label>
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center space-x-2">
-                <span className="text-xl font-semibold text-gray-900">
-                  {planLabels[dbUser.plan as keyof typeof planLabels] || dbUser.plan}
-                </span>
-                {dbUser.plan === 'free' && (
-                  <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-                    5 messages / 10 min
-                  </span>
-                )}
-                {dbUser.plan === 'pro' && (
-                  <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
-                    30 messages / 10 min
-                  </span>
-                )}
-                {dbUser.plan === 'premium' && (
-                  <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
-                    60 messages / 10 min
-                  </span>
-                )}
-              </div>
-              {dbUser.plan === 'free' && (
-                <Button variant="default" disabled>
-                  Upgrade (Coming Soon)
-                </Button>
-              )}
-              {dbUser.plan !== 'free' && (
-                <Button variant="outline" disabled>
-                  Manage Subscription (Coming Soon)
-                </Button>
-              )}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-slate-300">Current plan</p>
+              <p className="text-sm text-slate-500 capitalize">{plan}</p>
             </div>
+            {plan === 'free' && (
+              <a href="/#pricing" className="text-sm text-cyan-400 hover:text-cyan-300">Upgrade →</a>
+            )}
           </div>
+          {/* Trial status */}
+          {trialStatus === 'active' && (
+            <div className="rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-4 py-3">
+              <p className="text-sm font-medium text-cyan-400">
+                Free Trial — {trialDaysRemaining} day{trialDaysRemaining !== 1 ? 's' : ''} remaining
+              </p>
+              <p className="text-xs text-cyan-400/60 mt-0.5">Full access to all features</p>
+            </div>
+          )}
+          {trialStatus === 'expired' && (
+            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3">
+              <p className="text-sm font-medium text-red-400">Trial Expired</p>
+              <p className="text-xs text-red-400/60 mt-0.5">
+                Subscribe to restore full access.
+              </p>
+              <a href="/#pricing" className="text-xs text-red-400 hover:text-red-300 font-semibold mt-1 inline-block">
+                View plans →
+              </a>
+            </div>
+          )}
+          {subscription?.status && (
+            <div>
+              <p className="text-sm font-medium text-slate-300">Status</p>
+              <p className="text-sm text-slate-500 capitalize">{subscription.status}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* About Alex - AI Transparency */}
-      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
+      {/* About Sam */}
+      <Card className="bg-[#151C2C]/80 border-white/[0.06]">
         <CardHeader>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center shadow-lg">
-              <MessageCircle className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <CardTitle className="font-serif text-2xl">About {dbUser.companionName || 'Alex'}</CardTitle>
-              <CardDescription className="text-base mt-1">
-                Understanding your AI companion
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="prose prose-sm max-w-none">
-            <p className="text-gray-700 leading-relaxed">
-              {dbUser.companionName || 'Alex'} is an AI companion — not a therapist, not a replacement
-              for professional mental health care. Think of this as a space to think out loud, process
-              your thoughts, and explore what's going on inside.
-            </p>
-            <p className="text-gray-700 leading-relaxed mt-3">
-              <strong>What {dbUser.companionName || 'Alex'} can do:</strong>
-            </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-1 mt-2">
-              <li>Listen without judgment, remember your story</li>
-              <li>Help you think through challenges using evidence-based techniques</li>
-              <li>Offer psychological insights grounded in real research</li>
-              <li>Be available 24/7 when you need to talk</li>
-            </ul>
-            <p className="text-gray-700 leading-relaxed mt-3">
-              <strong>What {dbUser.companionName || 'Alex'} cannot do:</strong>
-            </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-1 mt-2">
-              <li>Diagnose mental health conditions</li>
-              <li>Prescribe medication or provide medical advice</li>
-              <li>Replace licensed therapy or crisis intervention</li>
-            </ul>
-            <p className="text-gray-700 leading-relaxed mt-4 p-3 bg-amber-50 border-l-4 border-amber-400 rounded">
-              <strong>In crisis?</strong> If you're in immediate danger, please contact emergency
-              services or a crisis hotline in your country. This is support, not emergency care.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Sign Out */}
-      <Card className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift">
-        <CardHeader>
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
-              <LogOut className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <CardTitle className="font-serif text-2xl">Sign Out</CardTitle>
-              <CardDescription className="text-base mt-1">End your current session</CardDescription>
-            </div>
-          </div>
+          <CardTitle className="text-xl text-white">About Sam</CardTitle>
+          <CardDescription className="text-slate-400">Your AI GMAT tutor</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={signOut}>
-            <Button variant="outline" type="submit" className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-smooth hover:scale-[1.02]">
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </form>
+          <p className="text-sm text-slate-400 leading-relaxed mb-4">
+            Sam is an AI tutor — not a human instructor. Sam uses AI to explain GMAT concepts,
+            track your progress, and adapt to your learning style.
+          </p>
+          <div className="text-sm text-slate-400 mb-3">
+            <strong className="text-slate-300">What Sam can do:</strong>
+            <span className="block mt-1">Explain concepts, practice problems, track weak areas, adapt difficulty, remember progress.</span>
+          </div>
+          <div className="text-sm text-slate-400">
+            <strong className="text-slate-300">What Sam cannot do:</strong>
+            <span className="block mt-1">Guarantee a score, replace a structured course, or provide official test access.</span>
+          </div>
         </CardContent>
       </Card>
     </div>

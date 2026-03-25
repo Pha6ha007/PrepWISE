@@ -2,194 +2,188 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import {
-  MessageSquare,
+  Brain,
   BookOpen,
   TrendingUp,
   Settings,
   LogOut,
   Crown,
-  Sparkles,
+  Target,
   Menu,
   X,
+  Mic,
+  Calendar,
 } from 'lucide-react'
-import InstallPrompt from '@/components/pwa/InstallPrompt'
 import type { User } from '@supabase/supabase-js'
+import { TrialBanner } from '@/components/billing/TrialBanner'
+import { getTrialStatus, getTrialDaysRemaining } from '@/lib/billing/trial'
 
 interface DashboardClientProps {
   user: User
   userPlan: string
+  trialStartDate: string | null
+  trialEndDate: string | null
   signOut: () => Promise<void>
   children: React.ReactNode
 }
 
 const navigation = [
-  { name: 'Chat', href: '/dashboard/chat', icon: MessageSquare },
-  { name: 'Journal', href: '/dashboard/journal', icon: BookOpen },
-  { name: 'Exercises', href: '/dashboard/exercises', icon: Sparkles },
+  { name: 'Session', href: '/dashboard/session', icon: Mic },
+  { name: 'Practice', href: '/dashboard/practice', icon: BookOpen },
+  { name: 'Journal', href: '/dashboard/journal', icon: Calendar },
   { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
+  { name: 'Mock Test', href: '/dashboard/mock-test', icon: Target },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
 export default function DashboardClient({
   user,
   userPlan,
+  trialStartDate,
+  trialEndDate,
   signOut,
   children,
 }: DashboardClientProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const currentPath = usePathname()
 
   return (
-    <div className="flex h-screen relative overflow-hidden">
-      {/* Animated Mesh Gradient Background */}
-      <div className="mesh-gradient fixed inset-0 -z-10" />
-
-      {/* Floating Blur Orbs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[#6366F1] rounded-full blur-orb animate-float" />
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-[#EC4899] rounded-full blur-orb animate-float-delayed" />
-        <div
-          className="absolute top-1/2 left-1/2 w-72 h-72 bg-[#F59E0B] rounded-full blur-orb animate-float"
-          style={{ animationDelay: '2s' }}
-        />
-      </div>
-
-      {/* Mobile Header with Hamburger */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-30 glass border-b border-white/20 px-4 py-3 flex items-center justify-between">
-        <button
-          onClick={() => setIsSidebarOpen(true)}
-          className="p-2 rounded-xl hover:bg-white/30 transition-smooth"
-        >
-          <Menu className="w-6 h-6 text-[#6366F1]" />
-        </button>
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-lg flex items-center justify-center shadow-lg">
-            <span className="font-serif font-bold text-lg text-white">C</span>
-          </div>
-          <span className="font-serif text-xl font-semibold text-[#1F2937]">Confide</span>
-        </Link>
-        <div className="w-10" /> {/* Spacer for centering */}
-      </div>
-
-      {/* Backdrop Overlay (Mobile) */}
+    <div className="h-screen flex bg-[#0A0F1E]">
+      {/* Mobile sidebar backdrop */}
       <AnimatePresence>
-        {isSidebarOpen && (
+        {sidebarOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setIsSidebarOpen(false)}
-            className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      {/* Glassmorphism Sidebar - Hidden on mobile by default, visible on desktop */}
+      {/* Sidebar */}
       <div
         className={`
-          ${isSidebarOpen ? 'flex' : 'hidden md:flex'}
-          fixed md:relative inset-y-0 left-0 z-50 md:z-10
-          w-64 glass border-r border-white/20 flex-col shadow-large
+          fixed lg:relative inset-y-0 left-0 z-50 w-64
+          bg-[#0D1220] border-r border-white/[0.06]
+          transform transition-transform duration-300
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-            {/* Close Button (Mobile Only) */}
-            <div className="md:hidden absolute top-4 right-4">
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                className="p-2 rounded-xl hover:bg-white/30 transition-smooth"
-              >
-                <X className="w-5 h-5 text-[#6B7280]" />
-              </button>
-            </div>
-
-            {/* Logo */}
-            <div className="p-6 border-b border-white/10">
-              <Link
-                href="/"
-                className="flex items-center space-x-2 transition-smooth hover:opacity-90 hover-lift"
-              >
-                <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-lg flex items-center justify-center shadow-lg">
-                  <span className="font-serif font-bold text-lg text-white">C</span>
-                </div>
-                <span className="font-serif text-xl font-semibold text-[#1F2937]">Confide</span>
-              </Link>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-2">
-              {navigation.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setIsSidebarOpen(false)}
-                    className="flex items-center space-x-3 px-4 py-3 text-[#4B5563] rounded-xl hover:bg-white/30 transition-smooth group backdrop-blur-sm"
-                  >
-                    <Icon className="w-5 h-5 group-hover:scale-110 transition-smooth text-[#6366F1]" />
-                    <span className="font-medium">{item.name}</span>
-                  </Link>
-                )
-              })}
-            </nav>
-
-            {/* User & Sign Out */}
-            <div className="p-4 border-t border-white/10">
-              <div className="flex items-center space-x-3 mb-4">
-                {/* Avatar */}
-                <div className="w-10 h-10 bg-gradient-to-br from-[#F59E0B] to-[#FBBF24] rounded-full flex items-center justify-center shadow-lg hover-lift">
-                  <span className="font-serif font-semibold text-white text-lg">
-                    {user.email?.[0].toUpperCase()}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-[#1F2937] text-sm truncate">{user.email}</p>
-                  <div className="flex items-center space-x-1 mt-1">
-                    {userPlan === 'free' && (
-                      <span className="text-xs bg-white/50 text-[#6B7280] px-2 py-0.5 rounded-full">
-                        Free
-                      </span>
-                    )}
-                    {userPlan === 'pro' && (
-                      <span className="text-xs bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] text-white px-2 py-0.5 rounded-full flex items-center">
-                        <Crown className="w-3 h-3 mr-1" />
-                        Pro
-                      </span>
-                    )}
-                    {userPlan === 'premium' && (
-                      <span className="text-xs bg-gradient-to-r from-purple-500 to-purple-600 text-white px-2 py-0.5 rounded-full flex items-center">
-                        <Crown className="w-3 h-3 mr-1" />
-                        Premium
-                      </span>
-                    )}
-                  </div>
-                </div>
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+            <Link href="/dashboard/session" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
+                <Brain className="w-4 h-4 text-[#0A0F1E]" />
               </div>
-              <form action={signOut}>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start bg-white/30 border-white/30 text-[#1F2937] hover:bg-white/50 transition-smooth backdrop-blur-sm"
-                  type="submit"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign out
-                </Button>
-              </form>
-            </div>
+              <span className="text-lg font-bold text-white tracking-tight">Prepwise</span>
+            </Link>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto pt-16 md:pt-0">
-        <div className="w-full h-full">
-          {children}
-        </div>
-      </main>
+          {/* Navigation */}
+          <nav className="flex-1 px-3 py-4 space-y-1">
+            {navigation.map((item) => {
+              const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`
+                    flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                    transition-all duration-200
+                    ${isActive
+                      ? 'bg-cyan-500/10 text-cyan-400'
+                      : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+                    }
+                  `}
+                >
+                  <item.icon className="w-5 h-5" />
+                  {item.name}
+                </Link>
+              )
+            })}
+          </nav>
 
-      {/* PWA Install Prompt */}
-      <InstallPrompt />
+          {/* Trial banner */}
+          <TrialBanner
+            trialStartDate={trialStartDate}
+            trialEndDate={trialEndDate}
+            plan={userPlan}
+          />
+
+          {/* Plan badge + sign out */}
+          <div className="px-3 py-4 border-t border-white/[0.06] space-y-3">
+            <div className="px-3 py-2 rounded-xl bg-white/[0.03]">
+              <div className="flex items-center gap-2 text-sm">
+                <Crown className="w-4 h-4 text-amber-400" />
+                <span className="text-slate-300 capitalize">
+                  {(() => {
+                    const status = getTrialStatus({
+                      trialStartDate: trialStartDate ? new Date(trialStartDate) : null,
+                      trialEndDate: trialEndDate ? new Date(trialEndDate) : null,
+                      plan: userPlan,
+                    })
+                    if (status === 'active') {
+                      const days = getTrialDaysRemaining({ trialEndDate: trialEndDate ? new Date(trialEndDate) : null })
+                      return `Trial · ${days}d left`
+                    }
+                    return `${userPlan} plan`
+                  })()}
+                </span>
+              </div>
+              {userPlan === 'free' && (
+                <Link
+                  href="/#pricing"
+                  className="text-xs text-cyan-400 hover:text-cyan-300 mt-1 block"
+                >
+                  Upgrade for unlimited sessions →
+                </Link>
+              )}
+            </div>
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-slate-300 transition-colors w-full"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign out
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile header */}
+        <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#0D1220]">
+          <button onClick={() => setSidebarOpen(true)} className="text-slate-400 hover:text-white">
+            <Menu className="w-6 h-6" />
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
+              <Brain className="w-3 h-3 text-[#0A0F1E]" />
+            </div>
+            <span className="font-semibold text-white">Prepwise</span>
+          </div>
+          <div className="w-6" />
+        </div>
+
+        <main className="flex-1 overflow-auto">{children}</main>
+      </div>
     </div>
   )
 }

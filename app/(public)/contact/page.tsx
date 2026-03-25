@@ -2,15 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { motion } from 'framer-motion'
-import { Clock, Send, Building2, Users, FlaskConical, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
-
-type FormType = 'general' | 'partnership'
 
 export default function ContactPage() {
   // General Contact Form
@@ -51,7 +43,7 @@ export default function ContactPage() {
 
       toast.success('Message sent! We\'ll get back to you within 24 hours.')
       setGeneralForm({ name: '', email: '', subject: '', message: '' })
-    } catch (error) {
+    } catch {
       toast.error('Failed to send message. Please try again.')
     } finally {
       // Anti-spam: disable button for 5 seconds
@@ -84,7 +76,7 @@ export default function ContactPage() {
         partnershipType: 'corporate',
         message: '',
       })
-    } catch (error) {
+    } catch {
       toast.error('Failed to send inquiry. Please try again.')
     } finally {
       // Anti-spam: disable button for 5 seconds
@@ -92,296 +84,236 @@ export default function ContactPage() {
     }
   }
 
+  const partnershipTypes = [
+    { value: 'corporate' as const, label: 'Corporate License', icon: '🏢' },
+    { value: 'research' as const, label: 'Research Collaboration', icon: '🔬' },
+    { value: 'other' as const, label: 'Other', icon: '👥' },
+  ]
+
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Animated Mesh Gradient Background */}
-      <div className="mesh-gradient fixed inset-0 -z-10" />
-
-      {/* Floating Blur Orbs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[#6366F1] rounded-full blur-orb animate-float" />
-        <div className="absolute top-40 right-20 w-80 h-80 bg-[#EC4899] rounded-full blur-orb animate-float-delayed" />
-      </div>
-
+    <div className="min-h-screen bg-[#0A0F1C]">
       {/* Header */}
-      <header className="glass sticky top-0 z-50 border-b border-white/20">
-        <nav className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-2 md:py-3">
-          <div className="flex justify-between items-center">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2 md:space-x-3 hover-lift transition-smooth hover:opacity-90">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-lg md:rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-serif font-bold text-lg md:text-xl">C</span>
-              </div>
-              <span className="font-serif text-xl md:text-2xl font-semibold text-[#1F2937]">Confide</span>
+      <header className="border-b border-white/[0.06]">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="text-xl font-bold text-white">🧠 PrepWISE</Link>
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors">Sign in</Link>
+            <Link
+              href="/register"
+              className="text-sm bg-cyan-500 hover:bg-cyan-400 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Start for free
             </Link>
-
-            {/* Nav Links */}
-            <div className="flex items-center space-x-2 md:space-x-4">
-              <Link href="/#pricing">
-                <Button variant="ghost" className="text-[#1F2937] hover:bg-white/30 transition-smooth text-sm md:text-base">
-                  Pricing
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button variant="ghost" className="text-[#1F2937] hover:bg-white/30 transition-smooth text-sm md:text-base">
-                  Sign in
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button className="bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white hover-lift shadow-lg text-sm md:text-base">
-                  Start for free
-                </Button>
-              </Link>
-            </div>
           </div>
-        </nav>
+        </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-6 lg:px-8 py-16 md:py-24">
+      {/* Content */}
+      <main className="max-w-5xl mx-auto px-6 py-12">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-[#1F2937] mb-4">
-            Get in <span className="gradient-text">Touch</span>
+        <div className="text-center mb-14">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            Get in Touch
           </h1>
-          <p className="text-lg md:text-xl text-[#6B7280] max-w-2xl mx-auto">
-            Have questions? Want to collaborate? We'd love to hear from you.
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            Have questions? Want to collaborate? We&apos;d love to hear from you.
           </p>
-        </motion.div>
+        </div>
 
         {/* General Contact Section */}
-        <div className="grid lg:grid-cols-3 gap-8 mb-20">
+        <div className="grid lg:grid-cols-3 gap-6 mb-16">
           {/* Left: Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="glass-button p-8 rounded-3xl space-y-6"
-          >
+          <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 space-y-5">
             <div>
-              <h3 className="font-serif text-xl font-bold text-[#1F2937] mb-2">Email</h3>
-              <a href="mailto:hello@confide.app" className="text-[#6366F1] hover:underline">
-                hello@confide.app
+              <h3 className="text-lg font-semibold text-white mb-1">Email</h3>
+              <a href="mailto:hello@prepwise.app" className="text-cyan-400 hover:underline text-sm">
+                hello@prepwise.app
               </a>
             </div>
 
-            <div className="flex items-start space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h3 className="font-serif text-xl font-bold text-[#1F2937] mb-1">Response Time</h3>
-                <p className="text-[#6B7280]">Within 24 hours</p>
-              </div>
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-1">Response Time</h3>
+              <p className="text-slate-400 text-sm">Within 24 hours</p>
             </div>
 
-            <div className="pt-4 border-t border-white/20">
-              <p className="text-sm text-[#6B7280]">
-                We read every message personally. Whether you have a question, feedback, or just want to say hi — we're here.
+            <div className="pt-4 border-t border-white/[0.06]">
+              <p className="text-sm text-slate-500">
+                We read every message personally. Whether you have a question, feedback, or just want to say hi — we&apos;re here.
               </p>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right: Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="lg:col-span-2 glass-button p-8 md:p-12 rounded-3xl"
-          >
-            <form onSubmit={handleGeneralSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+          <div className="lg:col-span-2 bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 md:p-8">
+            <form onSubmit={handleGeneralSubmit} className="space-y-5">
+              <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <Label htmlFor="name" className="text-[#1F2937] font-medium mb-2 block">
+                  <label htmlFor="name" className="text-sm font-medium text-slate-300 mb-1.5 block">
                     Name
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="name"
                     type="text"
                     required
                     value={generalForm.name}
                     onChange={(e) => setGeneralForm({ ...generalForm, name: e.target.value })}
                     placeholder="Your name"
-                    className="bg-white/50 border-white/20"
+                    className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="email" className="text-[#1F2937] font-medium mb-2 block">
+                  <label htmlFor="email" className="text-sm font-medium text-slate-300 mb-1.5 block">
                     Email
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="email"
                     type="email"
                     required
                     value={generalForm.email}
                     onChange={(e) => setGeneralForm({ ...generalForm, email: e.target.value })}
                     placeholder="you@example.com"
-                    className="bg-white/50 border-white/20"
+                    className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="subject" className="text-[#1F2937] font-medium mb-2 block">
+                <label htmlFor="subject" className="text-sm font-medium text-slate-300 mb-1.5 block">
                   Subject (Optional)
-                </Label>
-                <Input
+                </label>
+                <input
                   id="subject"
                   type="text"
                   value={generalForm.subject}
                   onChange={(e) => setGeneralForm({ ...generalForm, subject: e.target.value })}
                   placeholder="What is this about?"
-                  className="bg-white/50 border-white/20"
+                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
                 />
               </div>
 
               <div>
-                <Label htmlFor="message" className="text-[#1F2937] font-medium mb-2 block">
+                <label htmlFor="message" className="text-sm font-medium text-slate-300 mb-1.5 block">
                   Message
-                </Label>
-                <Textarea
+                </label>
+                <textarea
                   id="message"
                   required
-                  rows={6}
+                  rows={5}
                   value={generalForm.message}
                   onChange={(e) => setGeneralForm({ ...generalForm, message: e.target.value })}
                   placeholder="Tell us what's on your mind..."
-                  className="bg-white/50 border-white/20 resize-none"
+                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50 resize-none"
                 />
               </div>
 
-              <Button
+              <button
                 type="submit"
                 disabled={generalLoading}
-                className="w-full md:w-auto bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-semibold px-8 py-6 text-base hover-lift shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
               >
-                {generalLoading ? (
-                  'Sending...'
-                ) : (
-                  <>
-                    <Send className="w-5 h-5 mr-2" />
-                    Send Message
-                  </>
-                )}
-              </Button>
+                {generalLoading ? 'Sending...' : 'Send Message'}
+              </button>
             </form>
-          </motion.div>
+          </div>
         </div>
 
         {/* Partnership Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="glass-button p-8 md:p-12 rounded-3xl"
-        >
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center space-x-2 glass-button px-4 py-2 rounded-full text-sm font-medium mb-4">
-              <Sparkles className="w-4 h-4 text-[#6366F1]" />
-              <span className="text-[#1F2937]">For Organizations</span>
-            </div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#1F2937] mb-4">
-              Partnership & Collaboration
+        <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 md:p-10">
+          <div className="text-center mb-10">
+            <span className="inline-block text-xs font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full mb-3">
+              For Organizations
+            </span>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+              Partnership &amp; Collaboration
             </h2>
-            <p className="text-lg text-[#6B7280] max-w-2xl mx-auto">
-              Interested in bringing Confide to your organization or collaborating on research?
+            <p className="text-slate-400 max-w-2xl mx-auto">
+              Interested in bringing PrepWISE to your organization or collaborating on research?
             </p>
           </div>
 
-          <form onSubmit={handlePartnershipSubmit} className="space-y-6 max-w-3xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-6">
+          <form onSubmit={handlePartnershipSubmit} className="space-y-5 max-w-3xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <Label htmlFor="p-name" className="text-[#1F2937] font-medium mb-2 block">
+                <label htmlFor="p-name" className="text-sm font-medium text-slate-300 mb-1.5 block">
                   Name
-                </Label>
-                <Input
+                </label>
+                <input
                   id="p-name"
                   type="text"
                   required
                   value={partnershipForm.name}
                   onChange={(e) => setPartnershipForm({ ...partnershipForm, name: e.target.value })}
                   placeholder="Your name"
-                  className="bg-white/50 border-white/20"
+                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
                 />
               </div>
 
               <div>
-                <Label htmlFor="p-email" className="text-[#1F2937] font-medium mb-2 block">
+                <label htmlFor="p-email" className="text-sm font-medium text-slate-300 mb-1.5 block">
                   Email
-                </Label>
-                <Input
+                </label>
+                <input
                   id="p-email"
                   type="email"
                   required
                   value={partnershipForm.email}
                   onChange={(e) => setPartnershipForm({ ...partnershipForm, email: e.target.value })}
                   placeholder="you@company.com"
-                  className="bg-white/50 border-white/20"
+                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
                 />
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <Label htmlFor="company" className="text-[#1F2937] font-medium mb-2 block">
+                <label htmlFor="company" className="text-sm font-medium text-slate-300 mb-1.5 block">
                   Company / Organization
-                </Label>
-                <Input
+                </label>
+                <input
                   id="company"
                   type="text"
                   required
                   value={partnershipForm.company}
                   onChange={(e) => setPartnershipForm({ ...partnershipForm, company: e.target.value })}
                   placeholder="Acme Inc."
-                  className="bg-white/50 border-white/20"
+                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
                 />
               </div>
 
               <div>
-                <Label htmlFor="role" className="text-[#1F2937] font-medium mb-2 block">
+                <label htmlFor="role" className="text-sm font-medium text-slate-300 mb-1.5 block">
                   Your Role
-                </Label>
-                <Input
+                </label>
+                <input
                   id="role"
                   type="text"
                   required
                   value={partnershipForm.role}
                   onChange={(e) => setPartnershipForm({ ...partnershipForm, role: e.target.value })}
                   placeholder="CEO, HR Manager, etc."
-                  className="bg-white/50 border-white/20"
+                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
                 />
               </div>
             </div>
 
             <div>
-              <Label className="text-[#1F2937] font-medium mb-4 block">Partnership Type</Label>
-              <div className="grid md:grid-cols-3 gap-4">
-                {[
-                  { value: 'corporate', icon: Building2, label: 'Corporate License' },
-                  { value: 'research', icon: FlaskConical, label: 'Research Collaboration' },
-                  { value: 'other', icon: Users, label: 'Other' },
-                ].map(({ value, icon: Icon, label }) => (
+              <label className="text-sm font-medium text-slate-300 mb-3 block">Partnership Type</label>
+              <div className="grid md:grid-cols-3 gap-3">
+                {partnershipTypes.map(({ value, icon, label }) => (
                   <button
                     key={value}
                     type="button"
-                    onClick={() => setPartnershipForm({ ...partnershipForm, partnershipType: value as any })}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    onClick={() => setPartnershipForm({ ...partnershipForm, partnershipType: value })}
+                    className={`p-4 rounded-lg border-2 transition-all text-center ${
                       partnershipForm.partnershipType === value
-                        ? 'border-[#6366F1] bg-[#6366F1]/10'
-                        : 'border-white/20 bg-white/30 hover:border-white/40'
+                        ? 'border-cyan-500 bg-cyan-500/10'
+                        : 'border-white/[0.06] bg-[#0A0F1C] hover:border-white/10'
                     }`}
                   >
-                    <Icon className={`w-6 h-6 mx-auto mb-2 ${
-                      partnershipForm.partnershipType === value ? 'text-[#6366F1]' : 'text-[#6B7280]'
-                    }`} />
+                    <span className="text-2xl block mb-1">{icon}</span>
                     <span className={`text-sm font-medium ${
-                      partnershipForm.partnershipType === value ? 'text-[#6366F1]' : 'text-[#1F2937]'
+                      partnershipForm.partnershipType === value ? 'text-cyan-400' : 'text-slate-300'
                     }`}>
                       {label}
                     </span>
@@ -391,58 +323,39 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <Label htmlFor="p-message" className="text-[#1F2937] font-medium mb-2 block">
+              <label htmlFor="p-message" className="text-sm font-medium text-slate-300 mb-1.5 block">
                 Tell us about your inquiry
-              </Label>
-              <Textarea
+              </label>
+              <textarea
                 id="p-message"
                 required
-                rows={6}
+                rows={5}
                 value={partnershipForm.message}
                 onChange={(e) => setPartnershipForm({ ...partnershipForm, message: e.target.value })}
                 placeholder="What would you like to collaborate on?"
-                className="bg-white/50 border-white/20 resize-none"
+                className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50 resize-none"
               />
             </div>
 
-            <Button
+            <button
               type="submit"
               disabled={partnershipLoading}
-              className="w-full md:w-auto bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] text-white font-semibold px-8 py-6 text-base hover-lift shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
             >
-              {partnershipLoading ? (
-                'Submitting...'
-              ) : (
-                <>
-                  <Send className="w-5 h-5 mr-2" />
-                  Submit Partnership Inquiry
-                </>
-              )}
-            </Button>
+              {partnershipLoading ? 'Submitting...' : 'Submit Partnership Inquiry'}
+            </button>
           </form>
-        </motion.div>
+        </div>
       </main>
 
       {/* Footer */}
-      <footer className="relative border-t border-white/20 py-12 mt-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <Link href="/" className="flex items-center space-x-2 transition-smooth hover:opacity-90">
-              <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-lg flex items-center justify-center shadow-lg">
-                <span className="font-serif font-bold text-lg text-white">C</span>
-              </div>
-              <span className="font-serif text-xl font-semibold text-[#1F2937]">Confide</span>
-            </Link>
-
-            <p className="text-[#9CA3AF] text-sm">
-              © 2026 Confide. AI Wellness Companion — Not a Medical Service.
-            </p>
-
-            <div className="flex items-center space-x-6 text-sm text-[#6B7280]">
-              <Link href="/privacy" className="hover:text-[#6366F1] transition-smooth">Privacy</Link>
-              <Link href="/terms" className="hover:text-[#6366F1] transition-smooth">Terms</Link>
-              <Link href="/refund" className="hover:text-[#6366F1] transition-smooth">Refund</Link>
-            </div>
+      <footer className="border-t border-white/[0.06] mt-16">
+        <div className="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-slate-500">© 2026 PrepWISE. AI-Powered GMAT Tutor.</p>
+          <div className="flex items-center gap-6 text-sm text-slate-500">
+            <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms</Link>
+            <Link href="/refund" className="hover:text-slate-300 transition-colors">Refund</Link>
           </div>
         </div>
       </footer>

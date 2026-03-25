@@ -2,26 +2,24 @@
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FAFAF9]">
+    <div className="min-h-screen flex items-center justify-center bg-[#0A0F1C]">
       <div className="text-center px-6">
         {/* Logo */}
-        <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-[#EC4899] rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6">
-          C
-        </div>
+        <div className="text-4xl mb-6">🧠</div>
 
         {/* Message */}
-        <h1 className="font-serif text-2xl text-[#1F2937] mb-2">
+        <h1 className="text-2xl font-bold text-white mb-2">
           You&apos;re offline
         </h1>
-        <p className="text-[#6B7280] mb-6 max-w-md">
-          Confide needs an internet connection to talk with Alex.
+        <p className="text-slate-400 mb-6 max-w-md">
+          PrepWISE needs an internet connection to work with Sam.
           Check your connection and try again.
         </p>
 
         {/* Retry Button */}
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-2.5 bg-[#6366F1] text-white rounded-xl hover:bg-[#5558E3] transition-all duration-200 font-medium"
+          className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg font-medium transition-colors"
         >
           Try again
         </button>

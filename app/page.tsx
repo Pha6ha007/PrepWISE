@@ -21,7 +21,7 @@ export default function LandingPage() {
               Log in
             </Link>
             <Link href="/register" className="btn-primary text-sm !px-5 !py-2.5 inline-flex items-center gap-1.5">
-              Start free trial
+              Try 7 days free
             </Link>
           </div>
         </div>
@@ -57,7 +57,7 @@ export default function LandingPage() {
 
           <div className="flex items-center justify-center gap-4 mb-16">
             <Link href="/register" className="btn-primary text-base inline-flex items-center gap-2">
-              Start free trial <ArrowRight className="w-5 h-5" />
+              Try 7 days free <ArrowRight className="w-5 h-5" />
             </Link>
             <Link href="/login" className="btn-secondary text-base">
               Log in
@@ -67,7 +67,7 @@ export default function LandingPage() {
           {/* Social proof */}
           <div className="flex items-center justify-center gap-8 text-sm text-slate-500">
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-cyan-500" /> No credit card required</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-cyan-500" /> 14-day free trial</span>
+            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-cyan-500" /> 7-day free trial</span>
             <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-cyan-500" /> Cancel anytime</span>
           </div>
         </div>
@@ -161,28 +161,28 @@ export default function LandingPage() {
           {/* Starter */}
           <PricingCard
             name="Starter"
-            price={49}
+            price={39}
             trial="7-day free trial"
-            features={['20 voice sessions/month', 'Quant + Verbal basics', 'Progress tracking', 'Session memory']}
+            features={['20 voice sessions/month', 'Quant + Verbal practice', 'Progress tracking', 'Session memory', '5,600+ practice questions']}
             productId={process.env.NEXT_PUBLIC_PADDLE_PRODUCT_STARTER || ''}
           />
 
           {/* Pro — highlighted */}
           <PricingCard
             name="Pro"
-            price={99}
-            trial="14-day free trial"
+            price={79}
+            trial="7-day free trial"
             popular
-            features={['Unlimited voice sessions', 'All GMAT sections', 'Priority memory & personalization', 'Progress reports', 'Data Insights coverage', 'Mock test analysis']}
+            features={['Unlimited voice sessions', 'All 3 GMAT sections', 'Adaptive mock tests', 'Smart review (spaced repetition)', 'Detailed analytics & error analysis', 'Data Insights + DS coverage']}
             productId={process.env.NEXT_PUBLIC_PADDLE_PRODUCT_PRO || ''}
           />
 
           {/* Intensive */}
           <PricingCard
             name="Intensive"
-            price={199}
+            price={149}
             trial="7-day free trial"
-            features={['Everything in Pro', '90-day personalized study plan', 'Full mock tests with analysis', 'Score prediction', 'Priority support']}
+            features={['Everything in Pro', 'Personalized study plan', 'Full mock tests with score reports', 'Score prediction & percentile', 'Priority support', 'Audio explanations by Sam']}
             productId={process.env.NEXT_PUBLIC_PADDLE_PRODUCT_INTENSIVE || ''}
           />
         </div>
@@ -198,7 +198,7 @@ export default function LandingPage() {
             Start your free trial today. No credit card required.
           </p>
           <Link href="/register" className="btn-primary text-lg inline-flex items-center gap-2">
-            Start free trial <ArrowRight className="w-5 h-5" />
+            Try 7 days free <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>

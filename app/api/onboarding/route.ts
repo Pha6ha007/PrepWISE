@@ -2,25 +2,25 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { sendWelcomeEmail } from '@/lib/resend/emails/welcome'
 
-
-
-// Валидация данных онбординга
+// Validate onboarding data
 const OnboardingSchema = z.object({
   preferredName: z.string().min(1).max(30),
-  ageGroup: z.string().min(1),
-  userGender: z.enum(['male', 'female', 'not_specified']),
-  companionName: z.string().min(1).max(20),
-  voicePreference: z.string().optional(), // ElevenLabs voice ID
-  companionGender: z.enum(['male', 'female']).optional(),
+  companionName: z.string().default('Sam'),
+  targetScore: z.string().nullable().optional(),
+  timeline: z.string().nullable().optional(),
+  weakSections: z.array(z.string()).optional(),
+  previousScore: z.string().nullable().optional(),
+  studyHours: z.string().nullable().optional(),
 })
 
+/**
+ * Prepwise Onboarding API
+ * Saves the learner's profile, target score, weak areas, and study timeline.
+ */
 export async function POST(request: NextRequest) {
   try {
-    // ============================================
-    // 1. AUTH CHECK
-    // ============================================
+    // 1. Auth check
     const supabase = await createClient()
     const {
       data: { user },
@@ -30,9 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // ============================================
-    // 2. ВАЛИДАЦИЯ
-    // ============================================
+    // 2. Validate
     const body = await request.json()
     const validation = OnboardingSchema.safeParse(body)
 
@@ -45,72 +43,102 @@ export async function POST(request: NextRequest) {
 
     const {
       preferredName,
-      ageGroup,
-      userGender,
       companionName,
-      voicePreference,
-      companionGender,
+      targetScore,
+      timeline,
+      weakSections,
+      previousScore,
+      studyHours,
     } = validation.data
 
-    // ============================================
-    // 3. СОЗДАТЬ/ОБНОВИТЬ ПОЛЬЗОВАТЕЛЯ
-    // ============================================
-    // Используем upsert потому что запись может не существовать после регистрации
+    // 3. Parse target score into numeric value
+    let targetScoreNum: number | null = null
+    if (targetScore) {
+      const match = targetScore.match(/(\d+)/)
+      if (match) targetScoreNum = parseInt(match[1], 10)
+    }
+
+    // 4. Build initial GMAT learner profile
+    const initialProfile = {
+      weakTopics: weakSections || [],
+      strongTopics: [],
+      effectiveTechniques: [],
+      ineffectiveApproaches: [],
+      insightMoments: [],
+      conceptLinks: {},
+      learningStyle: '',
+      explanationPreference: null,
+      sessionTopics: [],
+      nextSessionPlan: weakSections && weakSections.length > 0
+        ? `Start with ${weakSections[0]} assessment`
+        : 'Initial diagnostic assessment',
+      scoreTrajectory: null,
+      timePressureNotes: null,
+      commonErrorPatterns: [],
+      targetScore: targetScoreNum,
+      currentEstimatedScore: null,
+      studyHoursPerWeek: studyHours ? parseInt(studyHours, 10) : null,
+      testDate: timeline || null,
+      preferredDifficulty: null,
+    }
+
+    // 5. Create/update user (with free trial for new users)
+    const { createTrialDates } = await import('@/lib/billing/trial')
+    const trialDates = createTrialDates()
+
+    // Check if user already has trial dates (don't reset on re-onboarding)
+    const existingUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: { trialStartDate: true },
+    })
+
     const updatedUser = await prisma.user.upsert({
       where: { id: user.id },
       create: {
         id: user.id,
         email: user.email!,
         preferredName,
-        ageGroup,
-        userGender,
-        companionName,
-        companionGender: companionGender || 'male',
-        voiceId: voicePreference || null,
-        plan: 'free', // Дефолтный план для новых пользователей
-        profile: {
-          create: {
-            communicationStyle: {},
-            emotionalProfile: {},
-            lifeContext: {},
-            patterns: [],
-            progress: {},
-            whatWorked: [],
-          },
-        },
+        companionName: companionName || 'Sam',
+        plan: 'free',
+        language: 'en',
+        gmatProfile: initialProfile,
+        trialStartDate: trialDates.trialStartDate,
+        trialEndDate: trialDates.trialEndDate,
       },
       update: {
         preferredName,
-        ageGroup,
-        userGender,
-        companionName,
-        companionGender: companionGender || 'male',
-        voiceId: voicePreference || null,
+        companionName: companionName || 'Sam',
+        gmatProfile: initialProfile,
+        // Only set trial dates if they haven't been set yet
+        ...(existingUser?.trialStartDate ? {} : {
+          trialStartDate: trialDates.trialStartDate,
+          trialEndDate: trialDates.trialEndDate,
+        }),
       },
     })
 
-    // ============================================
-    // 4. ОТПРАВИТЬ WELCOME EMAIL
-    // ============================================
-    // Fire-and-forget — не блокируем основной поток
-    sendWelcomeEmail({
-      preferredName: updatedUser.preferredName || 'there',
-      companionName: updatedUser.companionName,
-      email: updatedUser.email,
-    }).catch((error) => {
-      console.error('Failed to send welcome email (non-blocking):', error)
-    })
+    // 6. Send welcome email (fire-and-forget)
+    try {
+      const { sendWelcomeEmail } = await import('@/lib/resend/emails/welcome')
+      sendWelcomeEmail({
+        preferredName: updatedUser.preferredName || 'there',
+        companionName: 'Sam',
+        email: updatedUser.email,
+      }).catch(err => console.error('Welcome email failed:', err))
+    } catch {
+      // Resend not configured — skip silently
+    }
 
     return NextResponse.json({
       success: true,
-      user: {
-        companionName: updatedUser.companionName,
-        companionGender: updatedUser.companionGender,
+      profile: {
+        preferredName: updatedUser.preferredName,
+        targetScore: targetScoreNum,
+        weakSections,
       },
     })
   } catch (error) {
     console.error('Onboarding API error:', error)
-
     return NextResponse.json(
       {
         error: 'Internal server error',
