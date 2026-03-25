@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { openai } from '@/lib/openai/client'
+import { agentClient } from '@/lib/openai/client'
 import { checkRateLimit } from '@/lib/utils/rate-limit'
 import { ErrorResponse } from '@/types'
 
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     // Модель: whisper-large-v3-turbo (быстрая и точная)
     const whisperModel = process.env.GROQ_WHISPER_MODEL || 'whisper-large-v3-turbo'
 
-    const transcription = await openai.audio.transcriptions.create({
+    const transcription = await agentClient.audio.transcriptions.create({
       file: audioFile,
       model: whisperModel,
       language: 'en', // NOTE: можно добавить поддержку 'ru' через user.language

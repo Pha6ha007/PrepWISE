@@ -5,7 +5,7 @@
 import { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { openai, getModel } from '@/lib/openai/client'
+import { agentClient, getAgentModel } from '@/lib/openai/client'
 import { routeToGmatAgent } from '@/agents/gmat/orchestrator'
 import {
   buildQuantitativePrompt,
@@ -99,8 +99,8 @@ export async function POST(request: NextRequest) {
   }))
 
   // Stream response
-  const stream = await openai.chat.completions.create({
-    model: getModel(),
+  const stream = await agentClient.chat.completions.create({
+    model: getAgentModel(),
     messages: [
       { role: 'system', content: systemPrompt },
       ...messageHistory,

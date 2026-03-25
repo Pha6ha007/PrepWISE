@@ -1,18 +1,9 @@
-import OpenAI from 'openai'
 import { getPineconeIndex, type Namespace } from './client'
 import { NAMESPACES } from './constants'
 import { rerankChunks, type RetrievedChunk, type RerankedChunk } from './reranker'
+import { embeddingClient, getEmbeddingModel } from '@/lib/openai/client'
 
-let _openai: OpenAI | null = null
-
-function getOpenAIClient() {
-  if (!_openai) {
-    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
-  }
-  return _openai
-}
-
-const EMBEDDING_MODEL = 'text-embedding-3-small'
+const EMBEDDING_MODEL = getEmbeddingModel()
 const EXPANSION_MODEL = 'gpt-4o-mini'
 
 export type { RetrievedChunk, RerankedChunk }
@@ -21,7 +12,7 @@ export type { RetrievedChunk, RerankedChunk }
  * Expand a user query into richer search terms for better semantic search.
  */
 async function expandQuery(userQuery: string, namespace: Namespace): Promise<string> {
-  const openai = getOpenAIClient()
+  const openai = embeddingClient
 
   const namespaceContext: Record<string, string> = {
     'gmat-quant': 'GMAT quantitative: arithmetic, algebra, problem solving, number properties, statistics, probability, word problems',
@@ -93,8 +84,8 @@ export async function retrieveContext(
     }
 
     // Create embedding
-    const openai = getOpenAIClient()
-    const embeddingResponse = await openai.embeddings.create({
+    const openai = embeddingClient
+    const embeddingResponse = await embeddingClient.embeddings.create({
       model: EMBEDDING_MODEL,
       input: expandedQuery,
     })

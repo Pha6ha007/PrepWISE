@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { openai, getModel } from '@/lib/openai/client'
+import { agentClient, getAgentModel } from '@/lib/openai/client'
 import {
   routeToGmatAgent,
   GmatAgentType,
@@ -212,8 +212,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 13. Call AI
-    const completion = await openai.chat.completions.create({
-      model: getModel(),
+    const completion = await agentClient.chat.completions.create({
+      model: getAgentModel(),
       messages: [
         { role: 'system', content: systemPrompt },
         ...messageHistory,
