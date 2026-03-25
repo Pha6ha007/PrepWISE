@@ -8,9 +8,9 @@
 
 ## 🔴 P0 — Critical (blocks launch)
 
-- [ ] **1. Fix Confide branding on 5 pages** — Privacy, Terms, Contact, Refund, Offline pages still use purple/pink Confide theme, "C" logo, "AI Wellness Companion" text. Rebrand to PrepWISE dark cyan theme.
-- [ ] **2. Fix pricing inconsistency** — Landing page says $49/$99/$199. Terms and Refund pages say Free/$19/$29. Align all to actual prices.
-- [ ] **3. Add Free Trial (7 days)** — Every competitor offers free trial/demo. Without it, conversion will be near zero. Implement 7-day trial on Starter plan, no credit card required.
+- [x] **1. Fix Confide branding on 5 pages** — Privacy, Terms, Contact, Refund, Offline pages rebranded to PrepWISE dark cyan theme.
+- [x] **2. Fix pricing inconsistency** — All pages aligned to $39/$79/$149. Old $49/$99/$199 and $19/$29 removed.
+- [x] **3. Add Free Trial (7 days)** — Trial system with TrialBanner, trial utility, schema fields, onboarding + OAuth integration.
 
 ## 🟡 P1 — High Priority (month 1)
 
