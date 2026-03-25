@@ -9,7 +9,6 @@ import { PracticeSummary } from '@/components/practice/PracticeSummary'
 import { SelfRatingButtons } from '@/components/practice/SelfRatingButtons'
 import { SmartReviewPanel } from '@/components/practice/SmartReviewPanel'
 import {
-  SAMPLE_QUESTIONS,
   type GmatQuestion,
   type Section,
   type QuestionType,
@@ -62,54 +61,74 @@ export default function PracticePage() {
     } catch { /* no schedule */ }
   }
 
-  // Select & shuffle questions from the pool based on config
-  const selectQuestions = useCallback((cfg: PracticeConfig): GmatQuestion[] => {
-    let pool = [...SAMPLE_QUESTIONS]
+  const [isLoading, setIsLoading] = useState(false)
 
-    // Filter by section
-    pool = pool.filter(q => cfg.sections.includes(q.section))
+  // Fetch questions from API based on config
+  const fetchQuestions = useCallback(async (cfg: PracticeConfig): Promise<GmatQuestion[]> => {
+    // Build requests for each section+type combo
+    const fetches: Promise<GmatQuestion[]>[] = []
 
-    // Filter by question type
-    pool = pool.filter(q => cfg.questionTypes.includes(q.type))
+    for (const section of cfg.sections) {
+      const types = cfg.questionTypes.filter(t => {
+        // Only request types that belong to this section
+        const quantTypes = ['PS', 'DS']
+        const verbalTypes = ['CR', 'RC']
+        const diTypes = ['TPA', 'MSR', 'GI', 'DS']
+        if (section === 'quant') return quantTypes.includes(t)
+        if (section === 'verbal') return verbalTypes.includes(t)
+        if (section === 'data-insights') return diTypes.includes(t)
+        return false
+      })
 
-    // Filter by difficulty
-    if (cfg.difficulty !== 'all') {
-      pool = pool.filter(q => q.difficulty === cfg.difficulty)
+      for (const type of types) {
+        const params = new URLSearchParams({
+          section,
+          type,
+          limit: String(cfg.questionCount),
+        })
+        if (cfg.difficulty !== 'all') {
+          params.set('difficulty', cfg.difficulty)
+        }
+
+        fetches.push(
+          fetch(`/api/practice/questions?${params}`)
+            .then(res => res.ok ? res.json() : { questions: [] })
+            .then(data => data.questions as GmatQuestion[])
+            .catch(() => [] as GmatQuestion[])
+        )
+      }
     }
 
-    // Shuffle
+    const results = await Promise.all(fetches)
+    let pool = results.flat()
+
+    // Shuffle combined pool
     for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [pool[i], pool[j]] = [pool[j], pool[i]]
     }
 
-    // If we don't have enough, cycle through
-    const result: GmatQuestion[] = []
-    while (result.length < cfg.questionCount) {
-      const remaining = cfg.questionCount - result.length
-      result.push(...pool.slice(0, remaining))
-      // Reshuffle for next cycle if needed
-      if (result.length < cfg.questionCount) {
-        for (let i = pool.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [pool[i], pool[j]] = [pool[j], pool[i]]
-        }
-      }
-    }
-
-    return result
+    return pool.slice(0, cfg.questionCount)
   }, [])
 
-  const handleStart = useCallback((cfg: PracticeConfig) => {
-    const selected = selectQuestions(cfg)
+  const handleStart = useCallback(async (cfg: PracticeConfig) => {
+    setIsLoading(true)
     setConfig(cfg)
-    setQuestions(selected)
-    setCurrentIndex(0)
-    setAnswers([])
-    setCurrentUserAnswer(null)
-    setState('practicing')
-    sessionStartTime.current = Date.now()
-  }, [selectQuestions])
+    try {
+      const selected = await fetchQuestions(cfg)
+      setQuestions(selected)
+      setCurrentIndex(0)
+      setAnswers([])
+      setCurrentUserAnswer(null)
+      setState('practicing')
+      sessionStartTime.current = Date.now()
+    } catch {
+      // If fetch fails completely, stay on setup
+      setIsLoading(false)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [fetchQuestions])
 
   const handleSubmitAnswer = useCallback((answerId: string, timeTaken: number) => {
     const q = questions[currentIndex]
@@ -201,7 +220,14 @@ export default function PracticePage() {
             </div>
           )
         )}
-        <PracticeSetup onStart={handleStart} />
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-4">
+            <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-slate-400">Loading questions…</p>
+          </div>
+        ) : (
+          <PracticeSetup onStart={handleStart} />
+        )}
       </div>
     )
   }
