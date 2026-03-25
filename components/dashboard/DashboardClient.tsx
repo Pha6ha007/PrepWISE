@@ -17,6 +17,7 @@ import {
   X,
   Mic,
   Calendar,
+  CalendarDays,
 } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { TrialBanner } from '@/components/billing/TrialBanner'
@@ -34,6 +35,7 @@ interface DashboardClientProps {
 const navigation = [
   { name: 'Session', href: '/dashboard/session', icon: Mic },
   { name: 'Practice', href: '/dashboard/practice', icon: BookOpen },
+  { name: 'Study Plan', href: '/dashboard/study-plan', icon: CalendarDays },
   { name: 'Journal', href: '/dashboard/journal', icon: Calendar },
   { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
   { name: 'Mock Test', href: '/dashboard/mock-test', icon: Target },

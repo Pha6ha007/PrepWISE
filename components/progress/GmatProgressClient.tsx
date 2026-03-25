@@ -1,6 +1,10 @@
 'use client'
 
 import { BookOpen, Clock, Target, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react'
+import { ScorePredictor } from './ScorePredictor'
+import { ErrorAnalysis } from './ErrorAnalysis'
+import { TimingAnalytics } from './TimingAnalytics'
+import { TopicHeatmap } from './TopicHeatmap'
 
 interface ProgressData {
   summary: {
@@ -68,6 +72,9 @@ export function GmatProgressClient({ data }: { data: ProgressData }) {
         <p className="text-slate-400 mt-1">Track your improvement across all GMAT sections</p>
       </div>
 
+      {/* Score Predictor — prominent top section */}
+      <ScorePredictor />
+
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
@@ -99,7 +106,7 @@ export function GmatProgressClient({ data }: { data: ProgressData }) {
       {/* Section breakdown */}
       <div className="bg-[#0D1220] rounded-xl p-6 border border-white/[0.06]">
         <h2 className="text-lg font-semibold text-white mb-4">Section Breakdown</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.entries(SECTION_LABELS).map(([key, label]) => {
             const stats = sectionStats[key]
             const accuracy = stats && stats.totalAttempts > 0
@@ -118,53 +125,21 @@ export function GmatProgressClient({ data }: { data: ProgressData }) {
         </div>
       </div>
 
-      {/* Topic heatmap */}
-      <div className="bg-[#0D1220] rounded-xl p-6 border border-white/[0.06]">
-        <h2 className="text-lg font-semibold text-white mb-4">Topic Mastery</h2>
-        {topicProgress.length === 0 ? (
-          <p className="text-slate-500 text-sm">Start practicing to see your topic mastery here.</p>
-        ) : (
-          <div className="space-y-2">
-            {topicProgress.map(tp => (
-              <div key={tp.id} className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${MASTERY_COLORS[tp.masteryLevel]}`} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-white truncate">
-                      {tp.topic}{tp.subtopic ? ` — ${tp.subtopic}` : ''}
-                    </span>
-                    <span className="text-xs text-slate-400 ml-2">
-                      {(tp.accuracy * 100).toFixed(0)}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-[#1E293B] rounded-full h-1.5 mt-1">
-                    <div
-                      className={`h-1.5 rounded-full ${
-                        tp.accuracy >= 0.8
-                          ? 'bg-green-500'
-                          : tp.accuracy >= 0.6
-                            ? 'bg-yellow-500'
-                            : 'bg-red-500'
-                      }`}
-                      style={{ width: `${tp.accuracy * 100}%` }}
-                    />
-                  </div>
-                </div>
-                <span className="text-xs text-slate-500 capitalize whitespace-nowrap">
-                  {tp.masteryLevel.replace('_', ' ')}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Error Analysis */}
+      <ErrorAnalysis />
 
-      {/* Error patterns */}
+      {/* Timing Analytics */}
+      <TimingAnalytics />
+
+      {/* Topic Heatmap */}
+      <TopicHeatmap />
+
+      {/* Error patterns (original — kept for DB-sourced data when available) */}
       {Object.keys(errorTypeBreakdown).length > 0 && (
         <div className="bg-[#0D1220] rounded-xl p-6 border border-white/[0.06]">
           <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-yellow-500" />
-            Error Patterns
+            Error Patterns (Live)
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {Object.entries(errorTypeBreakdown).map(([type, count]) => (
