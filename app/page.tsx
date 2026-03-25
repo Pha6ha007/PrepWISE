@@ -17,6 +17,9 @@ export default function LandingPage() {
             <span className="text-lg font-bold tracking-tight">Prepwise</span>
           </Link>
           <div className="flex items-center gap-3">
+            <Link href="/blog" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
+              Blog
+            </Link>
             <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
               Log in
             </Link>
@@ -185,6 +188,17 @@ export default function LandingPage() {
             features={['Everything in Pro', 'Personalized study plan', 'Full mock tests with score reports', 'Score prediction & percentile', 'Priority support', 'Audio explanations by Sam']}
             productId={process.env.NEXT_PUBLIC_PADDLE_PRODUCT_INTENSIVE || ''}
           />
+        </div>
+
+        {/* Score Guarantee link */}
+        <div className="text-center mt-8">
+          <Link
+            href="/guarantee"
+            className="inline-flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
+          >
+            <Check className="w-4 h-4" />
+            +70 Point Score Guarantee
+          </Link>
         </div>
       </section>
 

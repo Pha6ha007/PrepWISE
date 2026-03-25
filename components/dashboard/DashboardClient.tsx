@@ -19,6 +19,7 @@ import {
   Calendar,
   CalendarDays,
   FileText,
+  Layers,
 } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { TrialBanner } from '@/components/billing/TrialBanner'
@@ -45,6 +46,7 @@ const navigation = [
   { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
   { name: 'Mock Test', href: '/dashboard/mock-test', icon: Target },
   { name: 'Formulas', href: '/dashboard/formulas', icon: FileText },
+  { name: 'Flashcards', href: '/dashboard/flashcards', icon: Layers },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
