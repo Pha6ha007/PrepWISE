@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -18,16 +18,21 @@ import {
   Mic,
   Calendar,
   CalendarDays,
+  FileText,
 } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import { TrialBanner } from '@/components/billing/TrialBanner'
 import { getTrialStatus, getTrialDaysRemaining } from '@/lib/billing/trial'
+import { StreakRing } from '@/components/gamification/StreakRing'
+import { calculateStreak } from '@/lib/gmat/gamification'
+import { QuestionOfTheDay } from '@/components/dashboard/QuestionOfTheDay'
 
 interface DashboardClientProps {
   user: User
   userPlan: string
   trialStartDate: string | null
   trialEndDate: string | null
+  studyDates?: string[]       // YYYY-MM-DD dates the user studied
   signOut: () => Promise<void>
   children: React.ReactNode
 }
@@ -39,6 +44,7 @@ const navigation = [
   { name: 'Journal', href: '/dashboard/journal', icon: Calendar },
   { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
   { name: 'Mock Test', href: '/dashboard/mock-test', icon: Target },
+  { name: 'Formulas', href: '/dashboard/formulas', icon: FileText },
   { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 
@@ -47,11 +53,13 @@ export default function DashboardClient({
   userPlan,
   trialStartDate,
   trialEndDate,
+  studyDates = [],
   signOut,
   children,
 }: DashboardClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const currentPath = usePathname()
+  const streakData = useMemo(() => calculateStreak(studyDates), [studyDates])
 
   return (
     <div className="h-screen flex bg-[#0A0F1E]">
@@ -118,6 +126,16 @@ export default function DashboardClient({
               )
             })}
           </nav>
+
+          {/* Streak Ring */}
+          <div className="px-3 py-3 border-t border-white/[0.06]">
+            <StreakRing streak={streakData} size={100} />
+          </div>
+
+          {/* Question of the Day — compact sidebar widget */}
+          <div className="px-3 pb-2 hidden lg:block">
+            <QuestionOfTheDay />
+          </div>
 
           {/* Trial banner */}
           <TrialBanner

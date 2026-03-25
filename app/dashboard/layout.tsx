@@ -19,6 +19,7 @@ export default async function DashboardLayout({
   // Try Supabase auth — gracefully degrade if not configured
   let user = null
   let userPlan = 'free'
+  let studyDates: string[] = []
   let trialData: { trialStartDate: Date | null; trialEndDate: Date | null } = {
     trialStartDate: null,
     trialEndDate: null,
@@ -46,6 +47,24 @@ export default async function DashboardLayout({
         trialStartDate: dbUser?.trialStartDate ?? null,
         trialEndDate: dbUser?.trialEndDate ?? null,
       }
+
+      // Load distinct study dates for streak calculation
+      try {
+        const sessions = await prisma.gmatSession.findMany({
+          where: { userId: user.id },
+          select: { startedAt: true },
+          orderBy: { startedAt: 'desc' },
+        })
+        const dateSet = new Set(
+          sessions.map((s) => {
+            const d = new Date(s.startedAt)
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+          })
+        )
+        studyDates = [...dateSet]
+      } catch {
+        // Session query failed — streak will show 0
+      }
     } catch {
       // DB not connected — use default
     }
@@ -64,6 +83,7 @@ export default async function DashboardLayout({
       userPlan={userPlan}
       trialEndDate={trialData.trialEndDate?.toISOString() ?? null}
       trialStartDate={trialData.trialStartDate?.toISOString() ?? null}
+      studyDates={studyDates}
       signOut={signOut}
     >
       {children}
