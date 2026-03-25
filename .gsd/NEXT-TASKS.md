@@ -21,10 +21,10 @@
 
 ## 🟢 P2 — Medium Priority (months 2-3)
 
-- [ ] **8. Blog/SEO content** — 10-20 SEO-optimized articles for organic traffic. Topics: "How to score 700+", "GMAT Focus Edition changes", "Data Insights strategies", etc.
+- [x] **8. Blog/SEO content** — 10 full articles (800-1200 words each), blog index + article pages, sitemap updated, blog link on landing.
 - [x] **9. Formula Sheet / Quick Reference** — 710-line page with 8 sections, search, bookmarks, print CSS. Added to dashboard nav.
-- [ ] **10. Flashcards** — AI-generated flashcards based on weak topics. Spaced repetition integration. Inspiration: TTP AI-generated flashcards.
-- [ ] **11. Score Guarantee** — "+70 points or money back" policy. Conditions: complete diagnostic, 20+ practice sessions, 3+ mock tests. Inspiration: Magoosh guarantee.
+- [x] **10. Flashcards** — 100 cards across 5 decks (Quant Formulas, Number Props, CR Patterns, DS Framework, Vocabulary). Flip animation, rating, localStorage progress.
+- [x] **11. Score Guarantee** — '+70 Points or Money Back' page with 7 conditions, 6 FAQ items, CTA. Link from pricing section.
 - [x] **12. Gamification** — Streak ring (SVG, weekly progress), 12 achievements, daily challenges. Integrated in dashboard sidebar.
 - [x] **13. Question of the Day** — Deterministic daily selector with day-of-week section rotation. Sidebar widget with inline solve + localStorage tracking.
 - [x] **14. Audio explanations** — TTS button in ExplanationPanel. Calls /api/tts, auto-hides if no API key.
