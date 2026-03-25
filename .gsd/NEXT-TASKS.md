@@ -22,12 +22,12 @@
 ## 🟢 P2 — Medium Priority (months 2-3)
 
 - [ ] **8. Blog/SEO content** — 10-20 SEO-optimized articles for organic traffic. Topics: "How to score 700+", "GMAT Focus Edition changes", "Data Insights strategies", etc.
-- [ ] **9. Formula Sheet / Quick Reference** — Downloadable/in-app reference with 100+ GMAT formulas and key concepts. Inspiration: Manhattan Prep.
+- [x] **9. Formula Sheet / Quick Reference** — 710-line page with 8 sections, search, bookmarks, print CSS. Added to dashboard nav.
 - [ ] **10. Flashcards** — AI-generated flashcards based on weak topics. Spaced repetition integration. Inspiration: TTP AI-generated flashcards.
 - [ ] **11. Score Guarantee** — "+70 points or money back" policy. Conditions: complete diagnostic, 20+ practice sessions, 3+ mock tests. Inspiration: Magoosh guarantee.
-- [ ] **12. Gamification** — Study streaks (daily/weekly), streak rings (like e-GMAT), daily challenges, progress badges.
-- [ ] **13. Question of the Day** — Email notification + dashboard widget with one daily GMAT question. Free engagement driver. Inspiration: GMAT Club.
-- [ ] **14. Audio explanations** — Sam explains each practice question by voice (post-answer). Our unique alternative to video lessons that no competitor has. Leverage existing TTS infrastructure.
+- [x] **12. Gamification** — Streak ring (SVG, weekly progress), 12 achievements, daily challenges. Integrated in dashboard sidebar.
+- [x] **13. Question of the Day** — Deterministic daily selector with day-of-week section rotation. Sidebar widget with inline solve + localStorage tracking.
+- [x] **14. Audio explanations** — TTS button in ExplanationPanel. Calls /api/tts, auto-hides if no API key.
 
 ## ⚪ P3 — Low Priority (later)
 
