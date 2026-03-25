@@ -23,31 +23,34 @@ function loadQuestions(): GmatQuestion[] {
 
   const questions: GmatQuestion[] = []
 
-  // Load aqua-rat (PS / quant)
-  try {
-    const aquaPath = path.join(process.cwd(), 'data/questions/aqua-rat.json')
-    const raw = fs.readFileSync(aquaPath, 'utf-8')
-    const parsed: PSQuestion[] = JSON.parse(raw)
-    questions.push(...parsed)
-  } catch {
-    // File missing or unreadable — will fall back
-  }
+  // All JSON question files to load
+  const questionFiles = [
+    'aqua-rat.json',         // 1,000 Quant PS (AQuA-RAT)
+    'reclor-verbal.json',    // 4,638 Verbal CR (ReClor)
+    'gen-quant-ps.json',     // AI-generated Quant PS
+    'gen-ds.json',           // AI-generated Data Sufficiency
+    'gen-cr.json',           // AI-generated Critical Reasoning
+    'gen-rc.json',           // AI-generated Reading Comprehension
+  ]
 
-  // Load reclor (CR / verbal)
-  try {
-    const reclorPath = path.join(process.cwd(), 'data/questions/reclor-verbal.json')
-    const raw = fs.readFileSync(reclorPath, 'utf-8')
-    const parsed: CRQuestion[] = JSON.parse(raw)
-    questions.push(...parsed)
-  } catch {
-    // File missing or unreadable — will fall back
+  for (const file of questionFiles) {
+    try {
+      const filePath = path.join(process.cwd(), 'data/questions', file)
+      const raw = fs.readFileSync(filePath, 'utf-8')
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        questions.push(...parsed)
+      }
+    } catch {
+      // File missing, empty, or invalid — skip silently
+    }
   }
 
   // Fall back to sample questions if nothing loaded
   if (questions.length === 0) {
     _allQuestions = [...SAMPLE_QUESTIONS]
   } else {
-    // Merge sample questions for types not covered by JSON (DS, RC, DI types)
+    // Merge sample questions for types not covered by JSON (DI types, etc.)
     const loadedTypes = new Set(questions.map(q => q.type))
     const extras = SAMPLE_QUESTIONS.filter(q => !loadedTypes.has(q.type))
     _allQuestions = [...questions, ...extras]
