@@ -14,10 +14,10 @@
 
 ## 🟡 P1 — High Priority (month 1)
 
-- [ ] **4. Study Plan Generator** — After diagnostic, generate personalized week-by-week plan. Include target score, test date, hours/week, weak areas. Inspiration: TTP daily calendar + e-GMAT execution tracker.
-- [ ] **5. Settings edit mode** — Currently read-only. Add: edit name, target score, test date, weak sections, cancel subscription, change password.
-- [ ] **6. Enhanced Analytics** — Error analysis with 4 categories (concept/careless/time_pressure/misread). Timing per question. Sub-topic heatmap. Peer comparison. Inspiration: TTP error tracking + e-GMAT Scholaranium.
-- [ ] **7. Score Report after Mock Test** — Full report like GMAC ESR: per-section scores (60-90), total (205-805), percentile, topic breakdown, time analysis, error patterns, recommendations.
+- [x] **4. Study Plan Generator** — Rule-based plan with 4 phases, daily schedule, weekly calendar UI. New dashboard page + API.
+- [x] **5. Settings edit mode** — Full edit form: name, target score, test date, hours/week, weak sections. Subscription management. PUT API with Zod validation.
+- [x] **6. Enhanced Analytics** — Error analysis (4 types), timing analytics (pace vs target), topic heatmap (mastery grid), score predictor with sparkline. All pure CSS/SVG charts.
+- [x] **7. Score Report after Mock Test** — Premium report: total score + percentile, section cards, topic breakdown, time analysis, error analysis, recommendations.
 
 ## 🟢 P2 — Medium Priority (months 2-3)
 
