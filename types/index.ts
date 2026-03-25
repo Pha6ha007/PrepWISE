@@ -78,14 +78,12 @@ export interface SessionPreview {
   isActive: boolean
 }
 
+// Agent Types (Prepwise GMAT)
 export type AgentType =
-  | 'anxiety'
-  | 'family'
-  | 'trauma'
-  | 'relationships'
-  | 'mens'
-  | 'womens'
-  | 'general'
+  | 'quantitative'
+  | 'verbal'
+  | 'data_insights'
+  | 'strategy'
 
 // Message Types
 export interface Message {
@@ -113,10 +111,11 @@ export interface JournalEntry {
 export interface Subscription {
   id: string
   userId: string
-  dodoCustomerId?: string
-  dodoSubscriptionId?: string
-  plan: 'free' | 'pro' | 'premium'
-  status: 'active' | 'cancelled' | 'on_hold' | 'expired'
+  paddleCustomerId?: string
+  paddleSubscriptionId?: string
+  plan: 'free' | 'starter' | 'pro' | 'intensive'
+  status: 'active' | 'cancelled' | 'on_hold' | 'expired' | 'trialing' | 'past_due'
+  trialEndsAt?: Date
   expiresAt?: Date
   createdAt?: Date
 }
@@ -154,34 +153,83 @@ export interface ErrorResponse {
 
 // Rate Limiting
 export interface RateLimit {
-  plan: 'free' | 'pro' | 'premium'
+  plan: 'free' | 'starter' | 'pro' | 'intensive'
   maxRequests: number
   windowMs: number
 }
 
-// Crisis Detection
-export type RiskLevel = 'none' | 'ideation' | 'planning' | 'imminent'
+// ============================================
+// PREPWISE — GMAT Types
+// ============================================
 
-export interface CrisisResource {
-  country: string
-  name: string
-  phone: string
-  description: string
+export type GmatAgentType =
+  | 'quantitative'
+  | 'verbal'
+  | 'data_insights'
+  | 'strategy'
+
+export interface GmatSession {
+  id: string
+  userId: string
+  startedAt: Date
+  endedAt?: Date
+  durationMins?: number
+  agentUsed: GmatAgentType
+  topicsCovered: string[]
+  questionsAsked: number
+  correctAnswers: number
+  transcript?: string
+  memoryUpdated: boolean
 }
 
-export interface CrisisResponse {
-  isCrisis: true
-  level: RiskLevel
-  message: string
-  resources: CrisisResource[]
+export interface TopicProgress {
+  id: string
+  userId: string
+  section: 'quant' | 'verbal' | 'data-insights'
+  topic: string
+  subtopic?: string
+  totalAttempts: number
+  correctAttempts: number
+  accuracy: number
+  lastPracticed?: Date
+  masteryLevel: 'not_started' | 'learning' | 'practicing' | 'mastered'
 }
 
-// Diary Types
-export interface MonthSummary {
-  mainThemes: string[]
-  progress: string
-  whatHelped: string[]
-  challengesRemaining: string
-  alexNote: string
-  goalsForNextMonth: string[]
+export interface GmatErrorLog {
+  id: string
+  userId: string
+  sessionId?: string
+  section: string
+  topic: string
+  questionType: 'PS' | 'DS' | 'CR' | 'RC' | 'TPA' | 'MSR' | 'GI' | 'TA'
+  difficulty: 'easy' | 'medium' | 'hard' | '700+'
+  errorType: 'concept' | 'careless' | 'time_pressure' | 'misread'
+  errorDetail: string
+  correctApproach?: string
+}
+
+export interface MockTestResult {
+  id: string
+  userId: string
+  takenAt: Date
+  durationMins: number
+  quantScore?: number
+  verbalScore?: number
+  dataInsightsScore?: number
+  totalScore?: number
+  quantAccuracy?: number
+  verbalAccuracy?: number
+  diAccuracy?: number
+  notes?: string
+}
+
+export interface GmatChunkMetadata {
+  source: string
+  chapter: string
+  section: 'quant' | 'verbal' | 'data-insights'
+  topic: string
+  subtopic: string
+  difficulty: 'easy' | 'medium' | 'hard' | '700+'
+  question_type?: 'PS' | 'DS' | 'CR' | 'RC' | 'TPA' | 'MSR' | 'GI' | 'TA'
+  page?: number
 }

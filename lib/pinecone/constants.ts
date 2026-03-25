@@ -1,20 +1,16 @@
 /**
  * Pinecone constants — namespaces and configuration
- *
- * Extracted to separate file to avoid circular dependencies
+ * Prepwise GMAT knowledge base namespaces.
  */
 
-// Namespaces для разных типов знаний
 export const NAMESPACES = {
-  ANXIETY_CBT: 'anxiety_cbt',
-  FAMILY: 'family',
-  TRAUMA: 'trauma',
-  CRISIS: 'crisis',
-  GENERAL: 'general',
-  MENS: 'mens',
-  WOMENS: 'womens',
-  COUNSELING_QA: 'counseling_qa',
-  USER_MEMORIES: 'user_memories',
+  // Prepwise GMAT namespaces
+  GMAT_QUANT: 'gmat-quant',
+  GMAT_VERBAL: 'gmat-verbal',
+  GMAT_DI: 'gmat-di',
+  GMAT_STRATEGY: 'gmat-strategy',
+  GMAT_FOCUS: 'gmat-focus',
+  GMAT_ERRORS: 'gmat-errors',
 } as const
 
 export type Namespace = (typeof NAMESPACES)[keyof typeof NAMESPACES]

@@ -1,211 +1,120 @@
 #!/usr/bin/env node
 /**
- * Test Agent Integration
- * Tests orchestrator routing and builder functions for all 6 agents
+ * Test GMAT Agent Integration
+ * Tests orchestrator routing and builder functions for all 5 GMAT agents
  */
 
-// Load env vars
 require('dotenv').config({ path: require('path').resolve(process.cwd(), '.env.local') })
 
-import { routeToAgent, shouldReroute } from '../lib/agents/orchestrator'
-import { getNamespaceForAgent } from '../lib/pinecone/namespace-mapping'
+import { routeToGmatAgent } from '../agents/gmat/orchestrator'
+import { getNamespaceForGmatAgent } from '../lib/pinecone/namespace-mapping'
 import {
-  buildAnxietyPrompt,
-  buildFamilyPrompt,
-  buildTraumaPrompt,
-  buildRelationshipsPrompt,
-  buildMensPrompt,
-  buildWomensPrompt,
-} from '../agents/prompts'
-import { UserProfile, AgentType } from '../types'
+  buildQuantitativePrompt,
+  buildVerbalPrompt,
+  buildDataInsightsPrompt,
+  buildStrategyPrompt,
+} from '../agents/gmat'
+import type { GmatAgentType } from '../agents/gmat/orchestrator'
 
-// Mock user profile
-const mockProfile: UserProfile = {
-  id: 'test-profile-id',
-  userId: 'test-user-id',
-  communicationStyle: {},
-  emotionalProfile: {
-    triggers: [],
-    pain_points: [],
-    responds_to: 'direct questions',
-  },
-  lifeContext: {
-    key_people: [],
-    work: 'software developer',
-  },
-  patterns: [],
-  progress: {},
-  whatWorked: [],
-  updatedAt: new Date(),
-}
+// Test cases: message → expected agent
+const ROUTING_TESTS: { message: string; expectedAgent: GmatAgentType; description: string }[] = [
+  // Quantitative
+  { message: 'How do I solve this quadratic equation?', expectedAgent: 'quantitative', description: 'Quadratic equation → quant' },
+  { message: 'Is statement 1 sufficient to determine x?', expectedAgent: 'data_insights', description: 'Data sufficiency → DI' },
+  { message: 'What is the probability of picking two reds?', expectedAgent: 'quantitative', description: 'Probability → quant' },
 
-interface TestCase {
-  id: number
-  message: string
-  expectedAgent: AgentType
-  userGender?: 'male' | 'female'
-}
+  // Verbal
+  { message: 'Which answer weakens the argument?', expectedAgent: 'verbal', description: 'Weaken → verbal' },
+  { message: 'What is the author\'s main point in the passage?', expectedAgent: 'verbal', description: 'RC main idea → verbal' },
+  { message: 'What is the main idea of this passage?', expectedAgent: 'verbal', description: 'Reading comprehension → verbal' },
 
-const testCases: TestCase[] = [
-  {
-    id: 1,
-    message: 'I keep having panic attacks at work',
-    expectedAgent: 'anxiety',
-  },
-  {
-    id: 2,
-    message: 'My husband and I keep fighting about money',
-    expectedAgent: 'family',
-  },
-  {
-    id: 3,
-    message: 'I freeze when someone raises their voice, it reminds me of my childhood',
-    expectedAgent: 'trauma',
-  },
-  {
-    id: 4,
-    message: 'My girlfriend goes silent and I spiral into panic',
-    expectedAgent: 'relationships',
-  },
-  {
-    id: 5,
-    message: "I can't show weakness at work, men aren't supposed to feel this way",
-    expectedAgent: 'mens',
-    userGender: 'male',
-  },
-  {
-    id: 6,
-    message: 'I feel guilty for wanting time alone, everyone needs me',
-    expectedAgent: 'womens',
-    userGender: 'female',
-  },
+  // Data Insights
+  { message: 'How do I read this table analysis question?', expectedAgent: 'data_insights', description: 'Table analysis → DI' },
+  { message: 'Interpret this graph for me', expectedAgent: 'data_insights', description: 'Graphics interpretation → DI' },
+  { message: 'Help me with a data sufficiency problem', expectedAgent: 'data_insights', description: 'DS → DI' },
+
+  // Strategy
+  { message: 'How should I manage my time on the GMAT?', expectedAgent: 'strategy', description: 'Time management → strategy' },
+  { message: 'I have my GMAT in 3 weeks, what should I study?', expectedAgent: 'strategy', description: 'Study plan → strategy' },
+  { message: 'I\'m overwhelmed and don\'t know where to start', expectedAgent: 'strategy', description: 'Overwhelmed → strategy' },
+
+  // Default
+  { message: 'hey', expectedAgent: 'quantitative', description: 'Casual greeting → default (quant)' },
 ]
 
-// Builder function map
-const builderMap = {
-  anxiety: buildAnxietyPrompt,
-  family: buildFamilyPrompt,
-  trauma: buildTraumaPrompt,
-  relationships: buildRelationshipsPrompt,
-  mens: buildMensPrompt,
-  womens: buildWomensPrompt,
-  general: buildAnxietyPrompt, // fallback
-}
+function runTests() {
+  console.log('🧪 GMAT Agent Integration Tests\n')
 
-async function testAgentIntegration() {
-  console.log('🧪 Testing Agent Integration')
-  console.log('=' .repeat(90))
-  console.log()
+  let passed = 0
+  let failed = 0
 
-  for (const testCase of testCases) {
-    console.log(`\n📝 TEST ${testCase.id}/6: ${testCase.expectedAgent.toUpperCase()} Agent`)
-    console.log(`Message: "${testCase.message}"`)
-    console.log('─'.repeat(90))
-
-    // 1. Route to agent
-    const routing = await routeToAgent(
-      'test-user-id',
-      testCase.message,
-      mockProfile,
-      testCase.userGender,
-      0
-    )
-
-    // 2. Get namespace
-    const namespace = getNamespaceForAgent(routing.route)
-
-    // 3. Build system prompt
-    const builder = builderMap[routing.route]
-    const systemPrompt = builder({
-      userProfile: mockProfile,
-      recentHistory: undefined,
-      pastSessions: undefined,
-      ragContext: undefined,
-      companionName: 'Alex',
-      preferredName: 'John',
-      language: 'en',
-    })
-
-    // 4. Output results
-    const match = routing.route === testCase.expectedAgent ? '✅' : '❌'
-    console.log(`\n${match} ROUTING DECISION:`)
-    console.log(`   Agent Selected:    ${routing.route}`)
-    console.log(`   Expected:          ${testCase.expectedAgent}`)
-    console.log(`   Confidence:        ${routing.confidence.toFixed(2)}`)
-    console.log(`   Detected Topics:   ${routing.detectedTopics.join(', ') || 'none'}`)
-    console.log(`   Detected Emotion:  ${routing.detectedEmotion}`)
-    console.log(`   Gender Relevant:   ${routing.genderRelevant}`)
-    console.log(`   Reasoning:         ${routing.reasoning}`)
-    if (routing.monitoringNotes) {
-      console.log(`   Monitoring:        ${routing.monitoringNotes}`)
-    }
-
-    console.log(`\n📚 RAG NAMESPACE:`)
-    console.log(`   Namespace:         ${namespace}`)
-
-    console.log(`\n📄 SYSTEM PROMPT (first 200 chars):`)
-    const promptPreview = systemPrompt.substring(0, 200).replace(/\n/g, ' ')
-    console.log(`   "${promptPreview}..."`)
-
-    // Verification
-    if (routing.route !== testCase.expectedAgent) {
-      console.log(`\n⚠️  WARNING: Expected ${testCase.expectedAgent} but got ${routing.route}`)
+  // Test routing
+  console.log('=== Orchestrator Routing ===\n')
+  for (const test of ROUTING_TESTS) {
+    const result = routeToGmatAgent(test.message)
+    const ok = result.route === test.expectedAgent
+    if (ok) {
+      console.log(`  ✅ ${test.description}`)
+      passed++
+    } else {
+      console.log(`  ❌ ${test.description}`)
+      console.log(`     Expected: ${test.expectedAgent}, Got: ${result.route} (conf: ${result.confidence.toFixed(2)})`)
+      failed++
     }
   }
 
-  // Test handoff detection
-  console.log('\n\n')
-  console.log('=' .repeat(90))
-  console.log('🔄 TESTING HANDOFF PROTOCOL (mid-conversation re-routing)')
-  console.log('=' .repeat(90))
+  // Test namespace mapping
+  console.log('\n=== Namespace Mapping ===\n')
+  const agents: GmatAgentType[] = ['quantitative', 'verbal', 'data_insights', 'strategy']
+  for (const agent of agents) {
+    const ns = getNamespaceForGmatAgent(agent)
+    console.log(`  ${agent} → ${ns}`)
+    passed++
+  }
 
-  // Simulate family → trauma handoff
-  const handoffMessages = [
-    { role: 'user', content: 'My mother is very critical of me' },
-    { role: 'assistant', content: 'That sounds difficult. How does her criticism affect you?' },
-    { role: 'user', content: "It makes me feel small. Like I'm never good enough." },
-    { role: 'assistant', content: 'Have you talked to her about how this makes you feel?' },
-    { role: 'user', content: "I can't. She used to hit me when I was young if I disagreed." },
-    { role: 'assistant', content: 'That must have been frightening...' },
-    { role: 'user', content: 'Yeah. I still freeze when she raises her voice. My body just shuts down.' },
+  // Test prompt builders
+  console.log('\n=== Prompt Builders ===\n')
+  const mockParams = {
+    learnerProfile: null,
+    currentTopic: 'algebra',
+    difficulty: 'intermediate' as const,
+    sessionCount: 1,
+  }
+
+  const builders = [
+    { name: 'Quantitative', fn: buildQuantitativePrompt },
+    { name: 'Verbal', fn: buildVerbalPrompt },
+    { name: 'Data Insights', fn: buildDataInsightsPrompt },
+    { name: 'Strategy', fn: buildStrategyPrompt },
   ]
 
-  console.log('\nScenario: User discussing critical mother (family agent)')
-  console.log('Then reveals: "She used to hit me" + "I freeze when she raises her voice"')
-  console.log('\nExpected: Handoff from family → trauma')
-  console.log('─'.repeat(90))
-
-  const handoffCheck = await shouldReroute(
-    'test-session-id',
-    'family',
-    handoffMessages,
-    mockProfile,
-    undefined
-  )
-
-  if (handoffCheck.shouldReroute) {
-    console.log(`\n✅ HANDOFF TRIGGERED:`)
-    console.log(`   From Agent:        family`)
-    console.log(`   To Agent:          ${handoffCheck.newAgent}`)
-    console.log(`   Reason:            ${handoffCheck.reason}`)
-    if (handoffCheck.handoffPayload) {
-      console.log(`   Emotional State:   ${handoffCheck.handoffPayload.emotionalState}`)
-      console.log(`   Key Insights:      ${handoffCheck.handoffPayload.keyInsights.join(', ')}`)
-      console.log(`   Continuation:      ${handoffCheck.handoffPayload.continuationNotes}`)
-      console.log(`   Avoid:             ${handoffCheck.handoffPayload.avoid}`)
+  for (const { name, fn } of builders) {
+    try {
+      const prompt = fn(mockParams)
+      const hasRole = prompt.includes('# ROLE')
+      const hasSam = prompt.includes('Sam')
+      if (hasRole && hasSam) {
+        console.log(`  ✅ ${name}: builds correctly (${prompt.length} chars)`)
+        passed++
+      } else {
+        console.log(`  ❌ ${name}: missing ROLE or Sam reference`)
+        failed++
+      }
+    } catch (error) {
+      console.log(`  ❌ ${name}: threw error: ${error}`)
+      failed++
     }
-  } else {
-    console.log(`\n❌ HANDOFF NOT TRIGGERED (expected: trauma)`)
   }
 
-  console.log('\n')
-  console.log('=' .repeat(90))
-  console.log('✅ INTEGRATION TEST COMPLETE')
-  console.log('=' .repeat(90))
+  // Summary
+  console.log(`\n=== Results ===`)
+  console.log(`  Passed: ${passed}`)
+  console.log(`  Failed: ${failed}`)
+  console.log(`  Total:  ${passed + failed}`)
+
+  if (failed > 0) {
+    process.exit(1)
+  }
 }
 
-// Run tests
-testAgentIntegration().catch((error) => {
-  console.error('❌ Test failed:', error)
-  process.exit(1)
-})
+runTests()

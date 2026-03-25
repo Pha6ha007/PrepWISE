@@ -3,79 +3,48 @@ import { getPineconeIndex, type Namespace } from './client'
 import { NAMESPACES } from './constants'
 import { rerankChunks, type RetrievedChunk, type RerankedChunk } from './reranker'
 
-// Lazy initialization - создаём клиент только при первом обращении
 let _openai: OpenAI | null = null
 
 function getOpenAIClient() {
   if (!_openai) {
-    _openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY!,
-    })
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! })
   }
   return _openai
 }
 
-// Модель для embeddings
 const EMBEDDING_MODEL = 'text-embedding-3-small'
-
-// Модель для query expansion (быстрая и дешёвая)
 const EXPANSION_MODEL = 'gpt-4o-mini'
 
-// Re-export types for consumers
 export type { RetrievedChunk, RerankedChunk }
 
 /**
- * Расширить запрос пользователя в набор релевантных психологических терминов
- * для улучшения semantic search в RAG базе знаний
- *
- * @param userQuery - Оригинальный запрос пользователя
- * @param namespace - Namespace для контекстно-зависимого расширения
- * @returns Расширенный запрос с ключевыми словами и концепциями
+ * Expand a user query into richer search terms for better semantic search.
  */
 async function expandQuery(userQuery: string, namespace: Namespace): Promise<string> {
   const openai = getOpenAIClient()
 
-  // Контекстно-зависимые подсказки по namespace
-  const namespaceContext: Record<Namespace, string> = {
-    anxiety_cbt:
-      'Focus on anxiety, panic, worry, CBT concepts, cognitive distortions, safety behaviors, exposure therapy',
-    family:
-      'Focus on family dynamics, attachment styles, communication patterns, boundaries, relationship conflicts',
-    trauma:
-      'Focus on PTSD, childhood trauma, freeze/fight/flight, body sensations, dissociation, trauma recovery',
-    crisis: 'Focus on suicidal ideation, self-harm, crisis intervention, safety planning, emergency resources',
-    general:
-      'Focus on general mental health, self-esteem, meaning, loneliness, identity, personal growth',
-    mens: 'Focus on male depression, masculinity, emotional expression, provider role, hidden suffering, male identity',
-    womens:
-      'Focus on female experiences, maternal identity, emotional labor, gaslighting, self-care, gender roles',
-    counseling_qa:
-      'Focus on practical counseling advice, therapeutic techniques, therapist responses, mental health Q&A',
-    user_memories:
-      'Focus on personal user memories, facts about the user, their history, preferences, and context',
+  const namespaceContext: Record<string, string> = {
+    'gmat-quant': 'GMAT quantitative: arithmetic, algebra, problem solving, number properties, statistics, probability, word problems',
+    'gmat-verbal': 'GMAT verbal: critical reasoning, reading comprehension, argument analysis, logical fallacies',
+    'gmat-di': 'GMAT data insights: table analysis, graphics interpretation, multi-source reasoning, two-part analysis, data sufficiency',
+    'gmat-strategy': 'GMAT strategy: time management, study planning, test-day preparation, guessing strategy, adaptive scoring',
+    'gmat-focus': 'GMAT Focus Edition: format changes, section structure, scoring scale',
+    'gmat-errors': 'Common GMAT mistakes: error patterns, careless errors, misread questions',
   }
 
-  const contextHint = namespaceContext[namespace] || 'Focus on general psychological concepts'
+  const contextHint = namespaceContext[namespace] || 'GMAT test preparation'
 
-  const systemPrompt = `You are a query expansion assistant for a psychology RAG (Retrieval-Augmented Generation) system.
+  const systemPrompt = `You are a query expansion assistant for a GMAT tutoring RAG system.
 
-Your task: Transform a user's conversational query into a rich set of psychological keywords, concepts, and related terms that will help semantic search find the most relevant content in our knowledge base.
+Transform the user's query into 50-100 words of relevant GMAT keywords, concepts, and related terms for semantic search.
 
-Guidelines:
-- Expand short queries into 50-100 words of relevant search terms
-- Include: clinical terms, symptom descriptions, theoretical concepts, treatment approaches, related emotions
-- Use both professional terminology AND everyday language
+Focus: ${contextHint}
+
+Rules:
+- Include formal GMAT terminology AND casual student language
 - Include synonyms and related concepts
-- ${contextHint}
 - Output ONLY keywords and short phrases, separated by spaces
-- NO full sentences, NO explanations, NO formatting
-
-Example:
-Input: "I'm anxious all the time"
-Output: chronic anxiety generalized anxiety disorder GAD persistent worry racing thoughts catastrophizing rumination physical symptoms chest tightness breathing difficulty hyperventilation panic cognitive distortions safety behaviors avoidance anxiety management techniques CBT cognitive behavioral therapy acceptance commitment therapy mindfulness grounding
-
-Input: "My relationship is falling apart"
-Output: relationship conflict marriage problems communication breakdown emotional disconnection attachment insecurity criticism contempt defensiveness stonewalling Gottman method couples therapy intimacy trust issues emotional availability vulnerability connection repair attempts love languages`
+- NO sentences, NO explanations, NO formatting`
 
   try {
     const response = await openai.chat.completions.create({
@@ -89,8 +58,6 @@ Output: relationship conflict marriage problems communication breakdown emotiona
     })
 
     const expandedQuery = response.choices[0]?.message?.content?.trim() || userQuery
-
-    // Fallback: если модель вернула пустой ответ, использовать оригинальный запрос
     return expandedQuery.length > 0 ? expandedQuery : userQuery
   } catch (error) {
     console.error('Query expansion failed, using original query:', error)
@@ -99,20 +66,13 @@ Output: relationship conflict marriage problems communication breakdown emotiona
 }
 
 /**
- * Получить релевантный контекст из RAG базы знаний с reranking
+ * Retrieve relevant context from Pinecone with optional reranking.
  *
- * Процесс:
- * 1. Query Expansion — расширить запрос для лучшего semantic search
- * 2. Pinecone Retrieval — query primary + secondary namespaces in parallel
- * 3. Merge & Deduplicate — combine results, remove duplicate IDs
- * 4. Cross-Encoder Reranking — LLM оценивает relevance, возвращает top-5
- *
- * @param query - Запрос пользователя
- * @param namespace - Primary namespace (anxiety_cbt, family, trauma, etc)
- * @param topK - Сколько чанков вернуть после reranking (по умолчанию 5)
- * @param useReranking - Включить reranking (по умолчанию true)
- * @param secondaryNamespace - Optional secondary namespace to query in parallel
- * @returns Массив reranked чанков с metadata
+ * Flow:
+ * 1. Query Expansion → richer search terms
+ * 2. Pinecone Retrieval → primary + secondary namespaces in parallel
+ * 3. Merge & Deduplicate
+ * 4. Cross-Encoder Reranking → top-K results
  */
 export async function retrieveContext(
   query: string,
@@ -122,35 +82,29 @@ export async function retrieveContext(
   secondaryNamespace?: Namespace | null
 ): Promise<RerankedChunk[]> {
   try {
-    // 1. Расширить запрос для улучшения semantic search
     const expandedQuery = await expandQuery(query, namespace)
 
-    // Логирование для debugging (только в development)
     if (process.env.NODE_ENV === 'development') {
       console.log('[RAG Retrieval]')
       console.log('  Original query:', query)
       console.log('  Expanded query:', expandedQuery)
       console.log('  Primary namespace:', namespace)
-      if (secondaryNamespace) {
-        console.log('  Secondary namespace:', secondaryNamespace)
-      }
+      if (secondaryNamespace) console.log('  Secondary namespace:', secondaryNamespace)
     }
 
-    // 2. Создать embedding расширенного запроса через OpenAI
+    // Create embedding
     const openai = getOpenAIClient()
     const embeddingResponse = await openai.embeddings.create({
       model: EMBEDDING_MODEL,
       input: expandedQuery,
     })
-
     const queryEmbedding = embeddingResponse.data[0].embedding
 
-    // 3. Parallel Pinecone queries — primary + secondary namespace
+    // Parallel Pinecone queries
     const retrievalTopK = useReranking ? Math.max(topK * 3, 15) : topK
     const index = getPineconeIndex()
 
-    // Build parallel queries
-    const queries: Promise<{ matches: any[]; source: 'primary' | 'counseling_qa' }>[] = [
+    const queries: Promise<{ matches: any[]; source: 'primary' | 'secondary' }>[] = [
       index.namespace(namespace).query({
         vector: queryEmbedding,
         topK: retrievalTopK,
@@ -159,45 +113,36 @@ export async function retrieveContext(
     ]
 
     if (secondaryNamespace && secondaryNamespace !== namespace) {
-      // Secondary gets fewer candidates — it supplements, doesn't dominate
       const secondaryTopK = Math.max(Math.floor(retrievalTopK * 0.6), 8)
       queries.push(
         index.namespace(secondaryNamespace).query({
           vector: queryEmbedding,
           topK: secondaryTopK,
           includeMetadata: true,
-        }).then(r => ({ matches: r.matches || [], source: 'counseling_qa' as const }))
+        }).then(r => ({ matches: r.matches || [], source: 'secondary' as const }))
       )
     }
 
     const results = await Promise.all(queries)
 
-    // 4. Merge and deduplicate by vector ID
+    // Merge and deduplicate
     const seenIds = new Set<string>()
     const allChunks: RetrievedChunk[] = []
 
-    for (const { matches, source } of results) {
+    for (const { matches } of results) {
       for (const match of matches) {
         if (!match.metadata?.text || seenIds.has(match.id)) continue
         seenIds.add(match.id)
-
-        const isCounselingQA = source === 'counseling_qa' ||
-          (match.metadata.source === 'counsel-chat') ||
-          (match.metadata.namespace === NAMESPACES.COUNSELING_QA)
 
         allChunks.push({
           id: match.id,
           score: match.score || 0,
           text: match.metadata.text as string,
           metadata: {
-            book_title: isCounselingQA
-              ? 'Real Therapist Response'
-              : ((match.metadata.book_title as string) || 'Unknown'),
-            author: isCounselingQA
-              ? 'Licensed Counselor'
-              : ((match.metadata.author as string) || 'Unknown'),
+            book_title: (match.metadata.book_title as string) || (match.metadata.source as string) || 'Unknown',
+            author: (match.metadata.author as string) || 'Unknown',
             chapter: match.metadata.chapter as string | undefined,
-            namespace: (match.metadata.namespace as string) || (isCounselingQA ? NAMESPACES.COUNSELING_QA : namespace),
+            namespace: (match.metadata.namespace as string) || namespace,
           },
         })
       }
@@ -206,27 +151,21 @@ export async function retrieveContext(
     if (process.env.NODE_ENV === 'development' && secondaryNamespace) {
       const primaryCount = results[0].matches.length
       const secondaryCount = results[1]?.matches.length || 0
-      console.log(`[RAG] Merged: ${primaryCount} primary + ${secondaryCount} counseling_qa → ${allChunks.length} unique`)
+      console.log(`[RAG] Merged: ${primaryCount} primary + ${secondaryCount} secondary → ${allChunks.length} unique`)
     }
 
-    // 5. Rerank combined set
+    // Rerank
     if (useReranking && allChunks.length > topK) {
       if (process.env.NODE_ENV === 'development') {
         console.log(`[RAG] Reranking ${allChunks.length} candidates → top ${topK}`)
       }
-
-      const rerankedChunks = await rerankChunks(query, allChunks, topK)
-      return rerankedChunks
+      return await rerankChunks(query, allChunks, topK)
     }
 
-    // Without reranking — return top-K by Pinecone score
     return allChunks
       .sort((a, b) => b.score - a.score)
       .slice(0, topK)
-      .map((chunk) => ({
-        ...chunk,
-        rerankScore: chunk.score * 10,
-      }))
+      .map(chunk => ({ ...chunk, rerankScore: chunk.score * 10 }))
   } catch (error) {
     console.error('Failed to retrieve context from Pinecone:', error)
     return []
@@ -234,21 +173,17 @@ export async function retrieveContext(
 }
 
 /**
- * Форматировать retrieved chunks в строку для system prompt.
- * Labels therapist Q&A differently from book sources.
+ * Format retrieved chunks for the system prompt.
  */
 export function formatContextForPrompt(chunks: RetrievedChunk[]): string {
-  if (chunks.length === 0) {
-    return ''
-  }
+  if (chunks.length === 0) return ''
 
   const contextParts = chunks.map((chunk, index) => {
-    const isCounselingQA =
-      chunk.metadata.namespace === NAMESPACES.COUNSELING_QA ||
-      chunk.metadata.book_title === 'Real Therapist Response'
+    const ns = chunk.metadata.namespace || ''
 
-    if (isCounselingQA) {
-      return `${index + 1}. [Real therapist response]\n${chunk.text}`
+    if (ns.startsWith('gmat-')) {
+      const section = chunk.metadata.chapter || ns.replace('gmat-', '').toUpperCase()
+      return `${index + 1}. [GMAT: ${section}]\n${chunk.text}`
     }
 
     const source = `[From "${chunk.metadata.book_title}" by ${chunk.metadata.author}]`
