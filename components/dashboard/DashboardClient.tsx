@@ -64,7 +64,7 @@ export default function DashboardClient({
   const streakData = useMemo(() => calculateStreak(studyDates), [studyDates])
 
   return (
-    <div className="h-screen flex bg-[#0A0F1E]">
+    <div className="h-screen flex bg-[#0B1120]">
       {/* Mobile sidebar backdrop */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -82,17 +82,17 @@ export default function DashboardClient({
       <div
         className={`
           fixed lg:relative inset-y-0 left-0 z-50 w-64
-          bg-[#0D1220] border-r border-white/[0.05]
+          bg-[#0B1120] border-r border-white/[0.04]
           transform transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="px-6 py-5 border-b border-white/[0.03] flex items-center justify-between">
+          <div className="px-6 py-5 border-b border-white/[0.04] flex items-center justify-between">
             <Link href="/dashboard/session" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-                <Brain className="w-4 h-4 text-[#0A0F1E]" />
+                <Brain className="w-4 h-4 text-[#0B1120]" />
               </div>
               <span className="text-lg font-bold text-white tracking-tight">Prepwise</span>
             </Link>
@@ -114,7 +114,7 @@ export default function DashboardClient({
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                    flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium
                     transition-all duration-200
                     ${isActive
                       ? 'bg-cyan-500/10 text-cyan-400'
@@ -130,7 +130,7 @@ export default function DashboardClient({
           </nav>
 
           {/* Streak Ring */}
-          <div className="px-3 py-3 border-t border-white/[0.03]">
+          <div className="px-3 py-3">
             <StreakRing streak={streakData} size={100} />
           </div>
 
@@ -147,7 +147,7 @@ export default function DashboardClient({
           />
 
           {/* Plan badge + sign out */}
-          <div className="px-3 py-4 border-t border-white/[0.03] space-y-3">
+          <div className="px-3 py-4 border-t border-white/[0.04] space-y-3">
             <div className="px-3 py-2 rounded-xl bg-white/[0.03]">
               <div className="flex items-center gap-2 text-sm">
                 <Crown className="w-4 h-4 text-amber-400" />
@@ -200,20 +200,20 @@ export default function DashboardClient({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
-        <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/[0.03] bg-[#0A0F1E]">
+        <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/[0.03] bg-[#0B1120]">
           <button onClick={() => setSidebarOpen(true)} className="text-slate-400 hover:text-white">
             <Menu className="w-6 h-6" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-md bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-              <Brain className="w-3 h-3 text-[#0A0F1E]" />
+              <Brain className="w-3 h-3 text-[#0B1120]" />
             </div>
             <span className="font-semibold text-white">Prepwise</span>
           </div>
           <div className="w-6" />
         </div>
 
-        <main className="flex-1 overflow-auto bg-[#0F1629] relative">
+        <main className="flex-1 overflow-auto relative">
           <div className="min-h-full">{children}</div>
         </main>
       </div>

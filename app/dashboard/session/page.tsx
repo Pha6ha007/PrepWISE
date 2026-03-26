@@ -313,9 +313,9 @@ function SessionPageInner() {
   // ── Active session ─────────────────────────────────────────
 
   return (
-    <div className="h-full flex flex-col bg-[#0A0F1E]">
+    <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-white/[0.06] bg-[#0D1220]/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <AgentStatus status={sessionStatus} agentName="Sam" currentTopic={AGENT_LABELS[currentAgent].label} />
         </div>
@@ -389,7 +389,7 @@ function SessionPageInner() {
       </div>
 
       {/* Input area */}
-      <div className="px-4 md:px-6 py-4 border-t border-white/[0.06] bg-[#0D1220]/80 backdrop-blur-sm">
+      <div className="px-4 md:px-6 py-4 border-t border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
         <div className="flex items-end gap-3 max-w-3xl mx-auto">
           {/* Voice recorder */}
           <VoiceRecorder
