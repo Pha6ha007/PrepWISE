@@ -1,31 +1,25 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans, Fraunces } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { Toaster } from '@/components/ui/toaster'
+import SupportWidget from '@/components/support/SupportWidget'
 import './globals.css'
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-plus-jakarta-sans',
-  display: 'swap',
-})
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-fraunces',
+  variable: '--font-inter',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'Confide — Someone who truly listens',
-  description: 'AI companion for emotional support. Share your thoughts, explore your feelings, and grow in a safe, judgment-free space.',
+  title: 'Prepwise — AI GMAT Tutor',
+  description: 'AI voice tutor for GMAT preparation. Talk to Sam — your personal tutor who remembers your progress, adapts to your weak spots, and helps you score 700+.',
   manifest: '/manifest.json',
-  themeColor: '#6366F1',
+  themeColor: '#0A0F1E',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Confide',
+    title: 'Prepwise',
   },
   icons: {
     apple: '/icons/icon-192x192.svg',
@@ -38,14 +32,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${plusJakartaSans.variable} ${fraunces.variable}`}>
+    <html lang="en" className={inter.variable}>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Confide" />
+        <meta name="apple-mobile-web-app-title" content="Prepwise" />
       </head>
-      <body className={plusJakartaSans.className}>
+      <body className={`${inter.className} bg-[#0A0F1E]`}>
         {children}
+        <SupportWidget />
         <Toaster />
       </body>
     </html>

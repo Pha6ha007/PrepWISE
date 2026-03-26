@@ -20,6 +20,9 @@ export default function LandingPage() {
             <Link href="/blog" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
               Blog
             </Link>
+            <Link href="/resources" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
+              Resources
+            </Link>
             <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
               Log in
             </Link>
@@ -227,14 +230,18 @@ export default function LandingPage() {
               </div>
               <span className="font-semibold">Prepwise</span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-slate-500">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
+              <Link href="/" className="hover:text-slate-300 transition-colors">Home</Link>
+              <Link href="/blog" className="hover:text-slate-300 transition-colors">Blog</Link>
+              <Link href="/resources" className="hover:text-slate-300 transition-colors">Resources</Link>
+              <Link href="/guarantee" className="hover:text-slate-300 transition-colors">Guarantee</Link>
+              <Link href="/contact" className="hover:text-slate-300 transition-colors">Contact</Link>
               <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms</Link>
-              <Link href="/contact" className="hover:text-slate-300 transition-colors">Contact</Link>
               <Link href="/refund" className="hover:text-slate-300 transition-colors">Refund</Link>
             </div>
             <p className="text-xs text-slate-600">
-              © 2026 Prepwise. AI GMAT Tutor.
+              © 2026 PrepWISE. AI-Powered GMAT Tutor.
             </p>
           </div>
         </div>

@@ -175,6 +175,15 @@ export default function DashboardClient({
                 </Link>
               )}
             </div>
+            {/* Help & Links */}
+            <div className="flex items-center gap-3 px-3">
+              <Link href="/contact" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+                Contact
+              </Link>
+              <Link href="/resources" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+                Resources
+              </Link>
+            </div>
             <form action={signOut}>
               <button
                 type="submit"

@@ -3,64 +3,67 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { MessageCircle } from 'lucide-react'
+
+type InvestmentRange = '<$50K' | '$50-200K' | '$200K-1M' | '$1M+'
+type PartnershipType = 'Content' | 'Technology' | 'Marketing' | 'Distribution' | 'Other'
 
 export default function ContactPage() {
-  // General Contact Form
-  const [generalForm, setGeneralForm] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  })
-  const [generalLoading, setGeneralLoading] = useState(false)
-
-  // Partnership Form
-  const [partnershipForm, setPartnershipForm] = useState({
+  // Investor Form
+  const [investorForm, setInvestorForm] = useState({
     name: '',
     email: '',
     company: '',
-    role: '',
-    partnershipType: 'corporate' as 'corporate' | 'research' | 'other',
+    investmentRange: '' as InvestmentRange | '',
     message: '',
   })
-  const [partnershipLoading, setPartnershipLoading] = useState(false)
+  const [investorLoading, setInvestorLoading] = useState(false)
 
-  const handleGeneralSubmit = async (e: React.FormEvent) => {
+  // Partner Form
+  const [partnerForm, setPartnerForm] = useState({
+    name: '',
+    email: '',
+    company: '',
+    partnershipType: '' as PartnershipType | '',
+    message: '',
+  })
+  const [partnerLoading, setPartnerLoading] = useState(false)
+
+  const handleInvestorSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setGeneralLoading(true)
+    setInvestorLoading(true)
 
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...generalForm,
-          type: 'general',
+          ...investorForm,
+          type: 'investor',
         }),
       })
 
-      if (!res.ok) throw new Error('Failed to send message')
+      if (!res.ok) throw new Error('Failed to send inquiry')
 
-      toast.success('Message sent! We\'ll get back to you within 24 hours.')
-      setGeneralForm({ name: '', email: '', subject: '', message: '' })
+      toast.success('Investment inquiry sent! We\'ll respond within 48 hours.')
+      setInvestorForm({ name: '', email: '', company: '', investmentRange: '', message: '' })
     } catch {
-      toast.error('Failed to send message. Please try again.')
+      toast.error('Failed to send inquiry. Please try again.')
     } finally {
-      // Anti-spam: disable button for 5 seconds
-      setTimeout(() => setGeneralLoading(false), 5000)
+      setTimeout(() => setInvestorLoading(false), 5000)
     }
   }
 
-  const handlePartnershipSubmit = async (e: React.FormEvent) => {
+  const handlePartnerSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setPartnershipLoading(true)
+    setPartnerLoading(true)
 
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...partnershipForm,
+          ...partnerForm,
           type: 'partnership',
         }),
       })
@@ -68,27 +71,17 @@ export default function ContactPage() {
       if (!res.ok) throw new Error('Failed to send inquiry')
 
       toast.success('Partnership inquiry sent! We\'ll review and respond within 48 hours.')
-      setPartnershipForm({
-        name: '',
-        email: '',
-        company: '',
-        role: '',
-        partnershipType: 'corporate',
-        message: '',
-      })
+      setPartnerForm({ name: '', email: '', company: '', partnershipType: '', message: '' })
     } catch {
       toast.error('Failed to send inquiry. Please try again.')
     } finally {
-      // Anti-spam: disable button for 5 seconds
-      setTimeout(() => setPartnershipLoading(false), 5000)
+      setTimeout(() => setPartnerLoading(false), 5000)
     }
   }
 
-  const partnershipTypes = [
-    { value: 'corporate' as const, label: 'Corporate License', icon: '🏢' },
-    { value: 'research' as const, label: 'Research Collaboration', icon: '🔬' },
-    { value: 'other' as const, label: 'Other', icon: '👥' },
-  ]
+  const inputCls = 'w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50'
+  const labelCls = 'text-sm font-medium text-slate-300 mb-1.5 block'
+  const selectCls = `${inputCls} appearance-none cursor-pointer`
 
   return (
     <div className="min-h-screen bg-[#0A0F1C]">
@@ -110,242 +103,215 @@ export default function ContactPage() {
 
       {/* Content */}
       <main className="max-w-5xl mx-auto px-6 py-12">
-        {/* Header */}
-        <div className="text-center mb-14">
+        {/* Page Header */}
+        <div className="text-center mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Get in Touch
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            Have questions? Want to collaborate? We&apos;d love to hear from you.
+            Interested in investing or partnering with PrepWISE? We&apos;d love to hear from you.
           </p>
         </div>
 
-        {/* General Contact Section */}
-        <div className="grid lg:grid-cols-3 gap-6 mb-16">
-          {/* Left: Contact Info */}
-          <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 space-y-5">
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-1">Email</h3>
-              <a href="mailto:hello@prepwise.app" className="text-cyan-400 hover:underline text-sm">
-                hello@prepwise.app
-              </a>
+        {/* Support note */}
+        <div className="flex items-center justify-center gap-2 mb-14 px-4 py-3 rounded-xl bg-cyan-500/5 border border-cyan-500/10 max-w-xl mx-auto">
+          <MessageCircle className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+          <p className="text-sm text-slate-400">
+            For product support, use the chat widget in the bottom-right corner of any page.
+          </p>
+        </div>
+
+        {/* Two-column forms */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Investor Form */}
+          <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 md:p-8">
+            <div className="mb-6">
+              <span className="inline-block text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full mb-3">
+                For Investors
+              </span>
+              <h2 className="text-xl font-bold text-white mb-1">Investment Inquiry</h2>
+              <p className="text-sm text-slate-500">Interested in investing in the future of AI-powered education?</p>
             </div>
 
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-1">Response Time</h3>
-              <p className="text-slate-400 text-sm">Within 24 hours</p>
-            </div>
-
-            <div className="pt-4 border-t border-white/[0.06]">
-              <p className="text-sm text-slate-500">
-                We read every message personally. Whether you have a question, feedback, or just want to say hi — we&apos;re here.
-              </p>
-            </div>
-          </div>
-
-          {/* Right: Contact Form */}
-          <div className="lg:col-span-2 bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 md:p-8">
-            <form onSubmit={handleGeneralSubmit} className="space-y-5">
-              <div className="grid md:grid-cols-2 gap-5">
-                <div>
-                  <label htmlFor="name" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                    Name
-                  </label>
-                  <input
-                    id="name"
-                    type="text"
-                    required
-                    value={generalForm.name}
-                    onChange={(e) => setGeneralForm({ ...generalForm, name: e.target.value })}
-                    placeholder="Your name"
-                    className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    value={generalForm.email}
-                    onChange={(e) => setGeneralForm({ ...generalForm, email: e.target.value })}
-                    placeholder="you@example.com"
-                    className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
-                  />
-                </div>
-              </div>
-
+            <form onSubmit={handleInvestorSubmit} className="space-y-4">
               <div>
-                <label htmlFor="subject" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                  Subject (Optional)
-                </label>
+                <label htmlFor="inv-name" className={labelCls}>Name</label>
                 <input
-                  id="subject"
+                  id="inv-name"
                   type="text"
-                  value={generalForm.subject}
-                  onChange={(e) => setGeneralForm({ ...generalForm, subject: e.target.value })}
-                  placeholder="What is this about?"
-                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
+                  required
+                  value={investorForm.name}
+                  onChange={(e) => setInvestorForm({ ...investorForm, name: e.target.value })}
+                  placeholder="Your name"
+                  className={inputCls}
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                  Message
-                </label>
-                <textarea
-                  id="message"
+                <label htmlFor="inv-email" className={labelCls}>Email</label>
+                <input
+                  id="inv-email"
+                  type="email"
                   required
-                  rows={5}
-                  value={generalForm.message}
-                  onChange={(e) => setGeneralForm({ ...generalForm, message: e.target.value })}
-                  placeholder="Tell us what's on your mind..."
-                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50 resize-none"
+                  value={investorForm.email}
+                  onChange={(e) => setInvestorForm({ ...investorForm, email: e.target.value })}
+                  placeholder="you@fund.com"
+                  className={inputCls}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="inv-company" className={labelCls}>Company / Fund</label>
+                <input
+                  id="inv-company"
+                  type="text"
+                  required
+                  value={investorForm.company}
+                  onChange={(e) => setInvestorForm({ ...investorForm, company: e.target.value })}
+                  placeholder="Your firm or fund"
+                  className={inputCls}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="inv-range" className={labelCls}>Investment Range</label>
+                <select
+                  id="inv-range"
+                  required
+                  value={investorForm.investmentRange}
+                  onChange={(e) => setInvestorForm({ ...investorForm, investmentRange: e.target.value as InvestmentRange })}
+                  className={selectCls}
+                >
+                  <option value="" disabled>Select range</option>
+                  <option value="<$50K">&lt;$50K</option>
+                  <option value="$50-200K">$50–200K</option>
+                  <option value="$200K-1M">$200K–1M</option>
+                  <option value="$1M+">$1M+</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="inv-message" className={labelCls}>Message</label>
+                <textarea
+                  id="inv-message"
+                  required
+                  rows={4}
+                  value={investorForm.message}
+                  onChange={(e) => setInvestorForm({ ...investorForm, message: e.target.value })}
+                  placeholder="Tell us about your interest..."
+                  className={`${inputCls} resize-none`}
                 />
               </div>
 
               <button
                 type="submit"
-                disabled={generalLoading}
-                className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+                disabled={investorLoading}
+                className="w-full px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
               >
-                {generalLoading ? 'Sending...' : 'Send Message'}
+                {investorLoading ? 'Sending...' : 'Submit Investment Inquiry'}
+              </button>
+            </form>
+          </div>
+
+          {/* Partner Form */}
+          <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 md:p-8">
+            <div className="mb-6">
+              <span className="inline-block text-xs font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full mb-3">
+                For Partners
+              </span>
+              <h2 className="text-xl font-bold text-white mb-1">Partnership &amp; Collaboration</h2>
+              <p className="text-sm text-slate-500">Let&apos;s build something great together.</p>
+            </div>
+
+            <form onSubmit={handlePartnerSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="ptr-name" className={labelCls}>Name</label>
+                <input
+                  id="ptr-name"
+                  type="text"
+                  required
+                  value={partnerForm.name}
+                  onChange={(e) => setPartnerForm({ ...partnerForm, name: e.target.value })}
+                  placeholder="Your name"
+                  className={inputCls}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="ptr-email" className={labelCls}>Email</label>
+                <input
+                  id="ptr-email"
+                  type="email"
+                  required
+                  value={partnerForm.email}
+                  onChange={(e) => setPartnerForm({ ...partnerForm, email: e.target.value })}
+                  placeholder="you@company.com"
+                  className={inputCls}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="ptr-company" className={labelCls}>Company / Organization</label>
+                <input
+                  id="ptr-company"
+                  type="text"
+                  required
+                  value={partnerForm.company}
+                  onChange={(e) => setPartnerForm({ ...partnerForm, company: e.target.value })}
+                  placeholder="Acme Inc."
+                  className={inputCls}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="ptr-type" className={labelCls}>Partnership Type</label>
+                <select
+                  id="ptr-type"
+                  required
+                  value={partnerForm.partnershipType}
+                  onChange={(e) => setPartnerForm({ ...partnerForm, partnershipType: e.target.value as PartnershipType })}
+                  className={selectCls}
+                >
+                  <option value="" disabled>Select type</option>
+                  <option value="Content">Content</option>
+                  <option value="Technology">Technology</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Distribution">Distribution</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="ptr-message" className={labelCls}>Message</label>
+                <textarea
+                  id="ptr-message"
+                  required
+                  rows={4}
+                  value={partnerForm.message}
+                  onChange={(e) => setPartnerForm({ ...partnerForm, message: e.target.value })}
+                  placeholder="What would you like to collaborate on?"
+                  className={`${inputCls} resize-none`}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={partnerLoading}
+                className="w-full px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+              >
+                {partnerLoading ? 'Sending...' : 'Submit Partnership Inquiry'}
               </button>
             </form>
           </div>
         </div>
 
-        {/* Partnership Section */}
-        <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 md:p-10">
-          <div className="text-center mb-10">
-            <span className="inline-block text-xs font-medium text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 rounded-full mb-3">
-              For Organizations
-            </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              Partnership &amp; Collaboration
-            </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              Interested in bringing PrepWISE to your organization or collaborating on research?
-            </p>
-          </div>
-
-          <form onSubmit={handlePartnershipSubmit} className="space-y-5 max-w-3xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-5">
-              <div>
-                <label htmlFor="p-name" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                  Name
-                </label>
-                <input
-                  id="p-name"
-                  type="text"
-                  required
-                  value={partnershipForm.name}
-                  onChange={(e) => setPartnershipForm({ ...partnershipForm, name: e.target.value })}
-                  placeholder="Your name"
-                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="p-email" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                  Email
-                </label>
-                <input
-                  id="p-email"
-                  type="email"
-                  required
-                  value={partnershipForm.email}
-                  onChange={(e) => setPartnershipForm({ ...partnershipForm, email: e.target.value })}
-                  placeholder="you@company.com"
-                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
-                />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-5">
-              <div>
-                <label htmlFor="company" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                  Company / Organization
-                </label>
-                <input
-                  id="company"
-                  type="text"
-                  required
-                  value={partnershipForm.company}
-                  onChange={(e) => setPartnershipForm({ ...partnershipForm, company: e.target.value })}
-                  placeholder="Acme Inc."
-                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="role" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                  Your Role
-                </label>
-                <input
-                  id="role"
-                  type="text"
-                  required
-                  value={partnershipForm.role}
-                  onChange={(e) => setPartnershipForm({ ...partnershipForm, role: e.target.value })}
-                  placeholder="CEO, HR Manager, etc."
-                  className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-3 block">Partnership Type</label>
-              <div className="grid md:grid-cols-3 gap-3">
-                {partnershipTypes.map(({ value, icon, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setPartnershipForm({ ...partnershipForm, partnershipType: value })}
-                    className={`p-4 rounded-lg border-2 transition-all text-center ${
-                      partnershipForm.partnershipType === value
-                        ? 'border-cyan-500 bg-cyan-500/10'
-                        : 'border-white/[0.06] bg-[#0A0F1C] hover:border-white/10'
-                    }`}
-                  >
-                    <span className="text-2xl block mb-1">{icon}</span>
-                    <span className={`text-sm font-medium ${
-                      partnershipForm.partnershipType === value ? 'text-cyan-400' : 'text-slate-300'
-                    }`}>
-                      {label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="p-message" className="text-sm font-medium text-slate-300 mb-1.5 block">
-                Tell us about your inquiry
-              </label>
-              <textarea
-                id="p-message"
-                required
-                rows={5}
-                value={partnershipForm.message}
-                onChange={(e) => setPartnershipForm({ ...partnershipForm, message: e.target.value })}
-                placeholder="What would you like to collaborate on?"
-                className="w-full px-3 py-2.5 bg-[#0A0F1C] border border-white/[0.06] rounded-lg text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500/50 resize-none"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={partnershipLoading}
-              className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
-            >
-              {partnershipLoading ? 'Submitting...' : 'Submit Partnership Inquiry'}
-            </button>
-          </form>
-        </div>
+        {/* Direct email fallback */}
+        <p className="text-center text-sm text-slate-600 mt-8">
+          Prefer email? Reach us at{' '}
+          <a href="mailto:hello@prepwise.app" className="text-cyan-400 hover:underline">
+            hello@prepwise.app
+          </a>
+        </p>
       </main>
 
       {/* Footer */}
@@ -353,6 +319,10 @@ export default function ContactPage() {
         <div className="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-slate-500">© 2026 PrepWISE. AI-Powered GMAT Tutor.</p>
           <div className="flex items-center gap-6 text-sm text-slate-500">
+            <Link href="/" className="hover:text-slate-300 transition-colors">Home</Link>
+            <Link href="/blog" className="hover:text-slate-300 transition-colors">Blog</Link>
+            <Link href="/resources" className="hover:text-slate-300 transition-colors">Resources</Link>
+            <Link href="/guarantee" className="hover:text-slate-300 transition-colors">Guarantee</Link>
             <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms</Link>
             <Link href="/refund" className="hover:text-slate-300 transition-colors">Refund</Link>
