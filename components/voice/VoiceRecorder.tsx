@@ -12,7 +12,7 @@ interface VoiceRecorderProps {
 
 // Silence detection constants
 const SILENCE_THRESHOLD = 15 // RMS level below which audio is considered silence (0-255 scale)
-const SILENCE_DURATION_MS = 1500 // Auto-stop after 1.5s of silence
+const SILENCE_DURATION_MS = 1000 // Auto-stop after 1s of silence (was 1.5s — saves 500ms)
 const MONITOR_INTERVAL_MS = 100 // Check audio levels every 100ms
 
 export function VoiceRecorder({

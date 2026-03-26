@@ -1,22 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { agentClient } from '@/lib/openai/client'
+import OpenAI from 'openai'
 import { checkRateLimit } from '@/lib/utils/rate-limit'
 import { ErrorResponse } from '@/types'
 
 /**
  * POST /api/voice
  *
- * Транскрибирует аудио в текст через Whisper (Groq или OpenAI)
- *
- * Body: FormData с файлом audio
- *
- * ВСЕГДА:
- * - Auth check первым
- * - Валидация формата аудио
- * - Лимит размера файла
+ * Транскрибирует аудио в текст через Whisper
+ * Priority: Groq Whisper (fast, ~300ms) → OpenAI Whisper (fallback)
  */
+
+// Dedicated Groq client for fast Whisper STT (~300ms vs ~1.5s OpenAI)
+let _sttClient: OpenAI | null = null
+function getSTTClient(): OpenAI {
+  if (_sttClient) return _sttClient
+  if (process.env.GROQ_API_KEY) {
+    _sttClient = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: 'https://api.groq.com/openai/v1',
+    })
+  } else if (process.env.OPENAI_API_KEY) {
+    _sttClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+  } else {
+    _sttClient = new OpenAI({ apiKey: 'dummy' })
+  }
+  return _sttClient
+}
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024 // 25MB (Whisper limit)
 const ALLOWED_FORMATS = [
@@ -132,7 +143,8 @@ export async function POST(request: NextRequest) {
     // Модель: whisper-large-v3-turbo (быстрая и точная)
     const whisperModel = process.env.GROQ_WHISPER_MODEL || 'whisper-large-v3-turbo'
 
-    const transcription = await agentClient.audio.transcriptions.create({
+    const sttClient = getSTTClient()
+    const transcription = await sttClient.audio.transcriptions.create({
       file: audioFile,
       model: whisperModel,
       language: 'en', // NOTE: можно добавить поддержку 'ru' через user.language

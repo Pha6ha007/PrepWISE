@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { AutoCheckout } from '@/components/billing/AutoCheckout'
 import { VoiceRecorder } from '@/components/voice/VoiceRecorder'
 import { AudioPlayer } from '@/components/voice/AudioPlayer'
+import { useAudioQueue } from '@/components/voice/AudioQueue'
 import { AgentStatus } from '@/components/session/AgentStatus'
 
 interface Message {
@@ -37,6 +38,36 @@ function SessionPageInner() {
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [streamingContent, setStreamingContent] = useState('')
   const [autoPlayTTS, setAutoPlayTTS] = useState(true)
+
+  // Sentence-level TTS streaming
+  const sentenceBufferRef = useRef('')
+  const { addToQueue: addAudioToQueue, clear: clearAudioQueue, isPlaying: isAudioPlaying } = useAudioQueue({
+    onPlayStart: () => setSessionStatus('speaking'),
+    onAllComplete: () => setSessionStatus('idle'),
+  })
+
+  // Request TTS for a sentence and add to audio queue
+  const queueSentenceTTS = useCallback(async (sentence: string) => {
+    if (!autoPlayTTS || sentence.trim().length < 5) return
+    try {
+      const res = await fetch('/api/tts/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: sentence }),
+      })
+      if (res.ok && res.body) {
+        const reader = res.body.getReader()
+        const chunks: Uint8Array[] = []
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          if (value) chunks.push(value)
+        }
+        const blob = new Blob(chunks as BlobPart[], { type: 'audio/mpeg' })
+        addAudioToQueue(blob)
+      }
+    } catch { /* TTS unavailable — text only */ }
+  }, [autoPlayTTS, addAudioToQueue])
   const [lastAssistantMsgId, setLastAssistantMsgId] = useState<string | null>(null)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -132,8 +163,26 @@ function SessionPageInner() {
               if (parsed.type === 'token') {
                 fullContent += parsed.content
                 setStreamingContent(fullContent)
+                // Buffer tokens into sentences for TTS
+                if (autoPlayTTS) {
+                  sentenceBufferRef.current += parsed.content
+                  const parts = sentenceBufferRef.current.split(/(?<=[.!?])\s+/)
+                  if (parts.length > 1) {
+                    // Complete sentence(s) found — queue TTS
+                    for (let i = 0; i < parts.length - 1; i++) {
+                      queueSentenceTTS(parts[i])
+                    }
+                    sentenceBufferRef.current = parts[parts.length - 1]
+                  }
+                }
               }
               if (parsed.type === 'done') {
+                // Flush remaining sentence buffer to TTS
+                if (autoPlayTTS && sentenceBufferRef.current.trim().length > 5) {
+                  queueSentenceTTS(sentenceBufferRef.current.trim())
+                }
+                sentenceBufferRef.current = ''
+
                 const assistantMsg: Message = {
                   id: assistantId,
                   role: 'assistant',
@@ -144,8 +193,8 @@ function SessionPageInner() {
                 setMessages(prev => [...prev, assistantMsg])
                 setStreamingContent('')
                 setLastAssistantMsgId(assistantId)
-                if (autoPlayTTS) setSessionStatus('speaking')
-                else setSessionStatus('idle')
+                // If TTS is playing, status will be set by AudioQueue callbacks
+                if (!autoPlayTTS) setSessionStatus('idle')
               }
             } catch { /* skip malformed */ }
           }
