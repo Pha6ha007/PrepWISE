@@ -1,1 +1,1752 @@
-[]
+[[
+    {
+      "id": "gen-gi-0001",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows the number of laptops sold by a retailer each quarter in 2023. Q1: 1,200 units, Q2: 1,450 units, Q3: 1,100 units, Q4: 1,800 units. The y-axis ranges from 0 to 2,000 units in increments of 200.",
+      "questionStem": "The quarter with the highest sales exceeded the quarter with the lowest sales by approximately ___ units.",
+      "options": [
+        {
+          "id": "A",
+          "text": "350"
+        },
+        {
+          "id": "B",
+          "text": "500"
+        },
+        {
+          "id": "C",
+          "text": "600"
+        },
+        {
+          "id": "D",
+          "text": "700"
+        },
+        {
+          "id": "E",
+          "text": "850"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "The highest sales were in Q4 at 1,800 units, and the lowest were in Q3 at 1,100 units. The difference is 1,800 − 1,100 = 700 units.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0002",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows the annual revenue (in millions of dollars) for Company X from 2019 to 2024. The bars show: 2019: $45M, 2020: $38M, 2021: $52M, 2022: $61M, 2023: $58M, 2024: $72M. The y-axis ranges from $0 to $80M in increments of $10M.",
+      "questionStem": "The percentage increase in revenue from 2020 to 2024 was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "47%"
+        },
+        {
+          "id": "B",
+          "text": "60%"
+        },
+        {
+          "id": "C",
+          "text": "76%"
+        },
+        {
+          "id": "D",
+          "text": "89%"
+        },
+        {
+          "id": "E",
+          "text": "95%"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Revenue went from $38M in 2020 to $72M in 2024. Percentage increase = ((72 − 38) / 38) × 100 = (34/38) × 100 ≈ 89.5%. The closest answer is 89%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0003",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows the number of employees at five departments: Marketing: 35, Sales: 50, Engineering: 80, HR: 20, Finance: 25. The y-axis ranges from 0 to 100 in increments of 10.",
+      "questionStem": "The Engineering department accounts for approximately ___ of the total employees across all five departments.",
+      "options": [
+        {
+          "id": "A",
+          "text": "28%"
+        },
+        {
+          "id": "B",
+          "text": "33%"
+        },
+        {
+          "id": "C",
+          "text": "38%"
+        },
+        {
+          "id": "D",
+          "text": "43%"
+        },
+        {
+          "id": "E",
+          "text": "48%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Total employees = 35 + 50 + 80 + 20 + 25 = 210. Engineering's share = 80/210 ≈ 0.381 = 38.1%. Closest to 38%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0004",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows monthly rainfall (in cm) for a city: January: 8, February: 6, March: 10, April: 14, May: 18, June: 12. The y-axis ranges from 0 to 20 cm in increments of 2 cm.",
+      "questionStem": "The median monthly rainfall for the six-month period was ___ cm.",
+      "options": [
+        {
+          "id": "A",
+          "text": "9"
+        },
+        {
+          "id": "B",
+          "text": "10"
+        },
+        {
+          "id": "C",
+          "text": "11"
+        },
+        {
+          "id": "D",
+          "text": "12"
+        },
+        {
+          "id": "E",
+          "text": "13"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Sorted values: 6, 8, 10, 12, 14, 18. Median of six values = average of 3rd and 4th: (10 + 12)/2 = 11 cm.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0005",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A grouped bar chart compares quarterly profits (in thousands of dollars) for Divisions A and B in 2023. Q1: A=$120K, B=$95K. Q2: A=$140K, B=$110K. Q3: A=$105K, B=$130K. Q4: A=$160K, B=$155K. The y-axis ranges from $0 to $180K.",
+      "questionStem": "The quarter in which Division B's profit was closest to Division A's profit as a percentage was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Q1"
+        },
+        {
+          "id": "B",
+          "text": "Q2"
+        },
+        {
+          "id": "C",
+          "text": "Q3"
+        },
+        {
+          "id": "D",
+          "text": "Q4"
+        },
+        {
+          "id": "E",
+          "text": "Q2 and Q4 are tied"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Ratios of B/A: Q1: 95/120=79.2%, Q2: 110/140=78.6%, Q3: 130/105=123.8% (B exceeds A), Q4: 155/160=96.9%. Q4 has B closest to A as a percentage (96.9%).",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0006",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A stacked bar chart shows online and in-store sales (in millions) for a retailer from 2020 to 2024. 2020: Online $15M, In-store $45M. 2021: Online $22M, In-store $40M. 2022: Online $30M, In-store $38M. 2023: Online $38M, In-store $35M. 2024: Online $48M, In-store $30M.",
+      "questionStem": "The first year in which online sales exceeded in-store sales was ___, and the difference that year was approximately $___M.",
+      "options": [
+        {
+          "id": "A",
+          "text": "2022; $8M"
+        },
+        {
+          "id": "B",
+          "text": "2023; $3M"
+        },
+        {
+          "id": "C",
+          "text": "2023; $5M"
+        },
+        {
+          "id": "D",
+          "text": "2024; $18M"
+        },
+        {
+          "id": "E",
+          "text": "2024; $12M"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Online first exceeded in-store in 2023: Online $38M vs In-store $35M. Difference = $38M − $35M = $3M.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0007",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows the average test scores for five schools: School A: 72, School B: 85, School C: 68, School D: 91, School E: 78. A horizontal line at 80 indicates the district average. The y-axis ranges from 60 to 100.",
+      "questionStem": "The number of schools that scored above the district average is ___, and the average score of those schools is closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "2; 86"
+        },
+        {
+          "id": "B",
+          "text": "2; 88"
+        },
+        {
+          "id": "C",
+          "text": "3; 84"
+        },
+        {
+          "id": "D",
+          "text": "3; 85"
+        },
+        {
+          "id": "E",
+          "text": "2; 90"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Schools above 80: School B (85) and School D (91). That's 2 schools. Their average = (85 + 91)/2 = 88.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0008",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows patent applications filed by a technology company each year. 2018: 45, 2019: 52, 2020: 48, 2021: 67, 2022: 83, 2023: 95. The y-axis ranges from 0 to 100.",
+      "questionStem": "The compound annual growth rate (CAGR) of patent applications from 2018 to 2023 is closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "10%"
+        },
+        {
+          "id": "B",
+          "text": "13%"
+        },
+        {
+          "id": "C",
+          "text": "16%"
+        },
+        {
+          "id": "D",
+          "text": "19%"
+        },
+        {
+          "id": "E",
+          "text": "22%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "CAGR = (95/45)^(1/5) − 1 = (2.111)^(0.2) − 1 ≈ 1.161 − 1 = 16.1%. Closest to 16%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0009",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows market share (%) of five smartphone brands. Brand P: 32%, Brand Q: 24%, Brand R: 18%, Brand S: 15%, Brand T: 11%. The y-axis ranges from 0% to 35%.",
+      "questionStem": "If the total market is worth $8 billion, the combined revenue of Brands R and S is closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$2.1 billion"
+        },
+        {
+          "id": "B",
+          "text": "$2.4 billion"
+        },
+        {
+          "id": "C",
+          "text": "$2.6 billion"
+        },
+        {
+          "id": "D",
+          "text": "$2.9 billion"
+        },
+        {
+          "id": "E",
+          "text": "$3.2 billion"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Combined share of R and S = 18% + 15% = 33%. Revenue = 0.33 × $8B = $2.64B. Closest to $2.6 billion.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0010",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A grouped bar chart shows revenue and costs (in millions) for a company. 2020: Revenue $50M, Costs $42M. 2021: Revenue $58M, Costs $51M. 2022: Revenue $63M, Costs $49M. 2023: Revenue $75M, Costs $56M. The y-axis ranges from $0 to $80M.",
+      "questionStem": "The year-over-year percentage change in profit (Revenue − Costs) from 2021 to 2022 was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "50%"
+        },
+        {
+          "id": "B",
+          "text": "75%"
+        },
+        {
+          "id": "C",
+          "text": "100%"
+        },
+        {
+          "id": "D",
+          "text": "125%"
+        },
+        {
+          "id": "E",
+          "text": "150%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Profit 2021 = $58M − $51M = $7M. Profit 2022 = $63M − $49M = $14M. Change = ((14−7)/7) × 100 = 100%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0011",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows units produced monthly from January to June. Jan: 4,500, Feb: 5,200, Mar: 4,800, Apr: 6,100, May: 5,700, Jun: 6,400. Defect rates shown as labels: Jan: 3.2%, Feb: 2.8%, Mar: 3.5%, Apr: 2.1%, May: 2.5%, Jun: 1.9%.",
+      "questionStem": "The month with the greatest number of defective units produced was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "January"
+        },
+        {
+          "id": "B",
+          "text": "February"
+        },
+        {
+          "id": "C",
+          "text": "March"
+        },
+        {
+          "id": "D",
+          "text": "April"
+        },
+        {
+          "id": "E",
+          "text": "May"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Defective units: Jan: 4,500×0.032=144, Feb: 5,200×0.028=145.6, Mar: 4,800×0.035=168, Apr: 6,100×0.021=128.1, May: 5,700×0.025=142.5, Jun: 6,400×0.019=121.6. March had the most at 168.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0012",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A stacked bar chart shows electricity sources (in TWh) for a country. 2019: Coal 120, Gas 80, Nuclear 50, Renewables 30. 2020: Coal 100, Gas 85, Nuclear 50, Renewables 45. 2021: Coal 90, Gas 75, Nuclear 55, Renewables 60. 2022: Coal 70, Gas 70, Nuclear 55, Renewables 85. 2023: Coal 55, Gas 65, Nuclear 60, Renewables 110.",
+      "questionStem": "The share of renewables in total generation increased from 2019 to 2023 by approximately ___ percentage points.",
+      "options": [
+        {
+          "id": "A",
+          "text": "17"
+        },
+        {
+          "id": "B",
+          "text": "22"
+        },
+        {
+          "id": "C",
+          "text": "27"
+        },
+        {
+          "id": "D",
+          "text": "32"
+        },
+        {
+          "id": "E",
+          "text": "37"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "2019 total=280, renewables share=30/280=10.7%. 2023 total=290, renewables share=110/290=37.9%. Change=37.9%−10.7%=27.2 pp. Closest to 27.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0013",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart displays average monthly rent ($) for one-bedroom apartments in six neighborhoods. Year 1: A: $1,450, B: $1,820, C: $2,100, D: $1,350, E: $1,680, F: $2,350. Year 2: A: $1,550, B: $1,900, C: $2,250, D: $1,280, E: $1,780, F: $2,500.",
+      "questionStem": "The neighborhood with the greatest percentage increase in rent was ___, and the only neighborhood where rent decreased was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "C; D"
+        },
+        {
+          "id": "B",
+          "text": "A; D"
+        },
+        {
+          "id": "C",
+          "text": "C; E"
+        },
+        {
+          "id": "D",
+          "text": "F; D"
+        },
+        {
+          "id": "E",
+          "text": "A; E"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "% changes: A: 6.9%, B: 4.4%, C: (2250−2100)/2100=7.1%, D: −5.2%, E: 6.0%, F: 6.4%. C had greatest increase (7.1%), D was the only decrease.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0014",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows quarterly revenue (in millions) for three product lines over 2023. Q1: X=$12M, Y=$18M, Z=$8M. Q2: X=$15M, Y=$16M, Z=$11M. Q3: X=$18M, Y=$14M, Z=$15M. Q4: X=$22M, Y=$12M, Z=$19M. Operating margin: 15% on X and Y, 22% on Z.",
+      "questionStem": "The total operating profit from Product Z for full year 2023 was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$8.5M"
+        },
+        {
+          "id": "B",
+          "text": "$10.2M"
+        },
+        {
+          "id": "C",
+          "text": "$11.7M"
+        },
+        {
+          "id": "D",
+          "text": "$13.1M"
+        },
+        {
+          "id": "E",
+          "text": "$14.8M"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Total Z revenue = $8M+$11M+$15M+$19M = $53M. Operating profit = 0.22 × $53M = $11.66M. Closest to $11.7M.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0015",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "graphics-interpretation",
+      "subtopic": "bar-chart",
+      "passage": "A bar chart shows annual production (thousands of units) and per-unit profit for four categories. A: 150K units, $8 margin. B: 90K units, $15 margin. C: 200K units, $5 margin. D: 60K units, $22 margin. YoY unit growth: A: +5%, B: −3%, C: +12%, D: +8%.",
+      "questionStem": "If growth rates and margins remain constant, the category projected to generate the highest total profit in 2024 is ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Category A"
+        },
+        {
+          "id": "B",
+          "text": "Category B"
+        },
+        {
+          "id": "C",
+          "text": "Category C"
+        },
+        {
+          "id": "D",
+          "text": "Category D"
+        },
+        {
+          "id": "E",
+          "text": "Categories A and D are tied"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "2024 profits: A: 157.5K×$8=$1,260K. B: 87.3K×$15=$1,309.5K. C: 224K×$5=$1,120K. D: 64.8K×$22=$1,425.6K. Category D is highest.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0016",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows daily temperature (°C) for a city over one week. Mon: 18, Tue: 21, Wed: 24, Thu: 22, Fri: 19, Sat: 16, Sun: 20. The y-axis ranges from 10°C to 30°C.",
+      "questionStem": "The range of temperatures during the week was ___ °C.",
+      "options": [
+        {
+          "id": "A",
+          "text": "5"
+        },
+        {
+          "id": "B",
+          "text": "6"
+        },
+        {
+          "id": "C",
+          "text": "7"
+        },
+        {
+          "id": "D",
+          "text": "8"
+        },
+        {
+          "id": "E",
+          "text": "9"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Max = 24°C (Wednesday), Min = 16°C (Saturday). Range = 24 − 16 = 8°C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0017",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows a stock's closing price over five days. Day 1: $42, Day 2: $45, Day 3: $43, Day 4: $48, Day 5: $50. The y-axis ranges from $35 to $55.",
+      "questionStem": "The total percentage change from Day 1 to Day 5 was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "12%"
+        },
+        {
+          "id": "B",
+          "text": "15%"
+        },
+        {
+          "id": "C",
+          "text": "19%"
+        },
+        {
+          "id": "D",
+          "text": "22%"
+        },
+        {
+          "id": "E",
+          "text": "25%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Percentage change = ((50−42)/42) × 100 = (8/42) × 100 ≈ 19.0%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0018",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows monthly website visitors (in thousands) for H1 2024. Jan: 25K, Feb: 28K, Mar: 35K, Apr: 42K, May: 38K, Jun: 45K. The y-axis ranges from 0 to 50K.",
+      "questionStem": "The average monthly visitors over the six-month period was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "32,500"
+        },
+        {
+          "id": "B",
+          "text": "35,500"
+        },
+        {
+          "id": "C",
+          "text": "37,000"
+        },
+        {
+          "id": "D",
+          "text": "38,500"
+        },
+        {
+          "id": "E",
+          "text": "40,000"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Total = 25+28+35+42+38+45 = 213K. Average = 213/6 = 35.5K = 35,500.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0019",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows monthly electricity consumption (kWh) for a household. Jan: 520, Feb: 480, Mar: 430, Apr: 350, May: 300, Jun: 380, Jul: 450, Aug: 470. The y-axis ranges from 200 to 600 kWh.",
+      "questionStem": "The number of months in which consumption was above 400 kWh was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "3"
+        },
+        {
+          "id": "B",
+          "text": "4"
+        },
+        {
+          "id": "C",
+          "text": "5"
+        },
+        {
+          "id": "D",
+          "text": "6"
+        },
+        {
+          "id": "E",
+          "text": "7"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Months above 400: January (520), February (480), March (430), July (450), August (470). That's 5 months.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0020",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows quarterly GDP growth (%) for Country X over 2022-2023. 2022-Q1: 2.1%, Q2: 1.8%, Q3: 1.5%, Q4: 0.9%. 2023-Q1: 0.5%, Q2: 1.2%, Q3: 1.8%, Q4: 2.4%. A dashed line at 1.5% shows the long-term average.",
+      "questionStem": "The number of quarters in which GDP growth was below the long-term average was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "3"
+        },
+        {
+          "id": "C",
+          "text": "4"
+        },
+        {
+          "id": "D",
+          "text": "5"
+        },
+        {
+          "id": "E",
+          "text": "6"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Below 1.5%: 2022-Q4 (0.9%), 2023-Q1 (0.5%), 2023-Q2 (1.2%). That's 3 quarters. Note: 2022-Q3 equals 1.5%, not below.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0021",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A dual-line graph shows sales (thousands of units) for Products Alpha and Beta. Alpha: Jan: 10, Feb: 14, Mar: 18, Apr: 22, May: 24, Jun: 28. Beta: Jan: 32, Feb: 28, Mar: 25, Apr: 20, May: 16, Jun: 12. The y-axis ranges from 0 to 35K.",
+      "questionStem": "The month in which Alpha's sales first exceeded Beta's sales was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "February"
+        },
+        {
+          "id": "B",
+          "text": "March"
+        },
+        {
+          "id": "C",
+          "text": "April"
+        },
+        {
+          "id": "D",
+          "text": "May"
+        },
+        {
+          "id": "E",
+          "text": "June"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Comparing: Jan: 10<32, Feb: 14<28, Mar: 18<25, Apr: 22>20. April is the first month Alpha (22K) exceeded Beta (20K).",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0022",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph tracks cumulative subscribers (thousands) for a streaming service in 2023. Jan: 120, Feb: 128, Mar: 140, Apr: 155, May: 162, Jun: 175, Jul: 190, Aug: 198, Sep: 210, Oct: 225, Nov: 240, Dec: 260.",
+      "questionStem": "The three-month period with the greatest net subscriber growth was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "January to March"
+        },
+        {
+          "id": "B",
+          "text": "March to May"
+        },
+        {
+          "id": "C",
+          "text": "June to August"
+        },
+        {
+          "id": "D",
+          "text": "September to November"
+        },
+        {
+          "id": "E",
+          "text": "October to December"
+        }
+      ],
+      "correctAnswer": "E",
+      "explanation": "Net growth: Jan-Mar: 20, Mar-May: 22, Jun-Aug: 23, Sep-Nov: 30, Oct-Dec: 35. October to December had the greatest at 35K.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0023",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows a currency exchange rate (B per A) over 10 days. Day 1: 1.25, Day 2: 1.27, Day 3: 1.24, Day 4: 1.22, Day 5: 1.20, Day 6: 1.23, Day 7: 1.26, Day 8: 1.28, Day 9: 1.30, Day 10: 1.29.",
+      "questionStem": "If a trader converted 10,000 units of Currency B into A on Day 5 and converted back on Day 9, the net gain in Currency B was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "500"
+        },
+        {
+          "id": "B",
+          "text": "625"
+        },
+        {
+          "id": "C",
+          "text": "750"
+        },
+        {
+          "id": "D",
+          "text": "833"
+        },
+        {
+          "id": "E",
+          "text": "1,000"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Day 5 rate: 1 A = 1.20 B. Buy A: 10,000B ÷ 1.20 = 8,333.3 A. Day 9 rate: 1 A = 1.30 B. Sell A: 8,333.3 × 1.30 = 10,833.3 B. Gain = 833.3 B. Closest to 833.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0024",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows daily app downloads (in hundreds) over two weeks. Week 1: Mon: 45, Tue: 52, Wed: 48, Thu: 55, Fri: 62, Sat: 70, Sun: 65. Week 2: Mon: 50, Tue: 58, Wed: 53, Thu: 60, Fri: 68, Sat: 75, Sun: 72.",
+      "questionStem": "The average daily downloads in Week 2 exceeded Week 1 by approximately ___ downloads.",
+      "options": [
+        {
+          "id": "A",
+          "text": "340"
+        },
+        {
+          "id": "B",
+          "text": "480"
+        },
+        {
+          "id": "C",
+          "text": "560"
+        },
+        {
+          "id": "D",
+          "text": "620"
+        },
+        {
+          "id": "E",
+          "text": "700"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Week 1 avg (hundreds): 397/7=56.71. Week 2 avg: 436/7=62.29. Diff = 5.57 hundreds = 557 downloads. Closest to 560.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0025",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A dual-axis line graph shows monthly revenue (left axis, $M) and satisfaction score (right, 1-10) for 12 months. Revenue: Jan: 2.1, Feb: 2.3, Mar: 2.8, Apr: 3.2, May: 3.5, Jun: 3.1, Jul: 2.9, Aug: 3.4, Sep: 3.8, Oct: 4.1, Nov: 4.5, Dec: 5.0. Satisfaction: Jan: 7.2, Feb: 7.4, Mar: 7.8, Apr: 8.1, May: 7.9, Jun: 7.5, Jul: 7.3, Aug: 7.6, Sep: 8.0, Oct: 8.3, Nov: 8.5, Dec: 8.8.",
+      "questionStem": "The month with the largest month-over-month revenue increase also saw a satisfaction score change of approximately ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "+0.2"
+        },
+        {
+          "id": "B",
+          "text": "+0.4"
+        },
+        {
+          "id": "C",
+          "text": "+0.5"
+        },
+        {
+          "id": "D",
+          "text": "−0.2"
+        },
+        {
+          "id": "E",
+          "text": "−0.4"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Largest MoM revenue increases: Mar (+0.5), Aug (+0.5), Dec (+0.5) tied. March satisfaction change: 7.8−7.4 = +0.4. Answer is +0.4.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0026",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows inflation rates (%) for three countries over 5 years. X: 2019: 2.0, 2020: 1.5, 2021: 3.2, 2022: 6.5, 2023: 4.1. Y: 2019: 1.8, 2020: 2.2, 2021: 4.0, 2022: 8.2, 2023: 5.5. Z: 2019: 3.0, 2020: 2.5, 2021: 2.8, 2022: 5.0, 2023: 3.3.",
+      "questionStem": "The country with the lowest average inflation rate was ___, with an average of approximately ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Country X; 3.1%"
+        },
+        {
+          "id": "B",
+          "text": "Country X; 3.5%"
+        },
+        {
+          "id": "C",
+          "text": "Country Z; 3.3%"
+        },
+        {
+          "id": "D",
+          "text": "Country Z; 3.5%"
+        },
+        {
+          "id": "E",
+          "text": "Country Y; 4.3%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "X avg: 17.3/5=3.46%. Y avg: 21.7/5=4.34%. Z avg: 16.6/5=3.32%. Country Z lowest at ~3.3%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0027",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows MAU (millions) and ARPU ($) for a social app in 2023. MAU: Jan:45, Feb:47, Mar:52, Apr:58, May:63, Jun:60, Jul:55, Aug:59, Sep:65, Oct:72, Nov:78, Dec:85. ARPU: Jan:2.10, Feb:2.05, Mar:2.15, Apr:2.20, May:2.30, Jun:2.25, Jul:2.18, Aug:2.22, Sep:2.35, Oct:2.40, Nov:2.50, Dec:2.60.",
+      "questionStem": "The percentage increase in total monthly revenue (MAU × ARPU) from Q1 average to Q4 average was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "75%"
+        },
+        {
+          "id": "B",
+          "text": "90%"
+        },
+        {
+          "id": "C",
+          "text": "105%"
+        },
+        {
+          "id": "D",
+          "text": "120%"
+        },
+        {
+          "id": "E",
+          "text": "135%"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Q1 revenues: Jan:$94.5M, Feb:$96.35M, Mar:$111.8M. Avg=$100.88M. Q4: Oct:$172.8M, Nov:$195M, Dec:$221M. Avg=$196.27M. Increase=(196.27−100.88)/100.88≈94.6%. Closest to 90%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0028",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows cumulative distance (km) by a cyclist over 8 hours. H1: 25, H2: 52, H3: 74, H4: 88, H5: 105, H6: 128, H7: 148, H8: 162. The y-axis goes from 0 to 180 km.",
+      "questionStem": "The hour during which the cyclist covered the least distance was Hour ___, with a speed of ___ km/h.",
+      "options": [
+        {
+          "id": "A",
+          "text": "4; 14"
+        },
+        {
+          "id": "B",
+          "text": "4; 16"
+        },
+        {
+          "id": "C",
+          "text": "8; 14"
+        },
+        {
+          "id": "D",
+          "text": "8; 16"
+        },
+        {
+          "id": "E",
+          "text": "3; 18"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Per-hour distances: H1:25, H2:27, H3:22, H4:14, H5:17, H6:23, H7:20, H8:14. Hours 4 and 8 tied at 14km. Hour 4 comes first; answer is Hour 4; 14 km/h.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0029",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows monthly returns (%) for Fund A over 2023. Jan:+1.2, Feb:−0.5, Mar:+2.1, Apr:+0.8, May:−1.3, Jun:+1.5, Jul:+2.2, Aug:−0.3, Sep:+1.8, Oct:−0.7, Nov:+2.5, Dec:+1.4. Initial investment: $10,000.",
+      "questionStem": "The approximate value of a $10,000 investment in Fund A at end of December 2023 was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$10,780"
+        },
+        {
+          "id": "B",
+          "text": "$10,900"
+        },
+        {
+          "id": "C",
+          "text": "$11,050"
+        },
+        {
+          "id": "D",
+          "text": "$11,120"
+        },
+        {
+          "id": "E",
+          "text": "$11,280"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Compound: $10,000 × 1.012 × 0.995 × 1.021 × 1.008 × 0.987 × 1.015 × 1.022 × 0.997 × 1.018 × 0.993 × 1.025 × 1.014 ≈ $11,118. Closest to $11,120.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0030",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "graphics-interpretation",
+      "subtopic": "line-graph",
+      "passage": "A line graph shows projected and actual quarterly EPS for a company in 2023. Projected: Q1:$1.20, Q2:$1.35, Q3:$1.50, Q4:$1.65. Actual: Q1:$1.25, Q2:$1.28, Q3:$1.55, Q4:$1.58. Stock price change on earnings day: Q1:+3.2%, Q2:−4.5%, Q3:+2.1%, Q4:−2.8%.",
+      "questionStem": "When actual EPS exceeded projected, the average stock change was ___, and when actual fell short, the average was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "+2.65%; −3.65%"
+        },
+        {
+          "id": "B",
+          "text": "+2.65%; −4.50%"
+        },
+        {
+          "id": "C",
+          "text": "+3.20%; −3.65%"
+        },
+        {
+          "id": "D",
+          "text": "+1.75%; −2.80%"
+        },
+        {
+          "id": "E",
+          "text": "+2.10%; −4.50%"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Beat: Q1(+3.2%) and Q3(+2.1%). Avg=(3.2+2.1)/2=+2.65%. Miss: Q2(−4.5%) and Q4(−2.8%). Avg=(−4.5−2.8)/2=−3.65%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0031",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows hours studied (x, 0-20) vs. exam score (y, 0-100). Points: (2,45), (4,55), (6,60), (8,68), (10,75), (12,78), (14,82), (16,88), (18,92), (20,95). Best-fit line passes through approximately (4,55) and (16,88).",
+      "questionStem": "Based on the line of best fit, a student who studied 11 hours would score approximately ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "69"
+        },
+        {
+          "id": "B",
+          "text": "72"
+        },
+        {
+          "id": "C",
+          "text": "75"
+        },
+        {
+          "id": "D",
+          "text": "78"
+        },
+        {
+          "id": "E",
+          "text": "81"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Line through (4,55) and (16,88): slope=(88−55)/12=2.75. At x=11: y=55+2.75×(11−4)=55+19.25=74.25. Closest to 75.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0032",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows car age (x, 1-10 years) vs. resale price (y, $0-$30K). Points: (1,$26K), (2,$22K), (3,$19K), (4,$16.5K), (5,$14K), (6,$12K), (7,$10.5K), (8,$9K), (9,$7.5K), (10,$6.5K).",
+      "questionStem": "The percentage decline in price from year 1 to year 5 was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "38%"
+        },
+        {
+          "id": "B",
+          "text": "42%"
+        },
+        {
+          "id": "C",
+          "text": "46%"
+        },
+        {
+          "id": "D",
+          "text": "50%"
+        },
+        {
+          "id": "E",
+          "text": "54%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Decline = (26,000−14,000)/26,000 × 100 = 12,000/26,000 × 100 ≈ 46.2%. Closest to 46%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0033",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows advertising spend (x, $0-$100K) vs. sales revenue (y, $0-$600K) for 10 offices. Points: ($10K,$85K), ($20K,$140K), ($25K,$180K), ($35K,$210K), ($40K,$250K), ($50K,$310K), ($55K,$290K), ($65K,$380K), ($75K,$420K), ($90K,$510K).",
+      "questionStem": "The office with the lowest ratio of sales revenue to advertising spend had a ratio of approximately ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "4.8"
+        },
+        {
+          "id": "B",
+          "text": "5.3"
+        },
+        {
+          "id": "C",
+          "text": "5.6"
+        },
+        {
+          "id": "D",
+          "text": "6.3"
+        },
+        {
+          "id": "E",
+          "text": "7.0"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Ratios: 8.5, 7.0, 7.2, 6.0, 6.25, 6.2, 290/55=5.27, 5.85, 5.6, 5.67. Lowest is 5.27 ($55K,$290K). Closest to 5.3.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0034",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows employee tenure (x, 0-15 years) vs. salary (y, $40K-$120K). Points: (1,$52K), (2,$55K), (3,$62K), (5,$72K), (7,$78K), (8,$85K), (10,$92K), (12,$98K), (15,$115K). Best-fit line: y = 48 + 4.4x (thousands).",
+      "questionStem": "Among the data points, the one furthest above the line of best fit has a tenure of approximately ___ years.",
+      "options": [
+        {
+          "id": "A",
+          "text": "3"
+        },
+        {
+          "id": "B",
+          "text": "5"
+        },
+        {
+          "id": "C",
+          "text": "8"
+        },
+        {
+          "id": "D",
+          "text": "12"
+        },
+        {
+          "id": "E",
+          "text": "15"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Predicted vs actual at each option: (3): 61.2 vs 62, +0.8. (5): 70 vs 72, +2.0. (8): 83.2 vs 85, +1.8. (12): 100.8 vs 98, −2.8. (15): 114 vs 115, +1.0. Furthest above is 5 years (+$2.0K).",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0035",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows GDP per capita (x, $5K-$60K) vs. life expectancy (y, 55-85 years) for 8 countries. A:($8K,62), B:($12K,68), C:($18K,72), D:($25K,75), E:($32K,78), F:($40K,79), G:($48K,81), H:($55K,82).",
+      "questionStem": "A $10,000 increase in GDP per capita from $18K to $28K is associated with an approximate life expectancy increase of ___ years.",
+      "options": [
+        {
+          "id": "A",
+          "text": "1.5"
+        },
+        {
+          "id": "B",
+          "text": "2.5"
+        },
+        {
+          "id": "C",
+          "text": "3.5"
+        },
+        {
+          "id": "D",
+          "text": "4.5"
+        },
+        {
+          "id": "E",
+          "text": "5.5"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Slope between C($18K,72) and E($32K,78): (78−72)/(32−18)=6/14≈0.43 years per $1K. Over $10K: 4.3 years. But between C and D: (75−72)/(25−18)=3/7≈0.43/K. Interpolating $18K→$28K using this slope: ~4.3 years. Between options, 3.5 is closest to local estimates around the midpoint.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0036",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows height (x, 150-200 cm) vs. weight (y, 50-110 kg) for 12 athletes. Correlation coefficient r = 0.97.",
+      "questionStem": "The percentage of variance in weight explained by height (r²) is closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "88%"
+        },
+        {
+          "id": "B",
+          "text": "91%"
+        },
+        {
+          "id": "C",
+          "text": "94%"
+        },
+        {
+          "id": "D",
+          "text": "97%"
+        },
+        {
+          "id": "E",
+          "text": "99%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "r² = (0.97)² = 0.9409 ≈ 94.1%. Closest to 94%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0037",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows number of stores (x, 50-500) vs. annual revenue (y, $10M-$250M) for 8 retail chains. Chain 1:(75,$18M), 2:(120,$35M), 3:(180,$52M), 4:(220,$85M), 5:(280,$110M), 6:(340,$145M), 7:(400,$190M), 8:(480,$230M).",
+      "questionStem": "The chain with the highest revenue per store had approximately $___ in revenue per store.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$385K"
+        },
+        {
+          "id": "B",
+          "text": "$420K"
+        },
+        {
+          "id": "C",
+          "text": "$475K"
+        },
+        {
+          "id": "D",
+          "text": "$510K"
+        },
+        {
+          "id": "E",
+          "text": "$550K"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Revenue per store: 240K, 292K, 289K, 386K, 393K, 426K, 475K, 479K. Chain 8 has highest at ~$479K. Closest to $475K.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0038",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows R&D spending (x, 2%-20% of revenue) vs. 5-year revenue growth (y, −10% to 80%). A quadratic best fit: y = −0.15x² + 5.8x − 12.",
+      "questionStem": "The R&D spending percentage that maximizes predicted 5-year revenue growth is closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "15%"
+        },
+        {
+          "id": "B",
+          "text": "17%"
+        },
+        {
+          "id": "C",
+          "text": "19%"
+        },
+        {
+          "id": "D",
+          "text": "21%"
+        },
+        {
+          "id": "E",
+          "text": "23%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "For y=ax²+bx+c, max at x=−b/(2a). x=−5.8/(2×(−0.15))=5.8/0.30=19.33%. Closest to 19%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0039",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows commute time (x, 10-60 min) vs. satisfaction (y, 1-10). Best-fit line: y = 9.2 − 0.09x.",
+      "questionStem": "Satisfaction drops below 5.0 when commute time exceeds approximately ___ minutes.",
+      "options": [
+        {
+          "id": "A",
+          "text": "42"
+        },
+        {
+          "id": "B",
+          "text": "44"
+        },
+        {
+          "id": "C",
+          "text": "47"
+        },
+        {
+          "id": "D",
+          "text": "50"
+        },
+        {
+          "id": "E",
+          "text": "53"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "5.0 = 9.2 − 0.09x → 0.09x = 4.2 → x = 46.67. Satisfaction drops below 5.0 after ~47 minutes.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0040",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "graphics-interpretation",
+      "subtopic": "scatter-plot",
+      "passage": "A scatter plot shows P/E ratio (x, 5-40) vs. annual return (y, −20% to 40%). Value stocks (P/E 5-15): (6,12%), (8,18%), (9,15%), (10,22%), (12,8%), (13,25%), (14,20%). Growth stocks (P/E 20-40): (22,−5%), (24,15%), (26,28%), (28,−10%), (30,32%), (33,35%), (36,10%), (39,18%). Overall r = 0.15.",
+      "questionStem": "The average return of Value stocks exceeded Growth stocks by approximately ___ percentage points.",
+      "options": [
+        {
+          "id": "A",
+          "text": "1.7"
+        },
+        {
+          "id": "B",
+          "text": "2.5"
+        },
+        {
+          "id": "C",
+          "text": "3.5"
+        },
+        {
+          "id": "D",
+          "text": "4.5"
+        },
+        {
+          "id": "E",
+          "text": "5.5"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Value avg: (12+18+15+22+8+25+20)/7=120/7≈17.1%. Growth avg: (−5+15+28−10+32+35+10+18)/8=123/8≈15.4%. Diff=1.7 pp.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0041",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "A pie chart shows a household's monthly budget of $5,000. Housing: 35%, Food: 20%, Transportation: 15%, Utilities: 10%, Entertainment: 8%, Savings: 12%.",
+      "questionStem": "The combined dollar amount spent on Housing and Food is ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$2,250"
+        },
+        {
+          "id": "B",
+          "text": "$2,500"
+        },
+        {
+          "id": "C",
+          "text": "$2,750"
+        },
+        {
+          "id": "D",
+          "text": "$3,000"
+        },
+        {
+          "id": "E",
+          "text": "$3,250"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Housing + Food = 35%+20% = 55%. Amount = 0.55 × $5,000 = $2,750.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0042",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "A pie chart shows market share of five coffee chains. Chain A: 28%, Chain B: 22%, Chain C: 18%, Chain D: 17%, Chain E: 15%. Total market: $12 million.",
+      "questionStem": "Chain C's revenue is ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$1.56M"
+        },
+        {
+          "id": "B",
+          "text": "$1.80M"
+        },
+        {
+          "id": "C",
+          "text": "$2.04M"
+        },
+        {
+          "id": "D",
+          "text": "$2.16M"
+        },
+        {
+          "id": "E",
+          "text": "$2.40M"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Chain C = 18% of $12M = 0.18 × $12M = $2.16M.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0043",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "Two pie charts compare revenue sources. 2020 (Total: $80M): Product Sales 55%, Services 25%, Licensing 12%, Other 8%. 2024 (Total: $120M): Product Sales 42%, Services 35%, Licensing 15%, Other 8%.",
+      "questionStem": "The dollar amount of Services revenue increased from 2020 to 2024 by ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$12M"
+        },
+        {
+          "id": "B",
+          "text": "$18M"
+        },
+        {
+          "id": "C",
+          "text": "$22M"
+        },
+        {
+          "id": "D",
+          "text": "$25M"
+        },
+        {
+          "id": "E",
+          "text": "$30M"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Services 2020: 25%×$80M=$20M. Services 2024: 35%×$120M=$42M. Increase=$22M.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0044",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "A pie chart shows 800 employees by department: Engineering: 30%, Sales: 22%, Marketing: 15%, Operations: 18%, HR: 8%, Finance: 7%.",
+      "questionStem": "If Engineering is split equally into Frontend, Backend, and Data teams, each team would have ___ employees.",
+      "options": [
+        {
+          "id": "A",
+          "text": "72"
+        },
+        {
+          "id": "B",
+          "text": "76"
+        },
+        {
+          "id": "C",
+          "text": "80"
+        },
+        {
+          "id": "D",
+          "text": "84"
+        },
+        {
+          "id": "E",
+          "text": "88"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Engineering = 30% × 800 = 240. Split 3 ways: 240/3 = 80 each.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0045",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "A pie chart shows a $2M portfolio: US Stocks 40%, International 20%, Bonds 25%, Real Estate 10%, Cash 5%. Annual returns: US Stocks +12%, International +8%, Bonds +4%, Real Estate +6%, Cash +1%.",
+      "questionStem": "The weighted average annual return was closest to ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "6.2%"
+        },
+        {
+          "id": "B",
+          "text": "7.3%"
+        },
+        {
+          "id": "C",
+          "text": "8.1%"
+        },
+        {
+          "id": "D",
+          "text": "8.5%"
+        },
+        {
+          "id": "E",
+          "text": "9.1%"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Weighted return = 0.40×12 + 0.20×8 + 0.25×4 + 0.10×6 + 0.05×1 = 4.8+1.6+1.0+0.6+0.05 = 8.05%. Closest to 8.1%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0046",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "A pie chart shows causes of 5,000 flight delays: Weather 32%, Air Traffic Control 24%, Mechanical Issues 18%, Crew Availability 14%, Other 12%.",
+      "questionStem": "The number of delayed flights caused by Weather or Air Traffic Control was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "2,400"
+        },
+        {
+          "id": "B",
+          "text": "2,600"
+        },
+        {
+          "id": "C",
+          "text": "2,800"
+        },
+        {
+          "id": "D",
+          "text": "3,000"
+        },
+        {
+          "id": "E",
+          "text": "3,200"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Weather + ATC = 32%+24% = 56%. Number = 0.56 × 5,000 = 2,800.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0047",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "Two pie charts show smartphone OS market share. Q4 2019 (350M units): Android 76%, iOS 20%, Others 4%. Q4 2023 (400M units): Android 72%, iOS 24%, Others 4%.",
+      "questionStem": "iOS devices sold increased from Q4 2019 to Q4 2023 by approximately ___ million units.",
+      "options": [
+        {
+          "id": "A",
+          "text": "16"
+        },
+        {
+          "id": "B",
+          "text": "22"
+        },
+        {
+          "id": "C",
+          "text": "26"
+        },
+        {
+          "id": "D",
+          "text": "30"
+        },
+        {
+          "id": "E",
+          "text": "34"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "iOS Q4 2019: 20%×350M=70M. iOS Q4 2023: 24%×400M=96M. Increase=26M.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0048",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "A pie chart shows a city's $500M budget: Education 28%, Public Safety 22%, Infrastructure 18%, Healthcare 15%, Administration 10%, Debt Service 7%. Next year budget increases 6%, Education share rises to 30%, Public Safety drops to 20%.",
+      "questionStem": "Education's dollar allocation next year would exceed this year's by approximately ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$12M"
+        },
+        {
+          "id": "B",
+          "text": "$15M"
+        },
+        {
+          "id": "C",
+          "text": "$19M"
+        },
+        {
+          "id": "D",
+          "text": "$22M"
+        },
+        {
+          "id": "E",
+          "text": "$25M"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "This year Education: 28%×$500M=$140M. Next year: 30%×$530M=$159M. Increase=$19M.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0049",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "Two pie charts show energy mix. 2018 (500 TWh): Coal 40%, Gas 30%, Nuclear 15%, Hydro 8%, Wind 4%, Solar 3%. 2023 (580 TWh): Coal 28%, Gas 28%, Nuclear 14%, Hydro 9%, Wind 12%, Solar 9%.",
+      "questionStem": "The energy source with the greatest absolute production increase (TWh) from 2018 to 2023 was ___.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Natural Gas"
+        },
+        {
+          "id": "B",
+          "text": "Wind"
+        },
+        {
+          "id": "C",
+          "text": "Solar"
+        },
+        {
+          "id": "D",
+          "text": "Hydro"
+        },
+        {
+          "id": "E",
+          "text": "Nuclear"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Changes: Coal: 200→162.4(−37.6), Gas: 150→162.4(+12.4), Nuclear: 75→81.2(+6.2), Hydro: 40→52.2(+12.2), Wind: 20→69.6(+49.6), Solar: 15→52.2(+37.2). Wind increased most: +49.6 TWh.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-gi-0050",
+      "type": "GI",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "graphics-interpretation",
+      "subtopic": "pie-chart",
+      "passage": "A pie chart shows a $10M venture fund allocation: Startup A: 25%, B: 20%, C: 18%, D: 15%, E: 12%, F: 10%. After 3 years, returns: A: 3x, B: 0x (total loss), C: 2x, D: 1.5x, E: 4x, F: 2.5x.",
+      "questionStem": "The startup that contributed the most to the fund's total final value was ___, accounting for approximately ___% of total final value.",
+      "options": [
+        {
+          "id": "A",
+          "text": "A; 36.3%"
+        },
+        {
+          "id": "B",
+          "text": "A; 41.7%"
+        },
+        {
+          "id": "C",
+          "text": "E; 26.7%"
+        },
+        {
+          "id": "D",
+          "text": "C; 20.0%"
+        },
+        {
+          "id": "E",
+          "text": "E; 30.2%"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Final values: A: $2.5M×3=$7.5M, B: $0, C: $1.8M×2=$3.6M, D: $1.5M×1.5=$2.25M, E: $1.2M×4=$4.8M, F: $1M×2.5=$2.5M. Total=$20.65M. A=$7.5M/20.65M=36.3%.",
+      "source": "PrepWISE Generated"
+    }
+  ]]

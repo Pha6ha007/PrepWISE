@@ -1,1 +1,1960 @@
-[]
+[[
+    {
+      "id": "gen-tpa-0001",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A store sells notebooks and pens. Notebooks cost $4 each and pens cost $2 each. A customer buys a total of 10 items and spends exactly $28.",
+      "questionStem": "Select a value for the number of notebooks and a value for the number of pens that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "3"
+        },
+        {
+          "id": "C",
+          "text": "4"
+        },
+        {
+          "id": "D",
+          "text": "5"
+        },
+        {
+          "id": "E",
+          "text": "6"
+        },
+        {
+          "id": "F",
+          "text": "8"
+        }
+      ],
+      "correctAnswer": "C,E",
+      "explanation": "Let N = notebooks, P = pens. N + P = 10 and 4N + 2P = 28. From the first equation, P = 10 - N. Substituting: 4N + 2(10 - N) = 28 → 2N = 8 → N = 4 (C). P = 6 (E). Column 1 (Notebooks) = C, Column 2 (Pens) = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0002",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "Maria has quarters and dimes. She has 12 coins in total, and their combined value is $2.10.",
+      "questionStem": "Select a value for the number of quarters and a value for the number of dimes that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "4"
+        },
+        {
+          "id": "C",
+          "text": "5"
+        },
+        {
+          "id": "D",
+          "text": "6"
+        },
+        {
+          "id": "E",
+          "text": "7"
+        },
+        {
+          "id": "F",
+          "text": "8"
+        }
+      ],
+      "correctAnswer": "D,D",
+      "explanation": "Q + D = 12 and 0.25Q + 0.10D = 2.10. Substituting D = 12 - Q: 0.15Q = 0.90 → Q = 6 (D). D = 6 (D). Both columns select D.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0003",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "Two numbers have a sum of 20 and a difference of 8.",
+      "questionStem": "Select the larger number and the smaller number that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "4"
+        },
+        {
+          "id": "B",
+          "text": "6"
+        },
+        {
+          "id": "C",
+          "text": "8"
+        },
+        {
+          "id": "D",
+          "text": "10"
+        },
+        {
+          "id": "E",
+          "text": "12"
+        },
+        {
+          "id": "F",
+          "text": "14"
+        }
+      ],
+      "correctAnswer": "F,B",
+      "explanation": "L + S = 20 and L - S = 8. Adding: 2L = 28 → L = 14 (F). S = 6 (B). Column 1 (Larger) = F, Column 2 (Smaller) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0004",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A bakery sells muffins for $3 each and cookies for $1 each. On Monday, the bakery sold a total of 50 items and earned $90 in revenue.",
+      "questionStem": "Select a value for the number of muffins sold and a value for the number of cookies sold that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "10"
+        },
+        {
+          "id": "B",
+          "text": "15"
+        },
+        {
+          "id": "C",
+          "text": "20"
+        },
+        {
+          "id": "D",
+          "text": "25"
+        },
+        {
+          "id": "E",
+          "text": "30"
+        },
+        {
+          "id": "F",
+          "text": "35"
+        }
+      ],
+      "correctAnswer": "C,E",
+      "explanation": "M + C = 50 and 3M + C = 90. Subtracting: 2M = 40 → M = 20 (C). C = 30 (E). Column 1 (Muffins) = C, Column 2 (Cookies) = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0005",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A parking lot has motorcycles (2 wheels) and cars (4 wheels). There are 15 vehicles and 48 wheels in total.",
+      "questionStem": "Select a value for the number of motorcycles and a value for the number of cars that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "3"
+        },
+        {
+          "id": "B",
+          "text": "5"
+        },
+        {
+          "id": "C",
+          "text": "6"
+        },
+        {
+          "id": "D",
+          "text": "9"
+        },
+        {
+          "id": "E",
+          "text": "10"
+        },
+        {
+          "id": "F",
+          "text": "12"
+        }
+      ],
+      "correctAnswer": "C,D",
+      "explanation": "M + C = 15 and 2M + 4C = 48. M = 15 - C → 2(15 - C) + 4C = 48 → 30 + 2C = 48 → C = 9 (D). M = 6 (C). Column 1 (Motorcycles) = C, Column 2 (Cars) = D.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0006",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A company invested a total of $50,000 in two funds. Fund A yields 6% annually and Fund B yields 10% annually. The total annual interest earned from both funds is $3,800.",
+      "questionStem": "Select the amount invested in Fund A and the amount invested in Fund B that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$10,000"
+        },
+        {
+          "id": "B",
+          "text": "$15,000"
+        },
+        {
+          "id": "C",
+          "text": "$20,000"
+        },
+        {
+          "id": "D",
+          "text": "$25,000"
+        },
+        {
+          "id": "E",
+          "text": "$30,000"
+        },
+        {
+          "id": "F",
+          "text": "$35,000"
+        }
+      ],
+      "correctAnswer": "E,C",
+      "explanation": "A + B = 50,000 and 0.06A + 0.10B = 3,800. Substituting A = 50,000 - B: 3,000 - 0.06B + 0.10B = 3,800 → 0.04B = 800 → B = 20,000 (C). A = 30,000 (E). Column 1 (Fund A) = E, Column 2 (Fund B) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0007",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A test has 30 questions. Correct answers earn 4 points and incorrect answers lose 1 point. A student answered every question and scored 70 points.",
+      "questionStem": "Select the number of correct answers and the number of incorrect answers that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "8"
+        },
+        {
+          "id": "B",
+          "text": "10"
+        },
+        {
+          "id": "C",
+          "text": "12"
+        },
+        {
+          "id": "D",
+          "text": "15"
+        },
+        {
+          "id": "E",
+          "text": "18"
+        },
+        {
+          "id": "F",
+          "text": "20"
+        }
+      ],
+      "correctAnswer": "F,B",
+      "explanation": "C + I = 30 and 4C - I = 70. Adding: 5C = 100 → C = 20 (F). I = 10 (B). Column 1 (Correct) = F, Column 2 (Incorrect) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0008",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A theater charges $12 for adult tickets and $5 for child tickets. For a particular show, 200 tickets were sold and total revenue was $1,560.",
+      "questionStem": "Select the number of adult tickets sold and the number of child tickets sold that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "40"
+        },
+        {
+          "id": "B",
+          "text": "60"
+        },
+        {
+          "id": "C",
+          "text": "80"
+        },
+        {
+          "id": "D",
+          "text": "100"
+        },
+        {
+          "id": "E",
+          "text": "120"
+        },
+        {
+          "id": "F",
+          "text": "140"
+        }
+      ],
+      "correctAnswer": "C,E",
+      "explanation": "A + C = 200 and 12A + 5C = 1,560. C = 200 - A → 12A + 1,000 - 5A = 1,560 → 7A = 560 → A = 80 (C). Children = 120 (E). Verify: 12(80) + 5(120) = 960 + 600 = 1,560 ✓. Column 1 (Adults) = C, Column 2 (Children) = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0009",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A chemist needs to mix a 20% acid solution with a 60% acid solution to produce 40 liters of a 35% acid solution.",
+      "questionStem": "Select the volume of the 20% solution and the volume of the 60% solution that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "10 liters"
+        },
+        {
+          "id": "B",
+          "text": "15 liters"
+        },
+        {
+          "id": "C",
+          "text": "20 liters"
+        },
+        {
+          "id": "D",
+          "text": "25 liters"
+        },
+        {
+          "id": "E",
+          "text": "30 liters"
+        },
+        {
+          "id": "F",
+          "text": "35 liters"
+        }
+      ],
+      "correctAnswer": "D,B",
+      "explanation": "X + Y = 40 and 0.20X + 0.60Y = 14. X = 40 - Y → 8 - 0.20Y + 0.60Y = 14 → 0.40Y = 6 → Y = 15 (B). X = 25 (D). Column 1 (20%) = D, Column 2 (60%) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0010",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A factory produces standard widgets and premium widgets. Each standard widget requires 2 hours of labor, and each premium widget requires 5 hours. The factory has 160 labor-hours available per day and must produce exactly 50 widgets per day.",
+      "questionStem": "Select the number of standard widgets and the number of premium widgets produced daily that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "10"
+        },
+        {
+          "id": "B",
+          "text": "15"
+        },
+        {
+          "id": "C",
+          "text": "20"
+        },
+        {
+          "id": "D",
+          "text": "25"
+        },
+        {
+          "id": "E",
+          "text": "30"
+        },
+        {
+          "id": "F",
+          "text": "35"
+        }
+      ],
+      "correctAnswer": "E,C",
+      "explanation": "S + P = 50 and 2S + 5P = 160. S = 50 - P → 100 - 2P + 5P = 160 → 3P = 60 → P = 20 (C). S = 30 (E). Column 1 (Standard) = E, Column 2 (Premium) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0011",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "Two trains depart from the same station at the same time, traveling in opposite directions. After 3 hours, they are 540 km apart. Train A's speed is twice Train B's speed.",
+      "questionStem": "Select the speed of Train A and the speed of Train B that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "40 km/h"
+        },
+        {
+          "id": "B",
+          "text": "50 km/h"
+        },
+        {
+          "id": "C",
+          "text": "60 km/h"
+        },
+        {
+          "id": "D",
+          "text": "80 km/h"
+        },
+        {
+          "id": "E",
+          "text": "100 km/h"
+        },
+        {
+          "id": "F",
+          "text": "120 km/h"
+        }
+      ],
+      "correctAnswer": "F,C",
+      "explanation": "3(A + B) = 540, so A + B = 180. A = 2B → 3B = 180 → B = 60 (C). A = 120 (F). Column 1 (Train A) = F, Column 2 (Train B) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0012",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A fruit vendor sells apples for $1.50 each and oranges for $2.50 each. Yesterday, the vendor sold 80 pieces of fruit and earned a total of $140.",
+      "questionStem": "Select the number of apples sold and the number of oranges sold that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "10"
+        },
+        {
+          "id": "B",
+          "text": "20"
+        },
+        {
+          "id": "C",
+          "text": "30"
+        },
+        {
+          "id": "D",
+          "text": "40"
+        },
+        {
+          "id": "E",
+          "text": "50"
+        },
+        {
+          "id": "F",
+          "text": "60"
+        }
+      ],
+      "correctAnswer": "F,B",
+      "explanation": "A + O = 80 and 1.50A + 2.50O = 140. A = 80 - O → 120 - 1.50O + 2.50O = 140 → O = 20 (B). A = 60 (F). Column 1 (Apples) = F, Column 2 (Oranges) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0013",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A rope is cut into two pieces. The longer piece is 14 meters longer than the shorter piece, and the longer piece is 3 times the length of the shorter piece.",
+      "questionStem": "Select the length of the longer piece and the length of the shorter piece that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "5 meters"
+        },
+        {
+          "id": "B",
+          "text": "7 meters"
+        },
+        {
+          "id": "C",
+          "text": "10 meters"
+        },
+        {
+          "id": "D",
+          "text": "14 meters"
+        },
+        {
+          "id": "E",
+          "text": "21 meters"
+        },
+        {
+          "id": "F",
+          "text": "28 meters"
+        }
+      ],
+      "correctAnswer": "E,B",
+      "explanation": "L - S = 14 and L = 3S. 3S - S = 14 → S = 7 (B). L = 21 (E). Column 1 (Longer) = E, Column 2 (Shorter) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0014",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A boat travels 60 km upstream and 60 km downstream. The upstream trip takes 5 hours and the downstream trip takes 3 hours.",
+      "questionStem": "Select the boat's speed in still water and the speed of the current that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "2 km/h"
+        },
+        {
+          "id": "B",
+          "text": "4 km/h"
+        },
+        {
+          "id": "C",
+          "text": "8 km/h"
+        },
+        {
+          "id": "D",
+          "text": "12 km/h"
+        },
+        {
+          "id": "E",
+          "text": "16 km/h"
+        },
+        {
+          "id": "F",
+          "text": "20 km/h"
+        }
+      ],
+      "correctAnswer": "E,B",
+      "explanation": "Upstream: B - C = 60/5 = 12. Downstream: B + C = 60/3 = 20. Adding: 2B = 32 → B = 16 (E). 2C = 8 → C = 4 (B). Column 1 (Boat) = E, Column 2 (Current) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0015",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A shipment contains small and large boxes. Small boxes weigh 5 kg each and large boxes weigh 15 kg each. There are 24 boxes with a total weight of 200 kg.",
+      "questionStem": "Select the number of small boxes and the number of large boxes that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "4"
+        },
+        {
+          "id": "B",
+          "text": "8"
+        },
+        {
+          "id": "C",
+          "text": "10"
+        },
+        {
+          "id": "D",
+          "text": "12"
+        },
+        {
+          "id": "E",
+          "text": "16"
+        },
+        {
+          "id": "F",
+          "text": "20"
+        }
+      ],
+      "correctAnswer": "E,B",
+      "explanation": "S + L = 24 and 5S + 15L = 200. S = 24 - L → 120 - 5L + 15L = 200 → 10L = 80 → L = 8 (B). S = 16 (E). Column 1 (Small) = E, Column 2 (Large) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0016",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A retailer purchased 60 identical items for $2,400 total. She sold some at a 25% markup and the rest at a 40% markup. The number of items sold at 25% markup was twice the number sold at 40% markup.",
+      "questionStem": "Select the number of items sold at 25% markup and the number sold at 40% markup that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "10"
+        },
+        {
+          "id": "B",
+          "text": "15"
+        },
+        {
+          "id": "C",
+          "text": "20"
+        },
+        {
+          "id": "D",
+          "text": "30"
+        },
+        {
+          "id": "E",
+          "text": "40"
+        },
+        {
+          "id": "F",
+          "text": "45"
+        }
+      ],
+      "correctAnswer": "E,C",
+      "explanation": "Cost per unit = $40. X = items at 25% markup, Y = items at 40% markup. X + Y = 60, X = 2Y → 3Y = 60, Y = 20 (C), X = 40 (E). Revenue: 40($50) + 20($56) = $2,000 + $1,120 = $3,120. Column 1 (25% markup) = E, Column 2 (40% markup) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0017",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "Two machines working together can complete a job in 12 hours. Machine A is 50% faster than Machine B (Machine A takes two-thirds the time Machine B takes to do the job alone).",
+      "questionStem": "Select the time Machine A takes alone and the time Machine B takes alone that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "15 hours"
+        },
+        {
+          "id": "B",
+          "text": "18 hours"
+        },
+        {
+          "id": "C",
+          "text": "20 hours"
+        },
+        {
+          "id": "D",
+          "text": "24 hours"
+        },
+        {
+          "id": "E",
+          "text": "30 hours"
+        },
+        {
+          "id": "F",
+          "text": "36 hours"
+        }
+      ],
+      "correctAnswer": "C,E",
+      "explanation": "1/X + 1/Y = 1/12, X = (2/3)Y. Substituting: 3/(2Y) + 1/Y = 1/12 → 5/(2Y) = 1/12 → Y = 30 (E). X = 20 (C). Column 1 (Machine A) = C, Column 2 (Machine B) = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0018",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A portfolio manager allocates $100,000 between stocks and bonds. Stocks earn 8% per year and bonds earn 3% per year. The overall annual return must be exactly $5,500.",
+      "questionStem": "Select the amount allocated to stocks and the amount allocated to bonds that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$10,000"
+        },
+        {
+          "id": "B",
+          "text": "$20,000"
+        },
+        {
+          "id": "C",
+          "text": "$30,000"
+        },
+        {
+          "id": "D",
+          "text": "$40,000"
+        },
+        {
+          "id": "E",
+          "text": "$50,000"
+        },
+        {
+          "id": "F",
+          "text": "$60,000"
+        },
+        {
+          "id": "G",
+          "text": "$70,000"
+        }
+      ],
+      "correctAnswer": "E,E",
+      "explanation": "S + B = 100,000 and 0.08S + 0.03B = 5,500. B = 100,000 - S → 0.08S + 3,000 - 0.03S = 5,500 → 0.05S = 2,500 → S = 50,000 (E). B = 50,000 (E). Both columns = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0019",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A number N can be expressed as the product of two positive integers P and Q, such that P + Q = 28 and P × Q = 187.",
+      "questionStem": "Select the value of P (the larger factor) and the value of Q (the smaller factor) that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "7"
+        },
+        {
+          "id": "B",
+          "text": "9"
+        },
+        {
+          "id": "C",
+          "text": "11"
+        },
+        {
+          "id": "D",
+          "text": "13"
+        },
+        {
+          "id": "E",
+          "text": "17"
+        },
+        {
+          "id": "F",
+          "text": "19"
+        }
+      ],
+      "correctAnswer": "E,C",
+      "explanation": "t² - 28t + 187 = 0. Discriminant = 784 - 748 = 36. t = (28 ± 6)/2 → 17 or 11. P = 17 (E), Q = 11 (C). Verify: 17 + 11 = 28, 17 × 11 = 187 ✓. Column 1 (P) = E, Column 2 (Q) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0020",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A plane flies 2,400 km from City A to City B (with the wind) and returns the same distance against the wind. The return trip takes 2 hours longer. The plane's speed in still air is 500 km/h.",
+      "questionStem": "Select the time for the outbound trip (A to B) and the time for the return trip (B to A) that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "3 hours"
+        },
+        {
+          "id": "B",
+          "text": "4 hours"
+        },
+        {
+          "id": "C",
+          "text": "5 hours"
+        },
+        {
+          "id": "D",
+          "text": "6 hours"
+        },
+        {
+          "id": "E",
+          "text": "8 hours"
+        },
+        {
+          "id": "F",
+          "text": "10 hours"
+        }
+      ],
+      "correctAnswer": "B,D",
+      "explanation": "Let T = outbound time, return = T + 2. Outbound: 2400/T = 500 + W. Return: 2400/(T+2) = 500 - W. Adding: 2400/T + 2400/(T+2) = 1000. Try T = 4: 600 + 400 = 1000 ✓. Outbound = 4h (B), Return = 6h (D). Column 1 = B, Column 2 = D.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0021",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "In a class of 40 students, each studies French, Spanish, or both. 28 study French and 22 study Spanish.",
+      "questionStem": "Select the number of students who study only French and the number who study only Spanish that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "6"
+        },
+        {
+          "id": "B",
+          "text": "8"
+        },
+        {
+          "id": "C",
+          "text": "10"
+        },
+        {
+          "id": "D",
+          "text": "12"
+        },
+        {
+          "id": "E",
+          "text": "18"
+        },
+        {
+          "id": "F",
+          "text": "22"
+        }
+      ],
+      "correctAnswer": "E,D",
+      "explanation": "By inclusion-exclusion: 28 + 22 - Both = 40 → Both = 10. Only French = 28 - 10 = 18 (E). Only Spanish = 22 - 10 = 12 (D). Column 1 (Only French) = E, Column 2 (Only Spanish) = D.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0022",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A store offers a bulk discount. The first K units cost $8 each, and any units beyond K cost $5 each. A customer buys 30 units and pays $186 total.",
+      "questionStem": "Select the discount threshold K and the number of discounted units that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "6"
+        },
+        {
+          "id": "C",
+          "text": "10"
+        },
+        {
+          "id": "D",
+          "text": "12"
+        },
+        {
+          "id": "E",
+          "text": "18"
+        },
+        {
+          "id": "F",
+          "text": "22"
+        }
+      ],
+      "correctAnswer": "D,E",
+      "explanation": "8K + 5(30 - K) = 186 → 8K + 150 - 5K = 186 → 3K = 36 → K = 12 (D). Discounted = 30 - 12 = 18 (E). Column 1 (K) = D, Column 2 (Discounted) = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0023",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A company has two revenue streams. Stream A generates R_A = 15n - 200 dollars when n units are sold. Stream B generates a flat fee of F dollars per month. In January, 40 units were sold and total revenue was $700.",
+      "questionStem": "Select the monthly flat fee F and the value of Stream A's revenue when 50 units are sold, R_A(50), that together are consistent with the information above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "$100"
+        },
+        {
+          "id": "B",
+          "text": "$300"
+        },
+        {
+          "id": "C",
+          "text": "$500"
+        },
+        {
+          "id": "D",
+          "text": "$550"
+        },
+        {
+          "id": "E",
+          "text": "$700"
+        },
+        {
+          "id": "F",
+          "text": "$1,000"
+        }
+      ],
+      "correctAnswer": "B,D",
+      "explanation": "R_A(40) = 15(40) - 200 = 400. Total = 400 + F = 700 → F = 300 (B). R_A(50) = 15(50) - 200 = 550 (D). Column 1 (F) = B, Column 2 (R_A(50)) = D.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0024",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "A rectangular garden has a perimeter of 56 meters. A diagonal walkway across the garden measures exactly 20 meters.",
+      "questionStem": "Select the length and the width of the garden that together satisfy the conditions above.",
+      "options": [
+        {
+          "id": "A",
+          "text": "8 meters"
+        },
+        {
+          "id": "B",
+          "text": "10 meters"
+        },
+        {
+          "id": "C",
+          "text": "12 meters"
+        },
+        {
+          "id": "D",
+          "text": "14 meters"
+        },
+        {
+          "id": "E",
+          "text": "16 meters"
+        },
+        {
+          "id": "F",
+          "text": "18 meters"
+        },
+        {
+          "id": "G",
+          "text": "20 meters"
+        }
+      ],
+      "correctAnswer": "E,C",
+      "explanation": "2(L+W) = 56 → L+W = 28. L² + W² = 400. (L+W)² = 784 → L² + 2LW + W² = 784 → 2LW = 384 → LW = 192. Roots of t² - 28t + 192 = 0: t = (28 ± 4)/2 = 16 or 12. L = 16 (E), W = 12 (C). Verify: 16² + 12² = 400 ✓. Column 1 (Length) = E, Column 2 (Width) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0025",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "two-part-analysis",
+      "subtopic": "algebraic",
+      "passage": "Two candles are lit simultaneously. Candle A is 24 cm tall and burns at 3 cm/hour. Candle B is 16 cm tall and burns at 1 cm/hour. After T hours, both candles will be the same height.",
+      "questionStem": "Select the time T (in hours) when the candles are the same height, and select that common height (in cm).",
+      "options": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "4"
+        },
+        {
+          "id": "C",
+          "text": "8"
+        },
+        {
+          "id": "D",
+          "text": "10"
+        },
+        {
+          "id": "E",
+          "text": "12"
+        },
+        {
+          "id": "F",
+          "text": "16"
+        }
+      ],
+      "correctAnswer": "B,E",
+      "explanation": "24 - 3T = 16 - T → 8 = 2T → T = 4 (B). Height = 24 - 12 = 12 (E). Column 1 (Time) = B, Column 2 (Height) = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0026",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "Sales of electric vehicles have risen sharply in the past three years. Government subsidies have made electric vehicles more affordable for consumers. Therefore, the increase in electric vehicle sales is primarily due to government subsidies.",
+      "questionStem": "Select the statement that serves as a premise in the argument and the statement that serves as the conclusion.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Sales of electric vehicles have risen sharply in the past three years."
+        },
+        {
+          "id": "B",
+          "text": "Government subsidies have made electric vehicles more affordable for consumers."
+        },
+        {
+          "id": "C",
+          "text": "The increase in electric vehicle sales is primarily due to government subsidies."
+        },
+        {
+          "id": "D",
+          "text": "Electric vehicles are better for the environment than gasoline-powered cars."
+        },
+        {
+          "id": "E",
+          "text": "Consumers prefer affordable vehicles regardless of the fuel type."
+        },
+        {
+          "id": "F",
+          "text": "Government subsidies will continue to increase in the future."
+        }
+      ],
+      "correctAnswer": "B,C",
+      "explanation": "Option B is a stated premise providing the evidential basis (subsidies made EVs affordable). Option C is the conclusion (the sales increase is primarily due to subsidies). Column 1 (Premise) = B, Column 2 (Conclusion) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0027",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "Studies show that students who eat breakfast perform better on standardized tests. Most students at Lincoln High School skip breakfast regularly. It follows that Lincoln High School students would likely improve their test scores if they began eating breakfast.",
+      "questionStem": "Select the statement that serves as a premise and the statement that serves as the conclusion.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Students who eat breakfast perform better on standardized tests."
+        },
+        {
+          "id": "B",
+          "text": "Most students at Lincoln High School skip breakfast regularly."
+        },
+        {
+          "id": "C",
+          "text": "Lincoln High School students would likely improve their test scores if they began eating breakfast."
+        },
+        {
+          "id": "D",
+          "text": "Standardized tests are an accurate measure of student ability."
+        },
+        {
+          "id": "E",
+          "text": "Schools should provide free breakfast to all students."
+        },
+        {
+          "id": "F",
+          "text": "Eating breakfast is the single most important factor in academic success."
+        }
+      ],
+      "correctAnswer": "A,C",
+      "explanation": "The general finding (A) is a premise. The specific prediction about Lincoln High (C) is the conclusion. Column 1 (Premise) = A, Column 2 (Conclusion) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0028",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "All of the company's delivery trucks run on diesel fuel. Diesel fuel prices have increased by 30% this quarter. Therefore, the company's fuel costs have increased this quarter.",
+      "questionStem": "Select the statement that serves as a premise and the statement that serves as the conclusion.",
+      "options": [
+        {
+          "id": "A",
+          "text": "All of the company's delivery trucks run on diesel fuel."
+        },
+        {
+          "id": "B",
+          "text": "Diesel fuel prices have increased by 30% this quarter."
+        },
+        {
+          "id": "C",
+          "text": "The company's fuel costs have increased this quarter."
+        },
+        {
+          "id": "D",
+          "text": "The company should switch to electric delivery trucks."
+        },
+        {
+          "id": "E",
+          "text": "Diesel fuel is less efficient than gasoline."
+        },
+        {
+          "id": "F",
+          "text": "Fuel costs represent the largest expense for delivery companies."
+        }
+      ],
+      "correctAnswer": "B,C",
+      "explanation": "The diesel price increase (B) is a key premise. The company's increased fuel costs (C) is the conclusion. Column 1 (Premise) = B, Column 2 (Conclusion) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0029",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "The city's population grew by 15% last year. During the same period, housing units increased by only 5%. Consequently, housing prices in the city are likely to have risen.",
+      "questionStem": "Select the statement that serves as a premise and the statement that serves as the conclusion.",
+      "options": [
+        {
+          "id": "A",
+          "text": "The city's population grew by 15% last year."
+        },
+        {
+          "id": "B",
+          "text": "The number of housing units increased by only 5%."
+        },
+        {
+          "id": "C",
+          "text": "Housing prices in the city are likely to have risen."
+        },
+        {
+          "id": "D",
+          "text": "The city government should invest in more housing construction."
+        },
+        {
+          "id": "E",
+          "text": "Population growth always leads to higher housing prices."
+        },
+        {
+          "id": "F",
+          "text": "People are moving to the city for better job opportunities."
+        }
+      ],
+      "correctAnswer": "A,C",
+      "explanation": "Population growth outpacing housing supply (A) is the primary premise. Rising housing prices (C) is the conclusion. Column 1 (Premise) = A, Column 2 (Conclusion) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0030",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "Employee satisfaction surveys show that flexible work hours are the most valued benefit. Our company does not currently offer flexible work hours. Therefore, introducing flexible work hours would likely improve employee satisfaction at our company.",
+      "questionStem": "Select the statement that serves as a premise and the statement that serves as the conclusion.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Flexible work hours are the most valued benefit according to surveys."
+        },
+        {
+          "id": "B",
+          "text": "Our company does not currently offer flexible work hours."
+        },
+        {
+          "id": "C",
+          "text": "Introducing flexible work hours would likely improve employee satisfaction."
+        },
+        {
+          "id": "D",
+          "text": "Employee satisfaction directly impacts company profitability."
+        },
+        {
+          "id": "E",
+          "text": "Other companies have already adopted flexible work hours."
+        },
+        {
+          "id": "F",
+          "text": "Surveys are not always reliable indicators of actual preferences."
+        }
+      ],
+      "correctAnswer": "A,C",
+      "explanation": "Survey data (A) is the premise. The prediction about improvement (C) is the conclusion. Column 1 (Premise) = A, Column 2 (Conclusion) = C.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0031",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A pharmaceutical company argues that its new drug should be approved for widespread use. Clinical trials showed a 40% reduction in symptoms vs. placebo. However, trials lasted only six months and involved 200 participants aged 30-50.",
+      "questionStem": "Select the statement that, if true, most strengthens the argument for approval, and the statement that, if true, most weakens it.",
+      "options": [
+        {
+          "id": "A",
+          "text": "The drug's mechanism of action is well understood and targets a specific biological pathway."
+        },
+        {
+          "id": "B",
+          "text": "A subsequent 18-month study with 2,000 diverse participants confirmed the 40% reduction with no serious side effects."
+        },
+        {
+          "id": "C",
+          "text": "The condition the drug treats is most prevalent among people over age 60."
+        },
+        {
+          "id": "D",
+          "text": "The placebo group reported a 10% natural improvement in symptoms."
+        },
+        {
+          "id": "E",
+          "text": "The company's previous drug for the same condition was withdrawn due to long-term side effects not detected in short trials."
+        },
+        {
+          "id": "F",
+          "text": "The FDA has approved other drugs based on similar trial sizes."
+        }
+      ],
+      "correctAnswer": "B,E",
+      "explanation": "B strengthens by addressing all trial limitations. E weakens by showing this company's short trials missed dangerous side effects before. Column 1 (Strengthen) = B, Column 2 (Weaken) = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0032",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A city council member argues that building a new stadium will revitalize downtown, citing that cities with new stadiums saw tourism and revenue increases. Critics note those cities also implemented other economic development programs simultaneously.",
+      "questionStem": "Select the statement that best represents the council member's evidence and the statement that best represents the critics' objection.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Cities with new stadiums have experienced increases in tourism and business revenue."
+        },
+        {
+          "id": "B",
+          "text": "The observed economic benefits may be attributable to programs other than stadium construction."
+        },
+        {
+          "id": "C",
+          "text": "Building a stadium will create construction jobs in the short term."
+        },
+        {
+          "id": "D",
+          "text": "Stadiums are popular venues that attract visitors from neighboring regions."
+        },
+        {
+          "id": "E",
+          "text": "The stadium project would require a significant investment of taxpayer funds."
+        },
+        {
+          "id": "F",
+          "text": "Downtown areas naturally experience economic cycles regardless of infrastructure projects."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "A is the council member's correlation-based evidence. B is the critics' alternative-cause objection. Column 1 (Evidence) = A, Column 2 (Objection) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0033",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A school district considers eliminating art and music programs to cut costs. Proponents say math/reading test scores won't suffer. Opponents say art and music contribute to cognitive development and engagement.",
+      "questionStem": "Select the statement that best supports the proponents' position and the statement that best supports the opponents' position.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Schools that cut art programs showed no decline in math and reading scores over three years."
+        },
+        {
+          "id": "B",
+          "text": "Students in music courses develop stronger pattern-recognition skills that transfer to mathematical reasoning."
+        },
+        {
+          "id": "C",
+          "text": "Art supplies and instruments represent a small portion of the budget."
+        },
+        {
+          "id": "D",
+          "text": "Parental satisfaction surveys rank art and music as the most valued extracurriculars."
+        },
+        {
+          "id": "E",
+          "text": "The district's math scores have been declining for unrelated reasons."
+        },
+        {
+          "id": "F",
+          "text": "Students in districts without art programs are 20% more likely to report feeling disengaged."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "A supports proponents with direct evidence of no score decline. B supports opponents by showing cognitive transfer from music to math. Column 1 (Proponents) = A, Column 2 (Opponents) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0034",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A CEO claims remote work hasn't reduced productivity, citing stable total output. A manager counters that the company hired 20% more employees during the same period.",
+      "questionStem": "Select the statement that represents the CEO's evidence and the statement that identifies the flaw the manager highlights.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Total output remained constant after the shift to remote work."
+        },
+        {
+          "id": "B",
+          "text": "Per-employee productivity may have actually declined despite stable total output."
+        },
+        {
+          "id": "C",
+          "text": "Remote work saves the company money on office space and utilities."
+        },
+        {
+          "id": "D",
+          "text": "Employee satisfaction surveys show higher morale under remote work."
+        },
+        {
+          "id": "E",
+          "text": "The technology sector as a whole saw increased output during the same period."
+        },
+        {
+          "id": "F",
+          "text": "Some tasks are inherently less suited to remote work environments."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "The CEO's evidence is stable total output (A). The flaw is that with 20% more workers producing the same output, per-worker productivity fell (B). Column 1 (Evidence) = A, Column 2 (Flaw) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0035",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "Greenville's transportation department proposes widening Main Street from 2 to 4 lanes to reduce congestion. Traffic engineers warn that wider roads often induce additional demand.",
+      "questionStem": "Select the statement that best represents the department's assumption and the statement that best represents the engineers' counterargument.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Increasing road capacity will proportionally reduce congestion."
+        },
+        {
+          "id": "B",
+          "text": "Additional road capacity attracts more drivers, eventually restoring congestion levels."
+        },
+        {
+          "id": "C",
+          "text": "Public transportation is a more effective long-term solution."
+        },
+        {
+          "id": "D",
+          "text": "The cost of widening will be offset by reduced travel times."
+        },
+        {
+          "id": "E",
+          "text": "Greenville's population is expected to remain stable."
+        },
+        {
+          "id": "F",
+          "text": "Congestion is primarily caused by poor signal timing, not insufficient lanes."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "The department assumes more lanes = less congestion (A). Engineers counter with induced demand (B). Column 1 (Assumption) = A, Column 2 (Counter) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0036",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A university's new admissions policy weights extracurricular achievements more heavily. First-year data shows demographic composition didn't change, but the applicant pool grew 30%.",
+      "questionStem": "Select the statement that best explains why diversity didn't change, and the statement that suggests the policy may work over time.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Students from underrepresented backgrounds are less likely to have access to structured extracurricular programs."
+        },
+        {
+          "id": "B",
+          "text": "Extracurricular involvement correlates strongly with family income level."
+        },
+        {
+          "id": "C",
+          "text": "The larger applicant pool included more first-generation college students."
+        },
+        {
+          "id": "D",
+          "text": "Admissions officers didn't receive training on evaluating non-traditional activities."
+        },
+        {
+          "id": "E",
+          "text": "The policy was announced only two months before the deadline."
+        },
+        {
+          "id": "F",
+          "text": "High schools in lower-income areas are expanding extracurricular offerings in response to the policy."
+        }
+      ],
+      "correctAnswer": "A,F",
+      "explanation": "A explains no change: underrepresented students lack extracurricular access, so weighting these more doesn't help them. F suggests long-term success as schools adapt. Column 1 (Explains) = A, Column 2 (Future) = F.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0037",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A health insurer claims its wellness program reduces costs, noting participants had 15% lower medical expenses than non-participants over two years.",
+      "questionStem": "Select the statement that identifies the most significant flaw and the statement that would most effectively address it.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Participants self-selected into the program, so they may have been healthier to begin with."
+        },
+        {
+          "id": "B",
+          "text": "A randomized trial assigning employees to the program showed a 12% cost reduction."
+        },
+        {
+          "id": "C",
+          "text": "The program includes both exercise incentives and nutritional counseling."
+        },
+        {
+          "id": "D",
+          "text": "Non-participants may have had higher costs due to pre-existing conditions."
+        },
+        {
+          "id": "E",
+          "text": "Healthcare costs have been rising nationally at 8% per year."
+        },
+        {
+          "id": "F",
+          "text": "The insurer has a financial incentive to promote the program."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "The flaw is selection bias (A). A randomized trial (B) eliminates self-selection, establishing causation. Column 1 (Flaw) = A, Column 2 (Addresses it) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0038",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A restaurant chain plans to replace servers with ordering kiosks. The CEO argues this improves satisfaction through accuracy and speed. Employees argue the human element keeps customers returning.",
+      "questionStem": "Select the statement that most supports the CEO's argument and the statement that most supports the employees' argument.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Order accuracy complaints account for 60% of all negative feedback."
+        },
+        {
+          "id": "B",
+          "text": "A competitor that introduced kiosks saw repeat visits decline 25% within a year."
+        },
+        {
+          "id": "C",
+          "text": "Kiosks cost less than a server's annual salary."
+        },
+        {
+          "id": "D",
+          "text": "70% of customers rate 'friendly service' as their top reason for returning."
+        },
+        {
+          "id": "E",
+          "text": "Kiosk technology reduces average order time by 40%."
+        },
+        {
+          "id": "F",
+          "text": "Fast-food chains have used kiosks without satisfaction decline."
+        }
+      ],
+      "correctAnswer": "A,D",
+      "explanation": "A supports the CEO: most complaints are about accuracy, which kiosks fix. D supports employees: customers return for friendly service. Column 1 (CEO) = A, Column 2 (Employees) = D.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0039",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A non-profit argues that giving free laptops to low-income students will close the achievement gap, citing a pilot where recipients' grades improved 10%.",
+      "questionStem": "Select the statement identifying the key assumption and the statement that most undermines it.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Laptop access is a significant barrier to academic success for low-income students."
+        },
+        {
+          "id": "B",
+          "text": "The pilot also provided tutoring and internet access not available to the control group."
+        },
+        {
+          "id": "C",
+          "text": "Laptops become outdated within three years and need ongoing maintenance."
+        },
+        {
+          "id": "D",
+          "text": "Pilot students were selected because teachers identified them as motivated."
+        },
+        {
+          "id": "E",
+          "text": "The achievement gap is influenced by nutrition, housing, and parental involvement."
+        },
+        {
+          "id": "F",
+          "text": "Many low-income students already have smartphone internet access."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "The key assumption is that laptop access is the barrier (A). B undermines it by showing the pilot bundled other interventions. Column 1 (Assumption) = A, Column 2 (Undermines) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0040",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A finance minister argues that cutting the corporate tax rate from 30% to 20% will stimulate growth and ultimately increase total tax revenue. The opposition says it will simply reduce revenue.",
+      "questionStem": "Select the statement that most supports the minister's position and the statement that most supports the opposition's position.",
+      "options": [
+        {
+          "id": "A",
+          "text": "A neighboring country's similar cut saw GDP growth rise 2 points and tax revenue increase 8% within three years."
+        },
+        {
+          "id": "B",
+          "text": "Most large corporations indicated they would use savings for stock buybacks rather than hiring."
+        },
+        {
+          "id": "C",
+          "text": "The country currently has one of the highest corporate tax rates in its region."
+        },
+        {
+          "id": "D",
+          "text": "Small businesses, which create most new jobs, are already taxed at a lower rate."
+        },
+        {
+          "id": "E",
+          "text": "Infrastructure spending generates higher multipliers than tax cuts."
+        },
+        {
+          "id": "F",
+          "text": "The country is currently running a budget surplus."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "A supports the minister with a comparable success case. B supports the opposition: buybacks instead of hiring undercuts the growth mechanism. Column 1 (Minister) = A, Column 2 (Opposition) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0041",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A researcher claims a gene variant causes increased Type 2 diabetes susceptibility: 78% of diabetes clinic patients carry it vs. 30% of the general population. The study didn't control for diet, exercise, or family history.",
+      "questionStem": "Select the statement representing the researcher's primary evidence and the statement identifying the most critical methodological weakness.",
+      "options": [
+        {
+          "id": "A",
+          "text": "The gene variant is found at a significantly higher rate among diabetes patients than in the general population."
+        },
+        {
+          "id": "B",
+          "text": "The study failed to account for confounding variables that independently affect diabetes risk."
+        },
+        {
+          "id": "C",
+          "text": "Genetic research has identified many gene variants associated with chronic diseases."
+        },
+        {
+          "id": "D",
+          "text": "The clinic's patients may not represent all diabetes patients."
+        },
+        {
+          "id": "E",
+          "text": "The 30% general-population prevalence suggests the variant is common."
+        },
+        {
+          "id": "F",
+          "text": "Gene-environment interactions complicate genetic association studies."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "A is the primary evidence (prevalence difference). B is the critical weakness (uncontrolled confounders). Column 1 (Evidence) = A, Column 2 (Weakness) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0042",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "An economist argues rent control is counterproductive because landlords convert rentals to condos or let buildings deteriorate, reducing supply. A housing advocate responds that without rent control, low-income families would be displaced from cities, concentrating poverty in outlying areas.",
+      "questionStem": "Select the statement that best captures the economist's central claim and the statement that best captures the advocate's central claim.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Rent control reduces the overall supply of quality rental housing."
+        },
+        {
+          "id": "B",
+          "text": "Without rent control, low-income displacement creates concentrated poverty elsewhere."
+        },
+        {
+          "id": "C",
+          "text": "Landlords should be free to charge market-rate rents."
+        },
+        {
+          "id": "D",
+          "text": "Rent control creates a two-tiered market benefiting incumbents over newcomers."
+        },
+        {
+          "id": "E",
+          "text": "Urban housing policy should prioritize new construction over price controls."
+        },
+        {
+          "id": "F",
+          "text": "Displacement reduces low-income residents' access to city-center jobs and services."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "The economist's central claim is reduced supply (A). The advocate's central claim is displacement and concentrated poverty (B). Column 1 (Economist) = A, Column 2 (Advocate) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0043",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A startup claims its AI hiring tool eliminates bias by evaluating only skills, experience, and credentials. An independent audit found candidates from certain demographic groups were systematically ranked lower.",
+      "questionStem": "Select the startup's likely defense and the statement that best explains the audit's findings.",
+      "options": [
+        {
+          "id": "A",
+          "text": "The algorithm does not include any demographic variables in its scoring."
+        },
+        {
+          "id": "B",
+          "text": "Proxy variables like zip code and university can correlate with demographics and introduce indirect bias."
+        },
+        {
+          "id": "C",
+          "text": "AI tools are generally more consistent than human evaluators."
+        },
+        {
+          "id": "D",
+          "text": "The training data reflected historical hiring patterns that favored certain groups."
+        },
+        {
+          "id": "E",
+          "text": "The audit sample was too small for reliable conclusions."
+        },
+        {
+          "id": "F",
+          "text": "Transparency regulations should require disclosure of training data."
+        }
+      ],
+      "correctAnswer": "A,D",
+      "explanation": "The startup's defense: no demographic variables in the algorithm (A). Best explanation: biased training data (D). Column 1 (Defense) = A, Column 2 (Explains audit) = D.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0044",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A pharma executive argues high drug prices fund R&D, noting new drugs cost ~$2.6B and 10+ years to develop. Critics say foundational research is publicly funded and companies spend more on marketing than R&D.",
+      "questionStem": "Select the statement that most directly supports the executive's justification and the statement that most directly undermines it.",
+      "options": [
+        {
+          "id": "A",
+          "text": "New drugs have significantly improved survival rates for several diseases."
+        },
+        {
+          "id": "B",
+          "text": "Industry marketing expenditures exceed R&D spending by approximately 30%."
+        },
+        {
+          "id": "C",
+          "text": "Patent protections let companies recoup costs before generics enter the market."
+        },
+        {
+          "id": "D",
+          "text": "Government-funded university research contributes to early-stage discovery of most new drugs."
+        },
+        {
+          "id": "E",
+          "text": "Developing a new drug costs approximately $2.6 billion over more than a decade."
+        },
+        {
+          "id": "F",
+          "text": "Several countries with price controls still have thriving pharmaceutical industries."
+        }
+      ],
+      "correctAnswer": "E,B",
+      "explanation": "E directly supports: enormous development costs justify high prices. B directly undermines: profits fund marketing more than R&D. Column 1 (Supports) = E, Column 2 (Undermines) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0045",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A school board member argues tablets will improve learning, citing a study where tablet students scored 8% higher. A teacher notes the tablet group also received new curriculum materials designed for digital delivery that the textbook group did not receive.",
+      "questionStem": "Select the statement representing the board member's assumption and the statement describing the confound the teacher identifies.",
+      "options": [
+        {
+          "id": "A",
+          "text": "The score improvement was caused by the tablets rather than other factors."
+        },
+        {
+          "id": "B",
+          "text": "The tablet group's advantage may be due to the new curriculum materials, not the tablets."
+        },
+        {
+          "id": "C",
+          "text": "Digital devices are more engaging than printed materials."
+        },
+        {
+          "id": "D",
+          "text": "The study's sample size was large enough for meaningful differences."
+        },
+        {
+          "id": "E",
+          "text": "Tablets provide access to interactive content textbooks cannot."
+        },
+        {
+          "id": "F",
+          "text": "Teachers in the tablet group received additional training on digital pedagogy."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "The board member assumes tablets caused the improvement (A). The teacher identifies the confounding curriculum materials (B). Column 1 (Assumption) = A, Column 2 (Confound) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0046",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A mayor proposes banning single-use plastic bags, citing they constitute 12% of litter. Business owners say consumers will shift to other single-use products. Environmental scientists note plastic bags are less than 1% of total waste by weight.",
+      "questionStem": "Select the strongest reason to support the ban and the strongest reason to question its expected impact.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Plastic bags harm wildlife and clog waterways as a visible form of pollution."
+        },
+        {
+          "id": "B",
+          "text": "Jurisdictions with bag bans report no significant reduction in total waste volume."
+        },
+        {
+          "id": "C",
+          "text": "Manufacturing bag alternatives produces higher carbon emissions per unit."
+        },
+        {
+          "id": "D",
+          "text": "Plastic bags are not biodegradable and persist in the environment for hundreds of years."
+        },
+        {
+          "id": "E",
+          "text": "Consumer studies show bag bans lead to increased purchases of thicker plastic garbage bags."
+        },
+        {
+          "id": "F",
+          "text": "Public support for the ban exceeds 60%."
+        }
+      ],
+      "correctAnswer": "D,E",
+      "explanation": "D supports the ban: persistence makes them uniquely harmful. E questions impact: substitution to thicker bags negates the benefit. Column 1 (Support) = D, Column 2 (Question) = E.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0047",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A consultant recommends a struggling retailer invest in e-commerce over store renovation, citing industry trends and the 25-40 demographic's online shopping preference. The CEO counters that the brand is built on in-store experience.",
+      "questionStem": "Select the consultant's key assumption and the statement that most supports the CEO's position.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Industry-wide e-commerce trends will apply to this specific company's customer base."
+        },
+        {
+          "id": "B",
+          "text": "In-store customers spend 3x more per visit and have twice the retention rate of online customers."
+        },
+        {
+          "id": "C",
+          "text": "Building a competitive e-commerce platform costs more than store renovations."
+        },
+        {
+          "id": "D",
+          "text": "Several specialty retailers have successfully gone online-only."
+        },
+        {
+          "id": "E",
+          "text": "The company's online reviews are consistently lower than in-store satisfaction scores."
+        },
+        {
+          "id": "F",
+          "text": "Physical retail's share of total retail has declined for 10 consecutive years."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "The consultant assumes broad trends apply to this company (A). B supports the CEO: in-store customers are far more valuable. Column 1 (Assumption) = A, Column 2 (Supports CEO) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0048",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "An editorial argues autonomous vehicles (AVs) should be deployed immediately because human error causes 94% of accidents. However, AV testing shows they struggle with construction zones, erratic pedestrians, and severe weather. The editorial also ignores the ethical framework for unavoidable-accident decisions.",
+      "questionStem": "Select the strongest objection to immediate deployment, and the statement that would most effectively rebut that objection.",
+      "options": [
+        {
+          "id": "A",
+          "text": "AVs' inability to handle unpredictable situations means they could cause accidents where human judgment currently prevents them."
+        },
+        {
+          "id": "B",
+          "text": "Extensive pilot programs in five major cities showed AVs reduced accidents by 60% even in construction zones and adverse weather."
+        },
+        {
+          "id": "C",
+          "text": "The ethical framework for unavoidable-accident decisions remains unresolved across cultures."
+        },
+        {
+          "id": "D",
+          "text": "Insurance companies haven't developed pricing models for AV liability."
+        },
+        {
+          "id": "E",
+          "text": "AVs can be programmed to disengage when detecting conditions beyond their parameters."
+        },
+        {
+          "id": "F",
+          "text": "Fewer than 30% of adults are willing to ride in an AV."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "A is the strongest objection: AVs could cause harm where humans wouldn't. B rebuts it with empirical evidence that AVs reduce accidents even in challenging conditions. Column 1 (Objection) = A, Column 2 (Rebuttal) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0049",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A central bank raised rates 2 points to fight 9% inflation. Six months later, inflation fell to 5% but unemployment rose from 4% to 7%. The bank calls it a success. Critics say the costs outweigh the benefits. Defenders say unchecked inflation would have caused greater long-term damage.",
+      "questionStem": "Select the statement that most effectively supports the critics and the statement that most effectively supports the defenders.",
+      "options": [
+        {
+          "id": "A",
+          "text": "The unemployment increase disproportionately affected low-income workers."
+        },
+        {
+          "id": "B",
+          "text": "Historical data shows unchecked inflation above 8% typically leads to recessions with 10%+ unemployment."
+        },
+        {
+          "id": "C",
+          "text": "The same inflation reduction could have been achieved with a smaller rate increase."
+        },
+        {
+          "id": "D",
+          "text": "Central banks in neighboring countries achieved similar reductions through targeted fiscal measures without significant unemployment increases."
+        },
+        {
+          "id": "E",
+          "text": "The Phillips Curve suggests a short-term inflation-unemployment tradeoff is expected."
+        },
+        {
+          "id": "F",
+          "text": "Consumer confidence dropped sharply during the period."
+        }
+      ],
+      "correctAnswer": "D,B",
+      "explanation": "D supports critics: other countries achieved the same result without the unemployment cost, suggesting the approach was too aggressive. B supports defenders: without action, things would have been worse. Column 1 (Critics) = D, Column 2 (Defenders) = B.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-tpa-0050",
+      "type": "TPA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "two-part-analysis",
+      "subtopic": "verbal",
+      "passage": "A social media company claims its moderation algorithm removes 95% of hate speech within 24 hours. Independent researchers find it disproportionately flags minority groups discussing discrimination while missing coded language from actual hate groups. The company says increasing sensitivity would cause too many false positives.",
+      "questionStem": "Select the statement that captures the fundamental tension and the statement that suggests a viable resolution.",
+      "options": [
+        {
+          "id": "A",
+          "text": "Optimizing for high removal rates can silence protected communities while missing sophisticated hate speech."
+        },
+        {
+          "id": "B",
+          "text": "A hybrid AI-plus-human-moderator system reduced both false positives and false negatives by 40% in comparable platforms' pilots."
+        },
+        {
+          "id": "C",
+          "text": "The moderation guidelines define hate speech too broadly, including any discussion of race."
+        },
+        {
+          "id": "D",
+          "text": "Users who are incorrectly flagged can appeal through a review process."
+        },
+        {
+          "id": "E",
+          "text": "The algorithm was trained primarily on English-language data."
+        },
+        {
+          "id": "F",
+          "text": "Transparency reports would increase public trust in the platform."
+        }
+      ],
+      "correctAnswer": "A,B",
+      "explanation": "A captures the core tension: the algorithm's approach silences those it should protect while missing actual bad actors. B offers a demonstrated resolution: hybrid systems that reduce both error types. Column 1 (Tension) = A, Column 2 (Resolution) = B.",
+      "source": "PrepWISE Generated"
+    }
+  ]]

@@ -1,1 +1,1752 @@
-[]
+[[
+    {
+      "id": "gen-ta-0001",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows annual revenue (in millions of dollars) for five technology companies from 2021 to 2024.\n\n| Company | 2021 ($M) | 2022 ($M) | 2023 ($M) | 2024 ($M) | Headquarters |\n|---------|-----------|-----------|-----------|-----------|-------------|\n| ByteWave | 34.2 | 41.7 | 38.9 | 47.3 | Austin |\n| CloudPeak | 28.1 | 32.5 | 35.6 | 40.2 | Seattle |\n| DataNova | 52.8 | 48.3 | 55.1 | 60.4 | San Jose |\n| EdgeLink | 19.6 | 22.8 | 26.4 | 31.5 | Denver |\n| FusionAI | 45.0 | 50.2 | 53.7 | 58.9 | Boston |",
+      "questionStem": "If the companies are sorted by their 2024 revenue from highest to lowest, which company would be third on the list?",
+      "options": [
+        {
+          "id": "A",
+          "text": "ByteWave"
+        },
+        {
+          "id": "B",
+          "text": "CloudPeak"
+        },
+        {
+          "id": "C",
+          "text": "DataNova"
+        },
+        {
+          "id": "D",
+          "text": "FusionAI"
+        },
+        {
+          "id": "E",
+          "text": "EdgeLink"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Sorting 2024 revenue from highest to lowest: DataNova ($60.4M), FusionAI ($58.9M), ByteWave ($47.3M), CloudPeak ($40.2M), EdgeLink ($31.5M). ByteWave is third.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0002",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "filtering",
+      "passage": "The following table shows population data for six cities in a metropolitan area.\n\n| City | Population (2024) | Median Age | Median Income ($) | Unemployment (%) | Area (sq mi) |\n|------|-------------------|------------|-------------------|-------------------|--------------|\n| Ashton | 85,400 | 34 | 62,500 | 4.2 | 18.3 |\n| Brookfield | 124,600 | 41 | 78,300 | 3.1 | 25.7 |\n| Clearview | 67,200 | 29 | 48,900 | 5.8 | 12.4 |\n| Dunmore | 93,100 | 38 | 71,200 | 3.9 | 22.1 |\n| Eastdale | 56,800 | 45 | 85,100 | 2.7 | 14.6 |\n| Fairhaven | 110,300 | 36 | 66,800 | 4.5 | 30.2 |",
+      "questionStem": "How many cities have both a population greater than 80,000 and an unemployment rate below 4.5%?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "4"
+        },
+        {
+          "id": "E",
+          "text": "5"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Cities with population > 80,000: Ashton (85,400), Brookfield (124,600), Dunmore (93,100), Fairhaven (110,300). Of these, unemployment below 4.5%: Ashton (4.2%), Brookfield (3.1%), Dunmore (3.9%). Fairhaven has 4.5%, which is not below 4.5%. So 3 cities qualify.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0003",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows the results of a customer satisfaction survey for a restaurant chain across five locations.\n\n| Location | Food Quality (1-10) | Service (1-10) | Ambiance (1-10) | Value (1-10) | Responses |\n|----------|---------------------|----------------|-----------------|--------------|----------|\n| Downtown | 8.4 | 7.2 | 8.9 | 6.5 | 342 |\n| Westside | 7.6 | 8.5 | 7.1 | 7.8 | 218 |\n| Northgate | 9.1 | 6.8 | 7.5 | 8.2 | 156 |\n| Lakefront | 8.0 | 8.1 | 9.2 | 7.0 | 287 |\n| Eastpoint | 7.3 | 7.9 | 6.8 | 8.5 | 195 |",
+      "questionStem": "Which location received the highest score in any single category?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Downtown, with a score of 8.9 in Ambiance"
+        },
+        {
+          "id": "B",
+          "text": "Lakefront, with a score of 9.2 in Ambiance"
+        },
+        {
+          "id": "C",
+          "text": "Northgate, with a score of 9.1 in Food Quality"
+        },
+        {
+          "id": "D",
+          "text": "Westside, with a score of 8.5 in Service"
+        },
+        {
+          "id": "E",
+          "text": "Eastpoint, with a score of 8.5 in Value"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Scanning all scores: the highest individual score is 9.2, achieved by Lakefront in the Ambiance category. The next highest is 9.1 (Northgate, Food Quality), followed by 8.9 (Downtown, Ambiance).",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0004",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "threshold",
+      "passage": "The following table shows monthly electricity consumption (in kWh) for a small office building in 2024.\n\n| Month | Floor 1 (kWh) | Floor 2 (kWh) | Floor 3 (kWh) | Floor 4 (kWh) | Total (kWh) |\n|-------|---------------|---------------|---------------|---------------|-------------|\n| January | 1,240 | 1,180 | 980 | 1,050 | 4,450 |\n| February | 1,150 | 1,090 | 920 | 990 | 4,150 |\n| March | 1,080 | 1,020 | 870 | 940 | 3,910 |\n| April | 1,310 | 1,250 | 1,060 | 1,120 | 4,740 |\n| May | 1,520 | 1,430 | 1,210 | 1,290 | 5,450 |\n| June | 1,680 | 1,590 | 1,340 | 1,410 | 6,020 |",
+      "questionStem": "In how many months did Floor 1 consume more than 1,200 kWh?",
+      "options": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "3"
+        },
+        {
+          "id": "C",
+          "text": "4"
+        },
+        {
+          "id": "D",
+          "text": "5"
+        },
+        {
+          "id": "E",
+          "text": "6"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Floor 1 consumption by month: January 1,240 (>1,200 ✓), February 1,150 (no), March 1,080 (no), April 1,310 (>1,200 ✓), May 1,520 (>1,200 ✓), June 1,680 (>1,200 ✓). Four months exceed 1,200 kWh.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0005",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows the number of patents filed by six pharmaceutical companies in 2024.\n\n| Company | Drug Patents | Device Patents | Process Patents | Software Patents | Total Patents |\n|---------|-------------|---------------|----------------|-----------------|---------------|\n| MedPharm Inc. | 42 | 18 | 25 | 11 | 96 |\n| BioGenix | 38 | 22 | 19 | 15 | 94 |\n| CuraHealth | 55 | 12 | 31 | 8 | 106 |\n| NovaLabs | 29 | 35 | 14 | 23 | 101 |\n| PharmaCo | 47 | 16 | 28 | 9 | 100 |\n| VitaScience | 33 | 27 | 20 | 18 | 98 |",
+      "questionStem": "Which company filed the fewest total patents?",
+      "options": [
+        {
+          "id": "A",
+          "text": "MedPharm Inc."
+        },
+        {
+          "id": "B",
+          "text": "BioGenix"
+        },
+        {
+          "id": "C",
+          "text": "NovaLabs"
+        },
+        {
+          "id": "D",
+          "text": "PharmaCo"
+        },
+        {
+          "id": "E",
+          "text": "VitaScience"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Total patents: MedPharm Inc. (96), BioGenix (94), CuraHealth (106), NovaLabs (101), PharmaCo (100), VitaScience (98). BioGenix filed the fewest with 94 total patents.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0006",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "filtering",
+      "passage": "The following table shows test scores for students in a college entrance exam.\n\n| Student | Math | Verbal | Writing | Science | Total |\n|---------|------|--------|---------|---------|-------|\n| Adams, J. | 78 | 85 | 82 | 74 | 319 |\n| Chen, L. | 92 | 76 | 88 | 91 | 347 |\n| Diaz, M. | 85 | 90 | 79 | 83 | 337 |\n| Foster, R. | 71 | 82 | 75 | 68 | 296 |\n| Garcia, S. | 88 | 79 | 91 | 86 | 344 |\n| Harris, T. | 95 | 88 | 84 | 93 | 360 |",
+      "questionStem": "How many students scored 85 or above in Math?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "4"
+        },
+        {
+          "id": "E",
+          "text": "5"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Math scores: Adams 78 (no), Chen 92 (≥85 ✓), Diaz 85 (≥85 ✓), Foster 71 (no), Garcia 88 (≥85 ✓), Harris 95 (≥85 ✓). Four students scored 85 or above in Math.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0007",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "threshold",
+      "passage": "The following table shows quarterly profit margins for five retail brands.\n\n| Brand | Q1 (%) | Q2 (%) | Q3 (%) | Q4 (%) | Annual Avg (%) |\n|-------|--------|--------|--------|--------|----------------|\n| AlphaStyle | 8.2 | 9.5 | 7.8 | 12.1 | 9.4 |\n| BrightMart | 6.4 | 7.1 | 6.9 | 10.8 | 7.8 |\n| CozyHome | 11.3 | 10.2 | 9.6 | 14.5 | 11.4 |\n| DailyDeal | 5.1 | 5.8 | 4.9 | 8.3 | 6.0 |\n| EliteGoods | 14.7 | 13.9 | 12.5 | 17.2 | 14.6 |",
+      "questionStem": "Which brand had the lowest profit margin in any single quarter?",
+      "options": [
+        {
+          "id": "A",
+          "text": "AlphaStyle in Q3"
+        },
+        {
+          "id": "B",
+          "text": "BrightMart in Q1"
+        },
+        {
+          "id": "C",
+          "text": "DailyDeal in Q3"
+        },
+        {
+          "id": "D",
+          "text": "DailyDeal in Q1"
+        },
+        {
+          "id": "E",
+          "text": "CozyHome in Q3"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Scanning all quarterly values, the lowest is DailyDeal's Q3 margin of 4.9%. The next lowest values are DailyDeal Q1 (5.1%) and DailyDeal Q2 (5.8%).",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0008",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows average daily temperatures (°F) for six cities during January 2024.\n\n| City | High (°F) | Low (°F) | Avg (°F) | Precipitation (in) | Humidity (%) |\n|------|-----------|----------|----------|--------------------|--------------|\n| Phoenix | 67 | 44 | 55.5 | 0.8 | 38 |\n| Miami | 76 | 60 | 68.0 | 2.1 | 72 |\n| Chicago | 31 | 16 | 23.5 | 1.9 | 68 |\n| Denver | 43 | 18 | 30.5 | 0.5 | 45 |\n| Portland | 46 | 35 | 40.5 | 5.3 | 81 |\n| Atlanta | 52 | 33 | 42.5 | 4.2 | 65 |",
+      "questionStem": "If the cities are sorted by average temperature from lowest to highest, which city would appear fourth?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Atlanta"
+        },
+        {
+          "id": "B",
+          "text": "Phoenix"
+        },
+        {
+          "id": "C",
+          "text": "Portland"
+        },
+        {
+          "id": "D",
+          "text": "Denver"
+        },
+        {
+          "id": "E",
+          "text": "Miami"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Sorted by average temperature (low to high): Chicago (23.5°F), Denver (30.5°F), Portland (40.5°F), Atlanta (42.5°F), Phoenix (55.5°F), Miami (68.0°F). Atlanta is fourth.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0009",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "filtering",
+      "passage": "The following table shows shipping data for a logistics company over six months.\n\n| Month | Domestic Orders | International Orders | Returns | On-Time (%) | Avg Delivery (days) |\n|-------|----------------|---------------------|---------|-------------|--------------------|\n| January | 4,520 | 1,230 | 285 | 94.2 | 3.1 |\n| February | 3,890 | 1,080 | 210 | 95.8 | 2.8 |\n| March | 5,100 | 1,450 | 340 | 92.1 | 3.5 |\n| April | 4,780 | 1,310 | 295 | 93.7 | 3.2 |\n| May | 5,640 | 1,620 | 380 | 91.5 | 3.7 |\n| June | 5,210 | 1,550 | 350 | 92.8 | 3.4 |",
+      "questionStem": "In how many months did the on-time delivery percentage exceed 93%?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "4"
+        },
+        {
+          "id": "E",
+          "text": "5"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "On-time percentages: January 94.2% (>93% ✓), February 95.8% (>93% ✓), March 92.1% (no), April 93.7% (>93% ✓), May 91.5% (no), June 92.8% (no). Three months exceeded 93%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0010",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows the enrollment and graduation numbers for five university departments in 2024.\n\n| Department | Enrolled | Graduated | Faculty | Avg GPA | Research Grants ($K) |\n|------------|----------|-----------|---------|---------|---------------------|\n| Biology | 420 | 105 | 32 | 3.28 | 850 |\n| Chemistry | 310 | 82 | 24 | 3.15 | 720 |\n| Physics | 280 | 68 | 21 | 3.42 | 910 |\n| Mathematics | 350 | 91 | 27 | 3.35 | 480 |\n| Computer Sci | 580 | 142 | 38 | 3.21 | 1,120 |",
+      "questionStem": "Which department has the highest student-to-faculty ratio (Enrolled ÷ Faculty)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Biology"
+        },
+        {
+          "id": "B",
+          "text": "Chemistry"
+        },
+        {
+          "id": "C",
+          "text": "Physics"
+        },
+        {
+          "id": "D",
+          "text": "Computer Science"
+        },
+        {
+          "id": "E",
+          "text": "Mathematics"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Student-to-faculty ratios: Biology 420/32 = 13.1, Chemistry 310/24 = 12.9, Physics 280/21 = 13.3, Mathematics 350/27 = 13.0, Computer Science 580/38 = 15.3. Computer Science has the highest ratio at 15.3.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0011",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows the nutritional content per 100g serving for six food items.\n\n| Food Item | Calories | Protein (g) | Fat (g) | Carbs (g) | Fiber (g) |\n|-----------|----------|-------------|---------|-----------|----------|\n| Quinoa | 120 | 4.4 | 1.9 | 21.3 | 2.8 |\n| Brown Rice | 111 | 2.6 | 0.9 | 23.0 | 1.8 |\n| Sweet Potato | 86 | 1.6 | 0.1 | 20.1 | 3.0 |\n| Lentils | 116 | 9.0 | 0.4 | 20.1 | 7.9 |\n| Chickpeas | 164 | 8.9 | 2.6 | 27.4 | 7.6 |\n| Oats | 389 | 16.9 | 6.9 | 66.3 | 10.6 |",
+      "questionStem": "Which food item has the second-highest protein content per 100g?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Quinoa"
+        },
+        {
+          "id": "B",
+          "text": "Lentils"
+        },
+        {
+          "id": "C",
+          "text": "Chickpeas"
+        },
+        {
+          "id": "D",
+          "text": "Oats"
+        },
+        {
+          "id": "E",
+          "text": "Brown Rice"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Protein content sorted high to low: Oats (16.9g), Lentils (9.0g), Chickpeas (8.9g), Quinoa (4.4g), Brown Rice (2.6g), Sweet Potato (1.6g). Lentils have the second-highest protein.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0012",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "easy",
+      "topic": "table-analysis",
+      "subtopic": "filtering",
+      "passage": "The following table shows sales figures for a bookstore across different genres during Q4 2024.\n\n| Genre | Units Sold | Revenue ($K) | Avg Price ($) | Returns | New Titles |\n|-------|-----------|-------------|---------------|---------|------------|\n| Fiction | 3,450 | 62.1 | 18.00 | 124 | 85 |\n| Non-Fiction | 2,810 | 58.6 | 20.85 | 98 | 72 |\n| Children's | 4,120 | 45.3 | 11.00 | 215 | 110 |\n| Science | 1,540 | 42.4 | 27.53 | 52 | 38 |\n| Biography | 1,980 | 39.6 | 20.00 | 71 | 45 |\n| Self-Help | 2,350 | 44.7 | 19.02 | 105 | 63 |",
+      "questionStem": "Which genre had the highest average price per book?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Fiction"
+        },
+        {
+          "id": "B",
+          "text": "Non-Fiction"
+        },
+        {
+          "id": "C",
+          "text": "Science"
+        },
+        {
+          "id": "D",
+          "text": "Biography"
+        },
+        {
+          "id": "E",
+          "text": "Self-Help"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Average prices: Fiction $18.00, Non-Fiction $20.85, Children's $11.00, Science $27.53, Biography $20.00, Self-Help $19.02. Science has the highest average price at $27.53.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0013",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows quarterly sales data for five retail chains in 2024.\n\n| Company | Q1 ($M) | Q2 ($M) | Q3 ($M) | Q4 ($M) | Employees |\n|---------|---------|---------|---------|---------|----------|\n| AlphaRetail | 12.4 | 15.1 | 14.8 | 18.2 | 3,400 |\n| BetaMart | 9.8 | 11.3 | 10.5 | 14.7 | 2,100 |\n| GammaStor | 18.6 | 20.4 | 19.1 | 22.8 | 5,200 |\n| DeltaShop | 7.2 | 8.9 | 8.1 | 11.3 | 1,600 |\n| EpsilonGo | 14.1 | 16.7 | 15.9 | 19.5 | 4,000 |",
+      "questionStem": "Which company had the greatest percentage increase in revenue from Q1 to Q4?",
+      "options": [
+        {
+          "id": "A",
+          "text": "AlphaRetail"
+        },
+        {
+          "id": "B",
+          "text": "BetaMart"
+        },
+        {
+          "id": "C",
+          "text": "GammaStor"
+        },
+        {
+          "id": "D",
+          "text": "DeltaShop"
+        },
+        {
+          "id": "E",
+          "text": "EpsilonGo"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Percentage increase from Q1 to Q4: AlphaRetail (18.2-12.4)/12.4 = 46.8%, BetaMart (14.7-9.8)/9.8 = 50.0%, GammaStor (22.8-18.6)/18.6 = 22.6%, DeltaShop (11.3-7.2)/7.2 = 56.9%, EpsilonGo (19.5-14.1)/14.1 = 38.3%. DeltaShop had the greatest percentage increase at approximately 56.9%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0014",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows employment data for seven industries in a regional economy.\n\n| Industry | Employees (K) | Avg Salary ($K) | Growth Rate (%) | Vacancies | Turnover (%) |\n|----------|--------------|-----------------|-----------------|-----------|-------------|\n| Healthcare | 45.2 | 68.5 | 3.8 | 2,140 | 12.5 |\n| Technology | 38.7 | 92.3 | 6.2 | 3,450 | 15.8 |\n| Education | 32.1 | 52.4 | 1.5 | 890 | 8.2 |\n| Manufacturing | 28.9 | 58.7 | -1.2 | 620 | 10.4 |\n| Finance | 22.4 | 85.1 | 2.9 | 1,280 | 13.1 |\n| Retail | 51.3 | 34.2 | 0.8 | 4,210 | 22.6 |\n| Construction | 19.8 | 61.3 | 4.1 | 1,050 | 16.9 |",
+      "questionStem": "How many industries have an average salary above $55,000, a positive growth rate, and a turnover rate below 15%?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "4"
+        },
+        {
+          "id": "E",
+          "text": "5"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Checking all three conditions (salary > $55K, positive growth, turnover < 15%): Healthcare: $68.5K ✓, 3.8% ✓, 12.5% ✓. Technology: $92.3K ✓, 6.2% ✓, 15.8% ✗ (fails turnover). Education: $52.4K ✗ (fails salary). Manufacturing: -1.2% ✗ (fails growth). Finance: $85.1K ✓, 2.9% ✓, 13.1% ✓. Retail: $34.2K ✗ (fails salary). Construction: $61.3K ✓, 4.1% ✓, 16.9% ✗ (fails turnover). Two industries qualify: Healthcare and Finance.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0015",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows monthly website traffic data for an e-commerce company.\n\n| Month | Visitors (K) | Page Views (K) | Bounce Rate (%) | Conversion (%) | Avg Session (min) |\n|-------|-------------|----------------|-----------------|----------------|-------------------|\n| Jan | 245 | 892 | 42.3 | 2.8 | 4.2 |\n| Feb | 218 | 756 | 45.1 | 2.5 | 3.8 |\n| Mar | 312 | 1,140 | 38.6 | 3.2 | 4.7 |\n| Apr | 287 | 1,034 | 40.2 | 3.0 | 4.5 |\n| May | 340 | 1,258 | 36.4 | 3.5 | 5.1 |\n| Jun | 365 | 1,387 | 35.8 | 3.7 | 5.3 |",
+      "questionStem": "Approximately how many pages did the average visitor view during March?",
+      "options": [
+        {
+          "id": "A",
+          "text": "2.8"
+        },
+        {
+          "id": "B",
+          "text": "3.2"
+        },
+        {
+          "id": "C",
+          "text": "3.7"
+        },
+        {
+          "id": "D",
+          "text": "4.1"
+        },
+        {
+          "id": "E",
+          "text": "4.7"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Pages per visitor in March = Page Views / Visitors = 1,140K / 312K ≈ 3.65, which rounds to approximately 3.7.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0016",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows economic indicators for eight countries in 2024.\n\n| Country | GDP ($B) | GDP Growth (%) | Inflation (%) | Unemployment (%) | Debt/GDP (%) |\n|---------|----------|---------------|---------------|------------------|--------------|\n| Aldoria | 285 | 3.2 | 4.1 | 5.8 | 62 |\n| Belvane | 142 | 5.8 | 6.5 | 4.2 | 38 |\n| Corvina | 510 | 1.8 | 2.3 | 7.1 | 85 |\n| Deltona | 78 | 7.1 | 8.2 | 3.9 | 25 |\n| Estrova | 395 | 2.5 | 3.6 | 6.4 | 71 |\n| Faldris | 220 | 4.4 | 5.2 | 5.1 | 44 |",
+      "questionStem": "Among the countries with GDP growth above 3%, how many have an inflation rate that is less than double their unemployment rate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "0"
+        },
+        {
+          "id": "B",
+          "text": "1"
+        },
+        {
+          "id": "C",
+          "text": "2"
+        },
+        {
+          "id": "D",
+          "text": "3"
+        },
+        {
+          "id": "E",
+          "text": "4"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Countries with GDP growth > 3%: Aldoria (3.2%), Belvane (5.8%), Deltona (7.1%), Faldris (4.4%). Check if inflation < 2 × unemployment: Aldoria: 4.1 < 2×5.8=11.6 ✓. Belvane: 6.5 < 2×4.2=8.4 ✓. Deltona: 8.2 < 2×3.9=7.8 ✗. Faldris: 5.2 < 2×5.1=10.2 ✓. Three countries qualify.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0017",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows production data for a manufacturing plant across six product lines.\n\n| Product Line | Units Produced | Defect Rate (%) | Unit Cost ($) | Selling Price ($) | Workers |\n|-------------|---------------|-----------------|---------------|-------------------|--------|\n| Alpha | 12,400 | 2.1 | 8.50 | 14.99 | 18 |\n| Beta | 8,600 | 1.5 | 12.30 | 22.49 | 14 |\n| Gamma | 15,200 | 3.4 | 5.75 | 9.99 | 22 |\n| Delta | 6,300 | 0.8 | 24.10 | 39.99 | 10 |\n| Epsilon | 10,800 | 2.7 | 9.20 | 16.49 | 16 |\n| Zeta | 7,900 | 1.2 | 18.40 | 29.99 | 12 |",
+      "questionStem": "Which product line has the highest profit margin per unit (Selling Price minus Unit Cost, as a percentage of Selling Price)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Alpha"
+        },
+        {
+          "id": "B",
+          "text": "Beta"
+        },
+        {
+          "id": "C",
+          "text": "Gamma"
+        },
+        {
+          "id": "D",
+          "text": "Delta"
+        },
+        {
+          "id": "E",
+          "text": "Epsilon"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Profit margin = (Selling Price - Unit Cost) / Selling Price: Alpha: (14.99-8.50)/14.99 = 43.3%. Beta: (22.49-12.30)/22.49 = 45.3%. Gamma: (9.99-5.75)/9.99 = 42.4%. Delta: (39.99-24.10)/39.99 = 39.7%. Epsilon: (16.49-9.20)/16.49 = 44.2%. Beta has the highest margin at 45.3%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0018",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows water quality measurements from seven sampling stations along a river.\n\n| Station | Distance (km) | pH | Dissolved O₂ (mg/L) | Turbidity (NTU) | Temp (°C) | Nitrate (mg/L) |\n|---------|--------------|-----|---------------------|-----------------|-----------|----------------|\n| S1 | 0 | 7.2 | 9.8 | 3.2 | 14.5 | 1.8 |\n| S2 | 12 | 7.0 | 8.5 | 5.1 | 15.2 | 3.4 |\n| S3 | 25 | 6.8 | 7.1 | 8.7 | 16.0 | 5.2 |\n| S4 | 38 | 6.5 | 6.2 | 12.4 | 16.8 | 7.8 |\n| S5 | 52 | 6.9 | 7.8 | 6.5 | 15.8 | 4.1 |\n| S6 | 65 | 7.1 | 8.9 | 4.3 | 15.1 | 2.6 |\n| S7 | 80 | 7.3 | 9.2 | 3.8 | 14.8 | 2.1 |",
+      "questionStem": "If the stations are sorted by turbidity from lowest to highest, which station would appear in the median (fourth) position?",
+      "options": [
+        {
+          "id": "A",
+          "text": "S2"
+        },
+        {
+          "id": "B",
+          "text": "S5"
+        },
+        {
+          "id": "C",
+          "text": "S6"
+        },
+        {
+          "id": "D",
+          "text": "S3"
+        },
+        {
+          "id": "E",
+          "text": "S7"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Turbidity values sorted low to high: S1 (3.2), S7 (3.8), S6 (4.3), S2 (5.1), S5 (6.5), S3 (8.7), S4 (12.4). The fourth position is S2 with turbidity of 5.1 NTU.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0019",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "threshold",
+      "passage": "The following table shows investment fund performance data for the past year.\n\n| Fund Name | 1-Year Return (%) | 3-Year Avg (%) | Expense Ratio (%) | Assets ($B) | Risk Rating |\n|-----------|--------------------|----------------|-------------------|-------------|------------|\n| GrowthMax | 14.2 | 11.8 | 0.85 | 12.4 | High |\n| StableCore | 6.8 | 7.2 | 0.45 | 28.6 | Low |\n| TechFront | 22.5 | 15.3 | 1.20 | 8.1 | High |\n| BalancePro | 9.4 | 8.9 | 0.62 | 19.3 | Medium |\n| ValuePick | 11.7 | 10.5 | 0.55 | 15.7 | Medium |\n| IncomePlus | 5.2 | 6.1 | 0.38 | 32.1 | Low |\n| EmergGrow | 18.9 | 13.7 | 1.05 | 5.4 | High |",
+      "questionStem": "An investor wants funds with a 1-year return above 10% and an expense ratio below 1.00%. How many funds meet both criteria?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "4"
+        },
+        {
+          "id": "E",
+          "text": "5"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Funds with 1-year return > 10%: GrowthMax (14.2%), TechFront (22.5%), ValuePick (11.7%), EmergGrow (18.9%). Of these, expense ratio < 1.00%: GrowthMax (0.85%) ✓, TechFront (1.20%) ✗, ValuePick (0.55%) ✓, EmergGrow (1.05%) ✗. Two funds meet both criteria: GrowthMax and ValuePick.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0020",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows airline performance data for six carriers during Q3 2024.\n\n| Airline | Flights | On-Time (%) | Cancellations | Passengers (K) | Baggage Claims | Revenue ($M) |\n|---------|---------|-------------|---------------|----------------|----------------|-------------|\n| SkyLink | 12,450 | 82.3 | 245 | 1,840 | 3,210 | 428 |\n| AirVista | 8,720 | 88.1 | 112 | 1,320 | 1,850 | 312 |\n| JetStream | 15,300 | 79.8 | 387 | 2,150 | 4,520 | 498 |\n| ClearAir | 6,890 | 91.5 | 68 | 985 | 1,120 | 245 |\n| WindRise | 10,100 | 85.4 | 178 | 1,560 | 2,680 | 375 |\n| PeakFly | 9,340 | 87.2 | 134 | 1,210 | 2,040 | 298 |",
+      "questionStem": "Which airline had the highest revenue per passenger (Revenue ÷ Passengers)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "SkyLink"
+        },
+        {
+          "id": "B",
+          "text": "AirVista"
+        },
+        {
+          "id": "C",
+          "text": "ClearAir"
+        },
+        {
+          "id": "D",
+          "text": "PeakFly"
+        },
+        {
+          "id": "E",
+          "text": "JetStream"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Revenue per passenger (in $): SkyLink: 428M/1,840K = $232.6. AirVista: 312M/1,320K = $236.4. JetStream: 498M/2,150K = $231.6. ClearAir: 245M/985K = $248.7. WindRise: 375M/1,560K = $240.4. PeakFly: 298M/1,210K = $246.3. ClearAir has the highest at approximately $248.7.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0021",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows health survey data for employees at a corporate headquarters.\n\n| Department | Employees | Avg BMI | Exercise (hrs/wk) | Sick Days (avg) | Stress Level (1-10) |\n|------------|-----------|---------|-------------------|-----------------|--------------------|\n| Engineering | 120 | 25.8 | 3.2 | 4.8 | 7.2 |\n| Marketing | 85 | 24.1 | 4.5 | 3.5 | 6.8 |\n| Sales | 95 | 26.4 | 2.8 | 5.2 | 8.1 |\n| HR | 40 | 23.5 | 5.1 | 2.9 | 5.4 |\n| Finance | 65 | 25.2 | 3.8 | 4.1 | 7.5 |\n| Operations | 110 | 27.1 | 2.3 | 6.1 | 7.9 |\n| Legal | 30 | 24.8 | 4.0 | 3.2 | 6.1 |",
+      "questionStem": "Which departments have both an average BMI above 25 and average sick days above 4.5?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Engineering and Sales only"
+        },
+        {
+          "id": "B",
+          "text": "Engineering, Sales, and Operations"
+        },
+        {
+          "id": "C",
+          "text": "Sales and Operations only"
+        },
+        {
+          "id": "D",
+          "text": "Engineering, Finance, and Operations"
+        },
+        {
+          "id": "E",
+          "text": "Sales, Finance, and Operations"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "BMI > 25: Engineering (25.8), Sales (26.4), Finance (25.2), Operations (27.1). Of these, sick days > 4.5: Engineering (4.8) ✓, Sales (5.2) ✓, Finance (4.1) ✗, Operations (6.1) ✓. Three departments qualify: Engineering, Sales, and Operations.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0022",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows crop yield data for different farming regions in 2024.\n\n| Region | Wheat (tons/ha) | Corn (tons/ha) | Soybeans (tons/ha) | Rice (tons/ha) | Total Area (K ha) |\n|--------|----------------|----------------|-------------------|----------------|-------------------|\n| Northern Plains | 3.8 | 10.2 | 3.1 | 0.0 | 245 |\n| Midwest | 4.2 | 11.5 | 3.5 | 0.0 | 380 |\n| Southeast | 3.1 | 8.8 | 2.8 | 7.2 | 195 |\n| Delta | 2.9 | 9.4 | 3.3 | 8.5 | 160 |\n| Pacific West | 5.1 | 12.8 | 2.4 | 9.1 | 140 |\n| Mountain | 3.5 | 7.6 | 2.1 | 0.0 | 110 |",
+      "questionStem": "Considering only regions that produce rice, which region has the highest corn yield?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Southeast"
+        },
+        {
+          "id": "B",
+          "text": "Delta"
+        },
+        {
+          "id": "C",
+          "text": "Pacific West"
+        },
+        {
+          "id": "D",
+          "text": "Midwest"
+        },
+        {
+          "id": "E",
+          "text": "Northern Plains"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Regions that produce rice (Rice > 0): Southeast (7.2), Delta (8.5), Pacific West (9.1). Among these, corn yields: Southeast 8.8, Delta 9.4, Pacific West 12.8. Pacific West has the highest corn yield at 12.8 tons/ha.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0023",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows mobile app download and revenue data for the first half of 2024.\n\n| App Category | Downloads (M) | Revenue ($M) | Avg Rating | Active Users (M) | Retention 30d (%) |\n|-------------|--------------|-------------|------------|-----------------|-------------------|\n| Social Media | 82.4 | 245.8 | 4.1 | 48.2 | 62 |\n| Gaming | 125.6 | 410.3 | 3.8 | 35.7 | 28 |\n| Productivity | 41.2 | 128.5 | 4.4 | 29.8 | 71 |\n| Health/Fitness | 38.7 | 95.2 | 4.2 | 18.4 | 45 |\n| Entertainment | 67.3 | 198.6 | 3.9 | 31.5 | 35 |\n| Education | 29.5 | 72.4 | 4.5 | 15.2 | 58 |",
+      "questionStem": "Which category has the highest ratio of active users to total downloads?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Social Media"
+        },
+        {
+          "id": "B",
+          "text": "Productivity"
+        },
+        {
+          "id": "C",
+          "text": "Education"
+        },
+        {
+          "id": "D",
+          "text": "Health/Fitness"
+        },
+        {
+          "id": "E",
+          "text": "Entertainment"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Active users / Downloads ratio: Social Media: 48.2/82.4 = 58.5%. Gaming: 35.7/125.6 = 28.4%. Productivity: 29.8/41.2 = 72.3%. Health/Fitness: 18.4/38.7 = 47.5%. Entertainment: 31.5/67.3 = 46.8%. Education: 15.2/29.5 = 51.5%. Productivity has the highest ratio at 72.3%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0024",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "threshold",
+      "passage": "The following table shows laboratory test results for soil samples collected from eight agricultural plots.\n\n| Plot | pH | Nitrogen (ppm) | Phosphorus (ppm) | Potassium (ppm) | Organic Matter (%) | Moisture (%) |\n|------|-----|---------------|-----------------|-----------------|-------------------|-------------|\n| A-1 | 6.2 | 45 | 32 | 180 | 3.8 | 22 |\n| A-2 | 5.8 | 38 | 28 | 145 | 2.9 | 18 |\n| B-1 | 7.1 | 62 | 41 | 210 | 4.5 | 26 |\n| B-2 | 6.8 | 55 | 38 | 195 | 4.1 | 24 |\n| C-1 | 5.5 | 30 | 22 | 120 | 2.2 | 15 |\n| C-2 | 6.5 | 48 | 35 | 175 | 3.5 | 21 |\n| D-1 | 7.4 | 68 | 45 | 230 | 5.2 | 29 |\n| D-2 | 6.9 | 58 | 40 | 200 | 4.3 | 25 |",
+      "questionStem": "A soil is considered 'nutrient-rich' if it has nitrogen above 50 ppm AND phosphorus above 35 ppm. How many plots qualify as nutrient-rich?",
+      "options": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "3"
+        },
+        {
+          "id": "C",
+          "text": "4"
+        },
+        {
+          "id": "D",
+          "text": "5"
+        },
+        {
+          "id": "E",
+          "text": "6"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Checking both conditions (N > 50 AND P > 35): A-1: N=45 ✗. A-2: N=38 ✗. B-1: N=62 ✓, P=41 ✓ → qualifies. B-2: N=55 ✓, P=38 ✓ → qualifies. C-1: N=30 ✗. C-2: N=48 ✗. D-1: N=68 ✓, P=45 ✓ → qualifies. D-2: N=58 ✓, P=40 ✓ → qualifies. Four plots qualify.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0025",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "filtering",
+      "passage": "The following table shows hotel occupancy and pricing data for a resort town during peak season.\n\n| Hotel | Rooms | Occupancy (%) | Avg Rate ($) | Review Score (5.0) | Stars | Pool |\n|-------|-------|---------------|-------------|-------------------|-------|------|\n| Seaside Grand | 280 | 94 | 289 | 4.6 | 5 | Yes |\n| Harbor Inn | 120 | 87 | 159 | 4.2 | 3 | Yes |\n| Coastal Suites | 180 | 91 | 225 | 4.5 | 4 | Yes |\n| Beach Motel | 65 | 78 | 89 | 3.8 | 2 | No |\n| Cliff Lodge | 95 | 85 | 198 | 4.3 | 4 | No |\n| Sunset Resort | 210 | 92 | 265 | 4.7 | 5 | Yes |\n| Dune View | 150 | 83 | 145 | 4.0 | 3 | Yes |",
+      "questionStem": "A traveler wants a hotel with a pool, occupancy below 90%, and a review score above 4.0. How many hotels meet all three criteria?",
+      "options": [
+        {
+          "id": "A",
+          "text": "0"
+        },
+        {
+          "id": "B",
+          "text": "1"
+        },
+        {
+          "id": "C",
+          "text": "2"
+        },
+        {
+          "id": "D",
+          "text": "3"
+        },
+        {
+          "id": "E",
+          "text": "4"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Hotels with pool: Seaside Grand, Harbor Inn, Coastal Suites, Sunset Resort, Dune View. Of these with occupancy < 90%: Harbor Inn (87%) and Dune View (83%). Of these with review score > 4.0 (strictly above): Harbor Inn (4.2) ✓, Dune View (4.0) ✗. Only 1 hotel qualifies: Harbor Inn.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0026",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows advertising spend and conversion data for a digital marketing campaign across five channels.\n\n| Channel | Spend ($K) | Impressions (K) | Clicks (K) | Conversions | Revenue ($K) |\n|---------|-----------|-----------------|------------|-------------|-------------|\n| Search Ads | 45.0 | 320 | 28.8 | 864 | 129.6 |\n| Social Media | 38.5 | 580 | 17.4 | 435 | 65.3 |\n| Display Ads | 22.0 | 890 | 8.9 | 178 | 26.7 |\n| Email | 8.5 | 125 | 18.8 | 752 | 112.8 |\n| Video Ads | 31.0 | 420 | 12.6 | 315 | 47.3 |",
+      "questionStem": "Which channel has the best return on ad spend (Revenue ÷ Spend)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Search Ads"
+        },
+        {
+          "id": "B",
+          "text": "Social Media"
+        },
+        {
+          "id": "C",
+          "text": "Email"
+        },
+        {
+          "id": "D",
+          "text": "Video Ads"
+        },
+        {
+          "id": "E",
+          "text": "Display Ads"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "ROAS (Revenue/Spend): Search Ads: 129.6/45.0 = 2.88. Social Media: 65.3/38.5 = 1.70. Display Ads: 26.7/22.0 = 1.21. Email: 112.8/8.5 = 13.27. Video Ads: 47.3/31.0 = 1.53. Email has the best ROAS at 13.27.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0027",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows energy generation data by source for a utility company in 2024.\n\n| Source | Capacity (MW) | Generation (GWh) | Capacity Factor (%) | Cost ($/MWh) | CO₂ (tons/GWh) |\n|--------|--------------|------------------|--------------------|--------------|-----------------|\n| Coal | 1,200 | 7,884 | 75 | 65 | 820 |\n| Natural Gas | 800 | 4,204 | 60 | 48 | 410 |\n| Nuclear | 1,500 | 11,826 | 90 | 35 | 12 |\n| Wind | 600 | 1,577 | 30 | 42 | 11 |\n| Solar | 400 | 701 | 20 | 38 | 25 |\n| Hydro | 350 | 1,536 | 50 | 28 | 4 |",
+      "questionStem": "If energy sources are sorted by cost per MWh from lowest to highest, which source would rank third?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Nuclear"
+        },
+        {
+          "id": "B",
+          "text": "Solar"
+        },
+        {
+          "id": "C",
+          "text": "Wind"
+        },
+        {
+          "id": "D",
+          "text": "Hydro"
+        },
+        {
+          "id": "E",
+          "text": "Natural Gas"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Cost per MWh sorted low to high: Hydro ($28), Nuclear ($35), Solar ($38), Wind ($42), Natural Gas ($48), Coal ($65). Solar ranks third at $38/MWh.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0028",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows real estate market data for neighborhoods in a city.\n\n| Neighborhood | Median Price ($K) | Price Change (%) | Days on Market | Inventory | Crime Index | Walk Score |\n|-------------|------------------|-----------------|----------------|-----------|-------------|------------|\n| Riverdale | 485 | 5.2 | 28 | 145 | 32 | 82 |\n| Oakwood | 620 | 3.8 | 35 | 98 | 18 | 91 |\n| Maple Heights | 340 | 8.1 | 18 | 210 | 45 | 68 |\n| Lakeview | 780 | 2.1 | 42 | 65 | 12 | 88 |\n| Cedar Park | 410 | 6.5 | 22 | 178 | 38 | 75 |\n| Elm District | 550 | 4.3 | 31 | 120 | 25 | 85 |",
+      "questionStem": "A buyer wants a neighborhood with a walk score above 80, a crime index below 30, and a median price below $600K. Which neighborhoods qualify?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Riverdale and Elm District"
+        },
+        {
+          "id": "B",
+          "text": "Riverdale only"
+        },
+        {
+          "id": "C",
+          "text": "Oakwood and Elm District"
+        },
+        {
+          "id": "D",
+          "text": "Elm District only"
+        },
+        {
+          "id": "E",
+          "text": "Riverdale, Elm District, and Lakeview"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Walk score > 80: Riverdale (82), Oakwood (91), Lakeview (88), Elm District (85). Of these, crime index < 30: Riverdale (32) ✗, Oakwood (18) ✓, Lakeview (12) ✓, Elm District (25) ✓. Of remaining, price < $600K: Oakwood ($620K) ✗, Lakeview ($780K) ✗, Elm District ($550K) ✓. Only Elm District qualifies.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0029",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows employee productivity data for six teams in a software company.\n\n| Team | Members | Features Delivered | Bugs Fixed | Story Points | Sprint Velocity | Avg Hours/Week |\n|------|---------|-------------------|------------|-------------|-----------------|----------------|\n| Alpha | 8 | 24 | 42 | 89 | 11.1 | 42 |\n| Bravo | 6 | 18 | 31 | 72 | 12.0 | 44 |\n| Charlie | 10 | 31 | 55 | 115 | 11.5 | 40 |\n| Delta | 5 | 14 | 28 | 58 | 11.6 | 45 |\n| Echo | 7 | 22 | 38 | 82 | 11.7 | 41 |\n| Foxtrot | 9 | 27 | 48 | 98 | 10.9 | 43 |",
+      "questionStem": "Which team has the highest number of features delivered per team member?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Alpha"
+        },
+        {
+          "id": "B",
+          "text": "Bravo"
+        },
+        {
+          "id": "C",
+          "text": "Charlie"
+        },
+        {
+          "id": "D",
+          "text": "Delta"
+        },
+        {
+          "id": "E",
+          "text": "Echo"
+        }
+      ],
+      "correctAnswer": "E",
+      "explanation": "Features per member: Alpha: 24/8 = 3.00. Bravo: 18/6 = 3.00. Charlie: 31/10 = 3.10. Delta: 14/5 = 2.80. Echo: 22/7 = 3.14. Foxtrot: 27/9 = 3.00. Echo has the highest at 3.14 features per member.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0030",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "filtering",
+      "passage": "The following table shows clinical trial results for a new medication tested across six hospitals.\n\n| Hospital | Patients | Improved (%) | No Change (%) | Worsened (%) | Side Effects (%) | Dropout (%) |\n|----------|----------|-------------|--------------|-------------|-----------------|------------|\n| Metro General | 245 | 68 | 22 | 10 | 15 | 8 |\n| St. Claire's | 180 | 72 | 20 | 8 | 12 | 6 |\n| Valley Medical | 310 | 64 | 24 | 12 | 18 | 11 |\n| University Hosp | 275 | 75 | 18 | 7 | 14 | 5 |\n| Riverside Clinic | 150 | 70 | 21 | 9 | 11 | 7 |\n| Northside Med | 220 | 66 | 23 | 11 | 16 | 9 |",
+      "questionStem": "At how many hospitals did the improvement rate exceed 70% while the side effect rate stayed below 15%?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "4"
+        },
+        {
+          "id": "E",
+          "text": "5"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Hospitals with improvement > 70%: St. Claire's (72%), University Hosp (75%). Metro General has exactly 68% (no). Of those with improvement > 70%, side effects < 15%: St. Claire's (12%) ✓, University Hosp (14%) ✓. Two hospitals meet both criteria.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0031",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows import and export data for a country across five trading sectors in 2024.\n\n| Sector | Exports ($B) | Imports ($B) | Trade Balance ($B) | Export Growth (%) | Import Growth (%) |\n|--------|-------------|-------------|-------------------|-------------------|-------------------|\n| Electronics | 42.8 | 38.5 | 4.3 | 8.2 | 5.1 |\n| Automotive | 35.2 | 41.7 | -6.5 | 3.5 | 6.8 |\n| Agriculture | 18.9 | 12.4 | 6.5 | 4.1 | 2.3 |\n| Textiles | 22.6 | 15.8 | 6.8 | -1.2 | 3.4 |\n| Machinery | 31.4 | 29.6 | 1.8 | 5.7 | 4.9 |",
+      "questionStem": "What is the country's total trade balance across all five sectors?",
+      "options": [
+        {
+          "id": "A",
+          "text": "$8.6 billion surplus"
+        },
+        {
+          "id": "B",
+          "text": "$10.2 billion surplus"
+        },
+        {
+          "id": "C",
+          "text": "$12.9 billion surplus"
+        },
+        {
+          "id": "D",
+          "text": "$15.1 billion surplus"
+        },
+        {
+          "id": "E",
+          "text": "$6.4 billion surplus"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Total trade balance = 4.3 + (-6.5) + 6.5 + 6.8 + 1.8 = 12.9. The country has a total trade surplus of $12.9 billion.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0032",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "medium",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows customer service metrics for a telecommunications company across seven call centers.\n\n| Call Center | Calls/Day | Avg Wait (min) | Resolution Rate (%) | Satisfaction (5.0) | Agents | Escalation (%) |\n|------------|-----------|----------------|--------------------|--------------------|--------|-----------------|\n| Atlanta | 1,250 | 4.2 | 82 | 3.8 | 85 | 12 |\n| Chicago | 1,890 | 6.5 | 78 | 3.5 | 120 | 15 |\n| Dallas | 980 | 3.1 | 88 | 4.2 | 65 | 8 |\n| Denver | 720 | 2.8 | 91 | 4.5 | 48 | 6 |\n| Miami | 1,450 | 5.3 | 80 | 3.6 | 95 | 14 |\n| Phoenix | 1,100 | 3.8 | 85 | 4.0 | 72 | 10 |\n| Seattle | 850 | 3.4 | 87 | 4.1 | 55 | 9 |",
+      "questionStem": "If call centers are ranked by calls handled per agent (Calls/Day ÷ Agents) from highest to lowest, which center ranks second?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Chicago"
+        },
+        {
+          "id": "B",
+          "text": "Miami"
+        },
+        {
+          "id": "C",
+          "text": "Phoenix"
+        },
+        {
+          "id": "D",
+          "text": "Seattle"
+        },
+        {
+          "id": "E",
+          "text": "Atlanta"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Calls per agent: Atlanta: 1250/85 = 14.7. Chicago: 1890/120 = 15.75. Dallas: 980/65 = 15.08. Denver: 720/48 = 15.0. Miami: 1450/95 = 15.26. Phoenix: 1100/72 = 15.28. Seattle: 850/55 = 15.45. Sorted highest to lowest: Chicago (15.75), Seattle (15.45), Phoenix (15.28), Miami (15.26), Dallas (15.08), Denver (15.0), Atlanta (14.7). Seattle ranks second.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0033",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows quarterly financial data for a diversified conglomerate's business units in 2024.\n\n| Business Unit | Q1 Rev ($M) | Q2 Rev ($M) | Q3 Rev ($M) | Q4 Rev ($M) | Operating Margin (%) | Employees (K) |\n|--------------|------------|------------|------------|------------|---------------------|---------------|\n| Consumer Goods | 128.5 | 135.2 | 142.8 | 168.4 | 14.2 | 8.5 |\n| Industrial | 95.3 | 88.7 | 102.1 | 98.6 | 18.5 | 5.2 |\n| Healthcare | 210.4 | 218.9 | 225.3 | 240.1 | 22.8 | 12.1 |\n| Technology | 78.6 | 92.4 | 105.8 | 118.2 | 28.4 | 3.8 |\n| Energy | 156.2 | 142.8 | 138.5 | 145.9 | 11.6 | 6.9 |",
+      "questionStem": "Which business unit generated the highest estimated annual operating profit (Total Annual Revenue × Operating Margin)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Consumer Goods"
+        },
+        {
+          "id": "B",
+          "text": "Healthcare"
+        },
+        {
+          "id": "C",
+          "text": "Technology"
+        },
+        {
+          "id": "D",
+          "text": "Energy"
+        },
+        {
+          "id": "E",
+          "text": "Industrial"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Annual revenue and operating profit: Consumer Goods: (128.5+135.2+142.8+168.4)=574.9 × 14.2% = $81.6M. Industrial: (95.3+88.7+102.1+98.6)=384.7 × 18.5% = $71.2M. Healthcare: (210.4+218.9+225.3+240.1)=894.7 × 22.8% = $204.0M. Technology: (78.6+92.4+105.8+118.2)=395.0 × 28.4% = $112.2M. Energy: (156.2+142.8+138.5+145.9)=583.4 × 11.6% = $67.7M. Healthcare has the highest at approximately $204M.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0034",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows performance data for mutual funds over a 5-year period.\n\n| Fund | 1-Yr (%) | 3-Yr (%) | 5-Yr (%) | Std Dev (%) | Sharpe Ratio | Beta | Expense (%) |\n|------|---------|---------|---------|-------------|-------------|------|------------|\n| AlphaGrowth | 18.5 | 14.2 | 12.8 | 16.4 | 0.92 | 1.15 | 0.85 |\n| BetaValue | 9.8 | 8.5 | 9.2 | 10.2 | 0.78 | 0.82 | 0.55 |\n| GammaBlend | 13.2 | 11.6 | 10.9 | 13.8 | 0.85 | 0.98 | 0.72 |\n| DeltaIncome | 6.4 | 5.8 | 6.1 | 7.5 | 0.65 | 0.55 | 0.42 |\n| EpsilonTech | 24.1 | 18.9 | 15.3 | 21.6 | 1.05 | 1.32 | 1.15 |\n| ZetaSmall | 15.8 | 12.4 | 11.5 | 18.9 | 0.72 | 1.08 | 0.95 |",
+      "questionStem": "An analyst defines a 'risk-efficient' fund as one where the Sharpe Ratio exceeds 0.80 AND the Expense Ratio is below 0.90%. Of the risk-efficient funds, which has the lowest Beta?",
+      "options": [
+        {
+          "id": "A",
+          "text": "AlphaGrowth"
+        },
+        {
+          "id": "B",
+          "text": "BetaValue"
+        },
+        {
+          "id": "C",
+          "text": "GammaBlend"
+        },
+        {
+          "id": "D",
+          "text": "EpsilonTech"
+        },
+        {
+          "id": "E",
+          "text": "ZetaSmall"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Risk-efficient funds (Sharpe > 0.80 AND Expense < 0.90%): AlphaGrowth: Sharpe 0.92 ✓, Expense 0.85% ✓. BetaValue: Sharpe 0.78 ✗. GammaBlend: Sharpe 0.85 ✓, Expense 0.72% ✓. DeltaIncome: Sharpe 0.65 ✗. EpsilonTech: Sharpe 1.05 ✓, Expense 1.15% ✗. ZetaSmall: Sharpe 0.72 ✗. Risk-efficient funds: AlphaGrowth (Beta 1.15) and GammaBlend (Beta 0.98). GammaBlend has the lowest Beta.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0035",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows demographic and economic data for districts within a city.\n\n| District | Population (K) | Median Income ($K) | Housing Cost ($K) | Commute (min) | College Grad (%) | Business Count |\n|----------|---------------|--------------------|--------------------|---------------|------------------|--------------|\n| Central | 42.5 | 78.4 | 425 | 18 | 58 | 1,240 |\n| North End | 35.8 | 62.1 | 310 | 32 | 42 | 680 |\n| Westbrook | 28.4 | 95.2 | 520 | 25 | 72 | 890 |\n| Southgate | 51.2 | 48.6 | 215 | 45 | 28 | 1,450 |\n| Eastview | 38.9 | 71.8 | 380 | 28 | 51 | 920 |\n| Hillcrest | 22.6 | 112.5 | 680 | 22 | 81 | 540 |\n| Riverside | 45.1 | 55.3 | 265 | 38 | 35 | 1,100 |",
+      "questionStem": "Which district has the highest housing cost-to-income ratio (Housing Cost ÷ Median Income)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Central"
+        },
+        {
+          "id": "B",
+          "text": "Hillcrest"
+        },
+        {
+          "id": "C",
+          "text": "Westbrook"
+        },
+        {
+          "id": "D",
+          "text": "Eastview"
+        },
+        {
+          "id": "E",
+          "text": "Southgate"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Housing/Income ratio: Central: 425/78.4 = 5.42. North End: 310/62.1 = 4.99. Westbrook: 520/95.2 = 5.46. Southgate: 215/48.6 = 4.42. Eastview: 380/71.8 = 5.29. Hillcrest: 680/112.5 = 6.04. Riverside: 265/55.3 = 4.79. Hillcrest has the highest ratio at 6.04.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0036",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows environmental monitoring data for industrial zones.\n\n| Zone | PM2.5 (µg/m³) | NOₓ (ppb) | SO₂ (ppb) | Ozone (ppb) | Water pH | Noise (dB) |\n|------|---------------|-----------|-----------|-------------|----------|------------|\n| Z-1 | 28.4 | 42 | 18 | 55 | 6.8 | 72 |\n| Z-2 | 45.2 | 68 | 35 | 48 | 6.2 | 85 |\n| Z-3 | 12.8 | 25 | 8 | 62 | 7.1 | 58 |\n| Z-4 | 38.6 | 55 | 28 | 51 | 6.5 | 78 |\n| Z-5 | 22.1 | 38 | 15 | 58 | 7.0 | 65 |\n| Z-6 | 52.3 | 72 | 42 | 45 | 5.9 | 91 |\n| Z-7 | 18.5 | 31 | 12 | 60 | 7.2 | 62 |\n| Z-8 | 35.9 | 48 | 24 | 52 | 6.6 | 75 |",
+      "questionStem": "Environmental regulations require PM2.5 below 35 µg/m³, NOₓ below 50 ppb, and water pH between 6.5 and 7.5 inclusive. How many zones are fully compliant?",
+      "options": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "3"
+        },
+        {
+          "id": "C",
+          "text": "4"
+        },
+        {
+          "id": "D",
+          "text": "5"
+        },
+        {
+          "id": "E",
+          "text": "6"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Checking all three conditions: Z-1: PM2.5=28.4 ✓, NOₓ=42 ✓, pH=6.8 ✓ → compliant. Z-2: PM2.5=45.2 ✗. Z-3: PM2.5=12.8 ✓, NOₓ=25 ✓, pH=7.1 ✓ → compliant. Z-4: PM2.5=38.6 ✗. Z-5: PM2.5=22.1 ✓, NOₓ=38 ✓, pH=7.0 ✓ → compliant. Z-6: PM2.5=52.3 ✗. Z-7: PM2.5=18.5 ✓, NOₓ=31 ✓, pH=7.2 ✓ → compliant. Z-8: PM2.5=35.9 ✗. Four zones are fully compliant: Z-1, Z-3, Z-5, Z-7.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0037",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows project portfolio data for a consulting firm.\n\n| Project | Budget ($K) | Spent ($K) | Duration (wks) | Elapsed (wks) | Team Size | Client Satisfaction (10) |\n|---------|-----------|-----------|----------------|---------------|-----------|-------------------------|\n| Apex | 450 | 380 | 24 | 20 | 8 | 8.5 |\n| Beacon | 280 | 310 | 16 | 16 | 5 | 7.2 |\n| Cipher | 620 | 495 | 32 | 24 | 12 | 9.1 |\n| Dynamo | 180 | 120 | 12 | 8 | 4 | 8.8 |\n| Echo | 350 | 290 | 20 | 15 | 6 | 7.8 |\n| Forge | 520 | 585 | 28 | 28 | 10 | 6.5 |",
+      "questionStem": "A project is considered 'at risk' if it has spent more than (Elapsed/Duration) × Budget. How many projects are currently at risk?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "4"
+        },
+        {
+          "id": "E",
+          "text": "5"
+        }
+      ],
+      "correctAnswer": "E",
+      "explanation": "Expected spend = (Elapsed/Duration) × Budget: Apex: (20/24)×450 = $375K, Spent $380K > $375K → at risk. Beacon: (16/16)×280 = $280K, Spent $310K > $280K → at risk. Cipher: (24/32)×620 = $465K, Spent $495K > $465K → at risk. Dynamo: (8/12)×180 = $120K, Spent $120K = $120K → not at risk (not more than). Echo: (15/20)×350 = $262.5K, Spent $290K > $262.5K → at risk. Forge: (28/28)×520 = $520K, Spent $585K > $520K → at risk. Five projects are at risk.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0038",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows supply chain data for a consumer electronics manufacturer.\n\n| Component | Unit Cost ($) | Monthly Demand (K) | Lead Time (days) | Defect Rate (%) | Suppliers | Safety Stock (K) |\n|-----------|--------------|-------------------|------------------|-----------------|-----------|------------------|\n| Chip-A | 4.85 | 250 | 14 | 0.8 | 3 | 45 |\n| Display-B | 12.30 | 180 | 21 | 1.2 | 2 | 60 |\n| Battery-C | 8.70 | 200 | 10 | 0.5 | 4 | 30 |\n| Frame-D | 3.20 | 220 | 7 | 0.3 | 5 | 20 |\n| Sensor-E | 6.45 | 150 | 18 | 1.5 | 2 | 50 |\n| Motor-F | 9.80 | 120 | 25 | 0.9 | 3 | 55 |",
+      "questionStem": "Which component has the highest total monthly cost at risk due to defects (Monthly Demand × Unit Cost × Defect Rate)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Chip-A"
+        },
+        {
+          "id": "B",
+          "text": "Display-B"
+        },
+        {
+          "id": "C",
+          "text": "Battery-C"
+        },
+        {
+          "id": "D",
+          "text": "Sensor-E"
+        },
+        {
+          "id": "E",
+          "text": "Motor-F"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Cost at risk = Demand × Unit Cost × Defect Rate: Chip-A: 250K × $4.85 × 0.008 = $9,700. Display-B: 180K × $12.30 × 0.012 = $26,568. Battery-C: 200K × $8.70 × 0.005 = $8,700. Sensor-E: 150K × $6.45 × 0.015 = $14,513. Motor-F: 120K × $9.80 × 0.009 = $10,584. Display-B has the highest cost at risk at approximately $26,568.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0039",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows data from a survey on workplace satisfaction across eight departments.\n\n| Department | Respondents | Satisfaction (10) | Engagement (10) | Intent to Stay (%) | Salary Satisfaction (10) | Work-Life (10) |\n|-----------|------------|-------------------|-----------------|--------------------|--------------------------|--------------|\n| R&D | 85 | 7.8 | 8.2 | 88 | 6.5 | 6.8 |\n| Marketing | 62 | 7.2 | 7.5 | 78 | 7.1 | 7.4 |\n| Sales | 94 | 6.5 | 7.8 | 72 | 8.2 | 5.8 |\n| Support | 78 | 5.8 | 6.2 | 65 | 5.4 | 6.1 |\n| Finance | 45 | 7.5 | 7.0 | 82 | 7.8 | 7.2 |\n| IT | 70 | 7.1 | 7.6 | 80 | 6.8 | 6.5 |\n| Legal | 28 | 7.9 | 7.4 | 85 | 8.0 | 7.8 |\n| Operations | 105 | 6.2 | 6.8 | 70 | 5.9 | 5.5 |",
+      "questionStem": "A department is classified as 'high retention risk' if any TWO of these conditions apply: satisfaction below 7.0, intent to stay below 75%, or work-life balance below 6.0. How many departments are high retention risk?",
+      "options": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "4"
+        },
+        {
+          "id": "E",
+          "text": "5"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Checking flags (satisfaction < 7.0, intent to stay < 75%, work-life < 6.0): R&D: 0 flags. Marketing: 0 flags. Sales: sat 6.5 ✓, stay 72% ✓, WLB 5.8 ✓ → 3 flags → high risk. Support: sat 5.8 ✓, stay 65% ✓, WLB 6.1 → 2 flags → high risk. Finance: 0 flags. IT: 0 flags. Legal: 0 flags. Operations: sat 6.2 ✓, stay 70% ✓, WLB 5.5 ✓ → 3 flags → high risk. Three departments are high retention risk.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0040",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows data on startup funding rounds in a technology hub.\n\n| Startup | Seed ($M) | Series A ($M) | Series B ($M) | Valuation ($M) | Employees | Founded |\n|---------|----------|--------------|--------------|----------------|-----------|--------|\n| AppNova | 2.5 | 12.0 | 45.0 | 180 | 120 | 2019 |\n| ByteForge | 1.8 | 8.5 | 0.0 | 52 | 45 | 2021 |\n| CloudSync | 3.2 | 15.5 | 62.0 | 310 | 185 | 2018 |\n| DataMesh | 4.0 | 18.0 | 55.0 | 245 | 150 | 2020 |\n| EdgePulse | 1.5 | 7.2 | 28.0 | 95 | 68 | 2020 |\n| FlowAI | 5.5 | 22.0 | 78.0 | 420 | 210 | 2017 |",
+      "questionStem": "Which startup has the highest valuation per dollar of total funding raised (Valuation ÷ Total Funding)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "AppNova"
+        },
+        {
+          "id": "B",
+          "text": "ByteForge"
+        },
+        {
+          "id": "C",
+          "text": "CloudSync"
+        },
+        {
+          "id": "D",
+          "text": "DataMesh"
+        },
+        {
+          "id": "E",
+          "text": "FlowAI"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Total funding and valuation multiple: AppNova: (2.5+12+45)=59.5, 180/59.5=3.03x. ByteForge: (1.8+8.5+0)=10.3, 52/10.3=5.05x. CloudSync: (3.2+15.5+62)=80.7, 310/80.7=3.84x. DataMesh: (4+18+55)=77, 245/77=3.18x. EdgePulse: (1.5+7.2+28)=36.7, 95/36.7=2.59x. FlowAI: (5.5+22+78)=105.5, 420/105.5=3.98x. ByteForge has the highest valuation multiple at 5.05x.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0041",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows university ranking data across multiple dimensions.\n\n| University | Overall Rank | Research (100) | Teaching (100) | Intl Students (%) | Grad Rate (%) | Endowment ($B) |\n|-----------|-------------|---------------|---------------|-------------------|--------------|----------------|\n| Harwick | 3 | 92 | 88 | 24 | 96 | 42.5 |\n| Prestige | 8 | 85 | 91 | 31 | 94 | 28.3 |\n| Elmwood | 15 | 78 | 82 | 18 | 89 | 12.8 |\n| Thornton | 22 | 88 | 75 | 42 | 85 | 8.5 |\n| Cascade | 12 | 82 | 86 | 28 | 92 | 18.2 |\n| Ridgemont | 28 | 74 | 78 | 35 | 82 | 5.4 |\n| Silverdale | 6 | 90 | 89 | 22 | 95 | 35.1 |",
+      "questionStem": "A university is in the 'elite research tier' if Research score > 85 AND Overall Rank is in top 10. Among elite research tier universities, which has the lowest endowment?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Harwick"
+        },
+        {
+          "id": "B",
+          "text": "Prestige"
+        },
+        {
+          "id": "C",
+          "text": "Thornton"
+        },
+        {
+          "id": "D",
+          "text": "Silverdale"
+        },
+        {
+          "id": "E",
+          "text": "Cascade"
+        }
+      ],
+      "correctAnswer": "D",
+      "explanation": "Research > 85 AND Overall Rank ≤ 10: Harwick: Research 92 ✓, Rank 3 ✓ → elite. Prestige: Research 85 ✗ (not strictly > 85). Thornton: Rank 22 ✗. Silverdale: Research 90 ✓, Rank 6 ✓ → elite. Cascade: Research 82 ✗. Among elite tier (Harwick and Silverdale): Harwick $42.5B, Silverdale $35.1B. Silverdale has the lowest endowment.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0042",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows cross-border trade data between trading partners for a country.\n\n| Partner | Exports ($B) | Imports ($B) | FDI Inflow ($B) | FDI Outflow ($B) | Exchange Rate Change (%) |\n|---------|-------------|-------------|-----------------|------------------|-------------------------|\n| Country A | 28.4 | 35.2 | 8.5 | 4.2 | -2.1 |\n| Country B | 42.1 | 31.8 | 12.3 | 9.8 | 1.5 |\n| Country C | 15.6 | 22.9 | 3.1 | 1.8 | -4.8 |\n| Country D | 38.7 | 25.4 | 6.7 | 11.2 | 3.2 |\n| Country E | 21.3 | 18.7 | 4.9 | 3.5 | -0.8 |\n| Country F | 9.8 | 14.5 | 2.2 | 1.4 | -3.5 |",
+      "questionStem": "For which trading partner is the net capital flow (FDI Inflow minus FDI Outflow) most closely aligned with the trade balance (Exports minus Imports)?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Country A"
+        },
+        {
+          "id": "B",
+          "text": "Country B"
+        },
+        {
+          "id": "C",
+          "text": "Country C"
+        },
+        {
+          "id": "D",
+          "text": "Country D"
+        },
+        {
+          "id": "E",
+          "text": "Country E"
+        }
+      ],
+      "correctAnswer": "E",
+      "explanation": "Trade balance and net capital flow: A: Trade = 28.4-35.2 = -6.8, Capital = 8.5-4.2 = 4.3, Diff = |(-6.8)-4.3| = 11.1. B: Trade = 42.1-31.8 = 10.3, Capital = 12.3-9.8 = 2.5, Diff = |10.3-2.5| = 7.8. C: Trade = 15.6-22.9 = -7.3, Capital = 3.1-1.8 = 1.3, Diff = |-7.3-1.3| = 8.6. D: Trade = 38.7-25.4 = 13.3, Capital = 6.7-11.2 = -4.5, Diff = |13.3-(-4.5)| = 17.8. E: Trade = 21.3-18.7 = 2.6, Capital = 4.9-3.5 = 1.4, Diff = |2.6-1.4| = 1.2. F: Trade = 9.8-14.5 = -4.7, Capital = 2.2-1.4 = 0.8, Diff = 5.5. Country E has the smallest difference at 1.2.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0043",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows product line profitability data for a consumer goods company.\n\n| Product | Revenue ($M) | COGS ($M) | Marketing ($M) | R&D ($M) | Admin ($M) | Units (K) |\n|---------|-------------|----------|---------------|---------|-----------|----------|\n| Premium Blend | 45.2 | 18.1 | 8.5 | 3.2 | 2.8 | 320 |\n| Classic Line | 82.4 | 41.2 | 12.8 | 1.5 | 4.1 | 890 |\n| Budget Range | 38.6 | 25.1 | 5.2 | 0.8 | 2.4 | 1,240 |\n| Organic Select | 28.5 | 14.8 | 6.4 | 4.5 | 1.9 | 185 |\n| Sport Edition | 35.8 | 15.3 | 9.1 | 5.8 | 2.2 | 410 |",
+      "questionStem": "Which product line has the highest net profit as a percentage of revenue, where net profit = Revenue - COGS - Marketing - R&D - Admin?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Premium Blend"
+        },
+        {
+          "id": "B",
+          "text": "Classic Line"
+        },
+        {
+          "id": "C",
+          "text": "Budget Range"
+        },
+        {
+          "id": "D",
+          "text": "Organic Select"
+        },
+        {
+          "id": "E",
+          "text": "Sport Edition"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Net profit and margin: Premium Blend: 45.2-18.1-8.5-3.2-2.8=12.6, margin=12.6/45.2=27.9%. Classic Line: 82.4-41.2-12.8-1.5-4.1=22.8, margin=22.8/82.4=27.7%. Budget Range: 38.6-25.1-5.2-0.8-2.4=5.1, margin=5.1/38.6=13.2%. Organic Select: 28.5-14.8-6.4-4.5-1.9=0.9, margin=0.9/28.5=3.2%. Sport Edition: 35.8-15.3-9.1-5.8-2.2=3.4, margin=3.4/35.8=9.5%. Premium Blend has the highest net margin at 27.9%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0044",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "hard",
+      "topic": "table-analysis",
+      "subtopic": "sorting",
+      "passage": "The following table shows performance metrics for regional sales teams across two quarters.\n\n| Region | Q3 Revenue ($M) | Q4 Revenue ($M) | Q3 Deals | Q4 Deals | Q3 Win Rate (%) | Q4 Win Rate (%) |\n|--------|----------------|----------------|----------|----------|-----------------|------------------|\n| Northeast | 18.5 | 22.4 | 145 | 168 | 32 | 35 |\n| Southeast | 14.2 | 16.8 | 120 | 132 | 28 | 30 |\n| Midwest | 21.3 | 19.8 | 175 | 162 | 35 | 33 |\n| Southwest | 12.8 | 15.1 | 98 | 118 | 25 | 29 |\n| Pacific | 24.6 | 28.2 | 190 | 210 | 38 | 40 |\n| Mountain | 9.5 | 11.2 | 72 | 85 | 22 | 26 |",
+      "questionStem": "If regions are ranked by their percentage change in average deal size from Q3 to Q4 (Revenue/Deals), which region saw the greatest improvement?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Northeast"
+        },
+        {
+          "id": "B",
+          "text": "Southeast"
+        },
+        {
+          "id": "C",
+          "text": "Pacific"
+        },
+        {
+          "id": "D",
+          "text": "Mountain"
+        },
+        {
+          "id": "E",
+          "text": "Midwest"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Average deal size (Revenue/Deals): Northeast: Q3=$127.6K, Q4=$133.3K → +4.5%. Southeast: Q3=$118.3K, Q4=$127.3K → +7.6%. Midwest: Q3=$121.7K, Q4=$122.2K → +0.4%. Southwest: Q3=$130.6K, Q4=$127.9K → -2.1%. Pacific: Q3=$129.5K, Q4=$134.3K → +3.7%. Mountain: Q3=$131.9K, Q4=$131.8K → -0.1%. Southeast had the greatest improvement at +7.6%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0045",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows portfolio allocation and return data for a pension fund across asset classes.\n\n| Asset Class | Allocation (%) | 1-Yr Return (%) | 3-Yr Return (%) | Volatility (%) | Correlation w/ Equities |\n|------------|---------------|-----------------|-----------------|----------------|------------------------|\n| US Equities | 35 | 18.2 | 12.5 | 16.8 | 1.00 |\n| Intl Equities | 20 | 14.8 | 9.2 | 19.4 | 0.82 |\n| Fixed Income | 25 | 4.2 | 3.8 | 5.1 | -0.15 |\n| Real Estate | 10 | 8.5 | 7.1 | 12.3 | 0.45 |\n| Commodities | 5 | -2.4 | 1.8 | 22.6 | 0.32 |\n| Cash | 5 | 3.1 | 2.4 | 0.8 | -0.05 |",
+      "questionStem": "What was the portfolio's weighted 1-year return?",
+      "options": [
+        {
+          "id": "A",
+          "text": "10.8%"
+        },
+        {
+          "id": "B",
+          "text": "11.5%"
+        },
+        {
+          "id": "C",
+          "text": "12.2%"
+        },
+        {
+          "id": "D",
+          "text": "12.9%"
+        },
+        {
+          "id": "E",
+          "text": "13.6%"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Weighted return = (0.35×18.2) + (0.20×14.8) + (0.25×4.2) + (0.10×8.5) + (0.05×(-2.4)) + (0.05×3.1) = 6.37 + 2.96 + 1.05 + 0.85 + (-0.12) + 0.155 = 11.265%. This rounds to approximately 11.5% (accounting for the precise calculation: 6.37+2.96+1.05+0.85-0.12+0.155 = 11.265, closest to 11.5%).",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0046",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows quarterly performance metrics for a SaaS company's customer cohorts.\n\n| Cohort | Customers | ARR ($M) | Churn Rate (%) | Expansion (%) | NPS | Support Tickets | Avg Contract ($K) |\n|--------|-----------|---------|---------------|---------------|-----|-----------------|-------------------|\n| Enterprise | 45 | 18.9 | 3.2 | 28 | 72 | 185 | 420 |\n| Mid-Market | 180 | 12.6 | 8.5 | 15 | 58 | 420 | 70 |\n| SMB-Pro | 520 | 8.4 | 12.1 | 8 | 45 | 890 | 16.2 |\n| SMB-Basic | 1,250 | 5.2 | 18.4 | 4 | 38 | 1,850 | 4.2 |\n| Startup | 340 | 2.8 | 22.5 | 12 | 52 | 310 | 8.2 |",
+      "questionStem": "Net Revenue Retention (NRR) can be approximated as (100% - Churn% + Expansion%). Which cohort has the highest NRR, and what is the approximate value?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Enterprise, approximately 125%"
+        },
+        {
+          "id": "B",
+          "text": "Mid-Market, approximately 107%"
+        },
+        {
+          "id": "C",
+          "text": "Enterprise, approximately 131%"
+        },
+        {
+          "id": "D",
+          "text": "Startup, approximately 90%"
+        },
+        {
+          "id": "E",
+          "text": "SMB-Pro, approximately 96%"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "NRR = 100% - Churn + Expansion: Enterprise: 100 - 3.2 + 28 = 124.8% ≈ 125%. Mid-Market: 100 - 8.5 + 15 = 106.5% ≈ 107%. SMB-Pro: 100 - 12.1 + 8 = 95.9%. SMB-Basic: 100 - 18.4 + 4 = 85.6%. Startup: 100 - 22.5 + 12 = 89.5%. Enterprise has the highest NRR at approximately 125%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0047",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows data from a clinical study comparing treatment outcomes at different dosage levels.\n\n| Dosage (mg) | Patients | Complete Response (%) | Partial Response (%) | No Response (%) | Adverse Events (%) | Dropout (%) | Avg Recovery (days) |\n|------------|----------|---------------------|---------------------|-----------------|--------------------|-----------|-----------------------|\n| 10 | 120 | 22 | 35 | 43 | 8 | 5 | 42 |\n| 25 | 145 | 38 | 32 | 30 | 14 | 8 | 35 |\n| 50 | 160 | 52 | 28 | 20 | 22 | 12 | 28 |\n| 75 | 135 | 61 | 24 | 15 | 35 | 18 | 24 |\n| 100 | 110 | 65 | 21 | 14 | 48 | 25 | 22 |",
+      "questionStem": "An analyst calculates 'effective response' as the number of patients achieving complete or partial response, adjusted for dropouts: Patients × (Complete% + Partial%) × (1 - Dropout%). Which dosage level yields the highest effective response?",
+      "options": [
+        {
+          "id": "A",
+          "text": "25 mg"
+        },
+        {
+          "id": "B",
+          "text": "50 mg"
+        },
+        {
+          "id": "C",
+          "text": "75 mg"
+        },
+        {
+          "id": "D",
+          "text": "100 mg"
+        },
+        {
+          "id": "E",
+          "text": "10 mg"
+        }
+      ],
+      "correctAnswer": "B",
+      "explanation": "Effective response = Patients × (CR%+PR%) × (1-Dropout%): 10mg: 120 × 0.57 × 0.95 = 65.0. 25mg: 145 × 0.70 × 0.92 = 93.4. 50mg: 160 × 0.80 × 0.88 = 112.6. 75mg: 135 × 0.85 × 0.82 = 94.0. 100mg: 110 × 0.86 × 0.75 = 70.95. The 50mg dosage yields the highest effective response at approximately 112.6 patients.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0048",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "table-analysis",
+      "subtopic": "compound-conditions",
+      "passage": "The following table shows data on municipal bond offerings across different cities.\n\n| City | Issue Size ($M) | Coupon (%) | Maturity (yrs) | Credit Rating | Tax Revenue ($M) | Debt/Revenue (%) | Population (K) |\n|------|----------------|-----------|----------------|---------------|-----------------|-------------------|-----------------|\n| Ashford | 85 | 3.8 | 20 | AA | 420 | 32 | 185 |\n| Belmont | 120 | 4.5 | 30 | A+ | 310 | 48 | 142 |\n| Crestwood | 45 | 3.2 | 10 | AAA | 580 | 18 | 225 |\n| Danville | 200 | 5.1 | 25 | BBB+ | 680 | 55 | 340 |\n| Eastport | 65 | 3.5 | 15 | AA- | 290 | 28 | 120 |\n| Fairmont | 150 | 4.8 | 20 | A | 520 | 42 | 280 |",
+      "questionStem": "An analyst considers a bond 'investment grade premium' if the credit rating is AA- or better AND the debt-to-revenue ratio is below 35%. Among these, which city offers the highest coupon rate?",
+      "options": [
+        {
+          "id": "A",
+          "text": "Ashford"
+        },
+        {
+          "id": "B",
+          "text": "Crestwood"
+        },
+        {
+          "id": "C",
+          "text": "Eastport"
+        },
+        {
+          "id": "D",
+          "text": "Belmont"
+        },
+        {
+          "id": "E",
+          "text": "Fairmont"
+        }
+      ],
+      "correctAnswer": "A",
+      "explanation": "Credit rating AA- or better: Ashford (AA), Crestwood (AAA), Eastport (AA-). Of these, debt/revenue < 35%: Ashford (32%) ✓, Crestwood (18%) ✓, Eastport (28%) ✓. All three qualify. Coupon rates: Ashford 3.8%, Crestwood 3.2%, Eastport 3.5%. Ashford offers the highest coupon at 3.8%.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0049",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows warehouse operations data for a distribution company.\n\n| Warehouse | Capacity (K pallets) | Utilization (%) | Orders/Day | Pick Accuracy (%) | Ship Time (hrs) | Labor Cost ($/order) | Sq Ft (K) |\n|-----------|---------------------|-----------------|------------|-------------------|-----------------|---------------------|----------|\n| W-East | 25 | 88 | 1,850 | 99.2 | 4.2 | 3.85 | 180 |\n| W-West | 32 | 75 | 2,400 | 98.8 | 5.1 | 3.20 | 245 |\n| W-Central | 40 | 82 | 3,100 | 99.5 | 3.8 | 4.10 | 310 |\n| W-South | 18 | 92 | 1,200 | 99.1 | 4.5 | 4.50 | 140 |\n| W-North | 28 | 71 | 2,050 | 98.5 | 5.8 | 3.45 | 215 |",
+      "questionStem": "A composite efficiency score is calculated as: (Orders/Day per 1000 sq ft) × (Pick Accuracy/100) × (10/Ship Time). Which warehouse has the highest composite efficiency score?",
+      "options": [
+        {
+          "id": "A",
+          "text": "W-East"
+        },
+        {
+          "id": "B",
+          "text": "W-West"
+        },
+        {
+          "id": "C",
+          "text": "W-Central"
+        },
+        {
+          "id": "D",
+          "text": "W-South"
+        },
+        {
+          "id": "E",
+          "text": "W-North"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Composite = (Orders/SqFt per K) × (Accuracy/100) × (10/ShipTime): W-East: (1850/180) × 0.992 × (10/4.2) = 10.28 × 0.992 × 2.381 = 24.28. W-West: (2400/245) × 0.988 × (10/5.1) = 9.80 × 0.988 × 1.961 = 18.99. W-Central: (3100/310) × 0.995 × (10/3.8) = 10.0 × 0.995 × 2.632 = 26.19. W-South: (1200/140) × 0.991 × (10/4.5) = 8.57 × 0.991 × 2.222 = 18.87. W-North: (2050/215) × 0.985 × (10/5.8) = 9.53 × 0.985 × 1.724 = 16.19. W-Central has the highest composite score at approximately 26.19.",
+      "source": "PrepWISE Generated"
+    },
+    {
+      "id": "gen-ta-0050",
+      "type": "TA",
+      "section": "data-insights",
+      "difficulty": "700+",
+      "topic": "table-analysis",
+      "subtopic": "calculations",
+      "passage": "The following table shows data for a venture capital firm's portfolio companies over the past fiscal year.\n\n| Company | Investment ($M) | Revenue ($M) | Revenue Growth (%) | Burn Rate ($M/mo) | Months of Runway | Market Share (%) |\n|---------|----------------|-------------|-------------------|--------------------|------------------|-----------------|\n| TechAlpha | 15.0 | 8.2 | 120 | 1.8 | 14 | 4.2 |\n| DataBeta | 8.5 | 3.1 | 85 | 0.9 | 18 | 1.8 |\n| CloudGamma | 22.0 | 15.4 | 65 | 2.5 | 11 | 6.5 |\n| AIKappa | 12.0 | 5.8 | 150 | 1.4 | 16 | 3.1 |\n| FinOmega | 18.5 | 11.2 | 45 | 2.1 | 8 | 8.2 |\n| HealthSigma | 6.0 | 2.4 | 200 | 0.6 | 22 | 0.9 |",
+      "questionStem": "The VC firm uses a 'portfolio health index' calculated as: (Revenue/Investment) × (Months of Runway/12) × (1 + Revenue Growth/100). Which company has the highest index value?",
+      "options": [
+        {
+          "id": "A",
+          "text": "TechAlpha"
+        },
+        {
+          "id": "B",
+          "text": "AIKappa"
+        },
+        {
+          "id": "C",
+          "text": "HealthSigma"
+        },
+        {
+          "id": "D",
+          "text": "CloudGamma"
+        },
+        {
+          "id": "E",
+          "text": "DataBeta"
+        }
+      ],
+      "correctAnswer": "C",
+      "explanation": "Health index = (Rev/Inv) × (Runway/12) × (1+Growth/100): TechAlpha: (8.2/15) × (14/12) × 2.20 = 0.547 × 1.167 × 2.20 = 1.404. DataBeta: (3.1/8.5) × (18/12) × 1.85 = 0.365 × 1.500 × 1.85 = 1.013. CloudGamma: (15.4/22) × (11/12) × 1.65 = 0.700 × 0.917 × 1.65 = 1.059. AIKappa: (5.8/12) × (16/12) × 2.50 = 0.483 × 1.333 × 2.50 = 1.611. FinOmega: (11.2/18.5) × (8/12) × 1.45 = 0.605 × 0.667 × 1.45 = 0.585. HealthSigma: (2.4/6) × (22/12) × 3.00 = 0.400 × 1.833 × 3.00 = 2.200. HealthSigma has the highest index at 2.200.",
+      "source": "PrepWISE Generated"
+    }
+  ]]
