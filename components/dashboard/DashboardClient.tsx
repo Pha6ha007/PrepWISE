@@ -82,14 +82,14 @@ export default function DashboardClient({
       <div
         className={`
           fixed lg:relative inset-y-0 left-0 z-50 w-64
-          bg-[#0D1220] border-r border-white/[0.06]
+          bg-[#0A0F1E]/95 backdrop-blur-xl border-r border-white/[0.04]
           transform transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
+          <div className="px-6 py-5 border-b border-white/[0.03] flex items-center justify-between">
             <Link href="/dashboard/session" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
                 <Brain className="w-4 h-4 text-[#0A0F1E]" />
@@ -130,7 +130,7 @@ export default function DashboardClient({
           </nav>
 
           {/* Streak Ring */}
-          <div className="px-3 py-3 border-t border-white/[0.06]">
+          <div className="px-3 py-3 border-t border-white/[0.03]">
             <StreakRing streak={streakData} size={100} />
           </div>
 
@@ -147,7 +147,7 @@ export default function DashboardClient({
           />
 
           {/* Plan badge + sign out */}
-          <div className="px-3 py-4 border-t border-white/[0.06] space-y-3">
+          <div className="px-3 py-4 border-t border-white/[0.03] space-y-3">
             <div className="px-3 py-2 rounded-xl bg-white/[0.03]">
               <div className="flex items-center gap-2 text-sm">
                 <Crown className="w-4 h-4 text-amber-400" />
@@ -200,7 +200,7 @@ export default function DashboardClient({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
-        <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#0D1220]">
+        <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-white/[0.03] bg-[#0A0F1E]">
           <button onClick={() => setSidebarOpen(true)} className="text-slate-400 hover:text-white">
             <Menu className="w-6 h-6" />
           </button>

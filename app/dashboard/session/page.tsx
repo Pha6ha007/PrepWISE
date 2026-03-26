@@ -273,7 +273,7 @@ function SessionPageInner() {
 
   if (!sessionStarted) {
     return (
-      <div className="h-full flex items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900">
+      <div className="h-full flex items-center justify-center">
         <Suspense fallback={null}><AutoCheckout /></Suspense>
         <div className="text-center max-w-lg px-6">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-400 flex items-center justify-center">
