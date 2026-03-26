@@ -82,7 +82,7 @@ export default function DashboardClient({
       <div
         className={`
           fixed lg:relative inset-y-0 left-0 z-50 w-64
-          bg-[#0A0F1E]/95 backdrop-blur-xl border-r border-white/[0.04]
+          bg-[#0D1220] border-r border-white/[0.05]
           transform transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
@@ -213,7 +213,7 @@ export default function DashboardClient({
           <div className="w-6" />
         </div>
 
-        <main className="flex-1 overflow-auto bg-[#0A0F1E] relative">
+        <main className="flex-1 overflow-auto bg-[#0F1629] relative">
           <div className="min-h-full">{children}</div>
         </main>
       </div>
