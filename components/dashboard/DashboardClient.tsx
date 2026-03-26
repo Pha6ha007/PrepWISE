@@ -213,7 +213,9 @@ export default function DashboardClient({
           <div className="w-6" />
         </div>
 
-        <main className="flex-1 overflow-auto bg-[#0A0F1E]">{children}</main>
+        <main className="flex-1 overflow-auto bg-[#0A0F1E] relative">
+          <div className="min-h-full">{children}</div>
+        </main>
       </div>
     </div>
   )
