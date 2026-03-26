@@ -31,6 +31,10 @@ function loadQuestions(): GmatQuestion[] {
     'gen-ds.json',           // AI-generated Data Sufficiency
     'gen-cr.json',           // AI-generated Critical Reasoning
     'gen-rc.json',           // AI-generated Reading Comprehension
+    'gen-ta.json',           // AI-generated Table Analysis
+    'gen-gi.json',           // AI-generated Graphics Interpretation
+    'gen-msr.json',          // AI-generated Multi-Source Reasoning
+    'gen-tpa.json',          // AI-generated Two-Part Analysis
   ]
 
   for (const file of questionFiles) {

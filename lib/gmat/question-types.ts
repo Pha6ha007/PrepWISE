@@ -1,7 +1,7 @@
 // lib/gmat/question-types.ts
 // Prepwise — GMAT Question type definitions for the Practice Mode
 
-export type QuestionType = 'PS' | 'DS' | 'CR' | 'RC' | 'TPA' | 'MSR' | 'GI'
+export type QuestionType = 'PS' | 'DS' | 'CR' | 'RC' | 'TPA' | 'MSR' | 'GI' | 'TA'
 export type Section = 'quant' | 'verbal' | 'data-insights'
 export type Difficulty = 'easy' | 'medium' | 'hard' | '700+'
 
@@ -85,6 +85,7 @@ export const TYPE_META: Record<QuestionType, { label: string; full: string }> = 
   TPA: { label: 'TPA', full: 'Two-Part Analysis' },
   MSR: { label: 'MSR', full: 'Multi-Source Reasoning' },
   GI: { label: 'GI', full: 'Graphics Interpretation' },
+  TA: { label: 'TA', full: 'Table Analysis' },
 }
 
 export const DIFFICULTY_META: Record<Difficulty, { label: string; color: string; bg: string }> = {
