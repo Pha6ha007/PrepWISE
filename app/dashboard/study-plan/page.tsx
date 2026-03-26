@@ -68,7 +68,7 @@ function SetupForm({ onGenerate, isLoading }: SetupFormProps) {
   const relevantTopics = GMAT_TOPICS.filter(t => weakSections.includes(t.section))
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="min-h-full max-w-2xl mx-auto">
       <div className="text-center mb-8">
         <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
           <CalendarDays className="w-6 h-6 text-cyan-400" />

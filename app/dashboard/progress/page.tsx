@@ -1,118 +1,119 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
-import ProgressClient from '@/components/progress/ProgressClient'
-import type { MoodEntryData, MoodStats } from '@/lib/mood/data'
+import { GmatProgressClient } from '@/components/progress/GmatProgressClient'
 
-export default async function ProgressPage() {
-  // Auth check
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+/**
+ * GMAT Progress Dashboard.
+ * Tries to load data from Supabase. Falls back to empty state if DB not connected.
+ */
+export default async function GmatProgressPage() {
+  let progressData = getEmptyProgressData()
 
-  if (!user) {
-    redirect('/login')
-  }
+  try {
+    const { createClient } = await import('@/lib/supabase/server')
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
 
-  // Fetch mood entries (last 30 days)
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    if (user) {
+      const { prisma } = await import('@/lib/prisma')
 
-  const moodEntries = await prisma.moodEntry.findMany({
-    where: {
-      userId: user.id,
-      createdAt: {
-        gte: thirtyDaysAgo,
-      },
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
+      const [sessions, topicProgress, errorLogs, mockTests, dbUser] = await Promise.all([
+        prisma.gmatSession.findMany({
+          where: { userId: user.id },
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+        }),
+        prisma.topicProgress.findMany({
+          where: { userId: user.id },
+          orderBy: { updatedAt: 'desc' },
+        }),
+        prisma.errorLog.findMany({
+          where: {
+            userId: user.id,
+            createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 100,
+        }),
+        prisma.mockTest.findMany({
+          where: { userId: user.id },
+          orderBy: { takenAt: 'desc' },
+          take: 20,
+        }),
+        prisma.user.findUnique({
+          where: { id: user.id },
+          select: { gmatProfile: true },
+        }),
+      ])
 
-  // Calculate stats
-  const beforeEntries = moodEntries.filter((e) => e.type === 'before')
-  const afterEntries = moodEntries.filter((e) => e.type === 'after')
+      const totalSessions = sessions.length
+      const totalMinutes = sessions.reduce((sum, s) => sum + (s.durationMins || 0), 0)
+      const totalQuestions = sessions.reduce((sum, s) => sum + s.questionsAsked, 0)
+      const totalCorrect = sessions.reduce((sum, s) => sum + s.correctAnswers, 0)
 
-  const avgBefore =
-    beforeEntries.length > 0
-      ? beforeEntries.reduce((sum, e) => sum + e.score, 0) / beforeEntries.length
-      : null
+      const sectionStats = topicProgress.reduce(
+        (acc, tp) => {
+          if (!acc[tp.section]) acc[tp.section] = { totalAttempts: 0, correctAttempts: 0, topics: 0 }
+          acc[tp.section].totalAttempts += tp.totalAttempts
+          acc[tp.section].correctAttempts += tp.correctAttempts
+          acc[tp.section].topics++
+          return acc
+        },
+        {} as Record<string, { totalAttempts: number; correctAttempts: number; topics: number }>
+      )
 
-  const avgAfter =
-    afterEntries.length > 0
-      ? afterEntries.reduce((sum, e) => sum + e.score, 0) / afterEntries.length
-      : null
+      const errorTypeBreakdown = errorLogs.reduce(
+        (acc, log) => { acc[log.errorType] = (acc[log.errorType] || 0) + 1; return acc },
+        {} as Record<string, number>
+      )
 
-  // Calculate streak
-  const entryDates = new Set(
-    moodEntries.map((e) => new Date(e.createdAt).toISOString().split('T')[0])
-  )
-  const sortedDates = Array.from(entryDates).sort().reverse()
-
-  let streak = 0
-  let bestStreak = 0
-  let currentStreakCount = 0
-
-  const today = new Date().toISOString().split('T')[0]
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-
-  for (let i = 0; i < sortedDates.length; i++) {
-    const date = sortedDates[i]
-    const prevDate = sortedDates[i - 1]
-
-    if (i === 0) {
-      if (date === today || date === yesterday) {
-        currentStreakCount = 1
-      }
-    } else {
-      const daysDiff =
-        (new Date(prevDate).getTime() - new Date(date).getTime()) / (1000 * 60 * 60 * 24)
-
-      if (daysDiff === 1) {
-        currentStreakCount++
-      } else {
-        if (currentStreakCount > bestStreak) {
-          bestStreak = currentStreakCount
-        }
-        currentStreakCount = 0
+      progressData = {
+        summary: {
+          totalSessions,
+          totalMinutes,
+          totalQuestions,
+          totalCorrect,
+          overallAccuracy: totalQuestions > 0 ? totalCorrect / totalQuestions : 0,
+        },
+        sectionStats,
+        errorTypeBreakdown,
+        topicProgress: topicProgress.map(tp => ({
+          id: tp.id, section: tp.section, topic: tp.topic, subtopic: tp.subtopic,
+          totalAttempts: tp.totalAttempts, correctAttempts: tp.correctAttempts,
+          accuracy: tp.accuracy, masteryLevel: tp.masteryLevel,
+          lastPracticed: tp.lastPracticed?.toISOString() || null,
+        })),
+        sessions: sessions.map(s => ({
+          id: s.id, agentUsed: s.agentUsed, topicsCovered: s.topicsCovered,
+          questionsAsked: s.questionsAsked, correctAnswers: s.correctAnswers,
+          durationMins: s.durationMins, createdAt: s.createdAt.toISOString(),
+        })),
+        mockTests: mockTests.map(mt => ({
+          id: mt.id, takenAt: mt.takenAt.toISOString(), durationMins: mt.durationMins,
+          totalScore: mt.totalScore, quantScore: mt.quantScore,
+          verbalScore: mt.verbalScore, dataInsightsScore: mt.dataInsightsScore,
+        })),
+        learnerProfile: (dbUser?.gmatProfile as any) || null,
       }
     }
+  } catch (error: any) {
+    // Supabase/DB not configured — show empty state
+    console.warn('Progress: Could not load data —', error.message?.slice(0, 80))
   }
-
-  if (currentStreakCount > bestStreak) {
-    bestStreak = currentStreakCount
-  }
-
-  if (sortedDates.length > 0 && (sortedDates[0] === today || sortedDates[0] === yesterday)) {
-    streak = currentStreakCount
-  }
-
-  const stats: MoodStats = {
-    avgBefore: avgBefore !== null ? Number(avgBefore.toFixed(1)) : null,
-    avgAfter: avgAfter !== null ? Number(avgAfter.toFixed(1)) : null,
-    improvement:
-      avgBefore !== null && avgAfter !== null ? Number((avgAfter - avgBefore).toFixed(1)) : null,
-    streak,
-    bestStreak,
-    totalEntries: moodEntries.length,
-  }
-
-  // Convert to plain objects for client component
-  const entries: MoodEntryData[] = moodEntries.map((e) => ({
-    id: e.id,
-    userId: e.userId,
-    sessionId: e.sessionId,
-    type: e.type as 'before' | 'after',
-    score: e.score,
-    reasons: e.reasons as string[],
-    note: e.note,
-    createdAt: e.createdAt,
-  }))
 
   return (
-    <div className="max-w-6xl mx-auto p-8 animate-fade-in-up">
-      <ProgressClient initialStats={stats} initialEntries={entries} />
+    <div className="min-h-full max-w-7xl mx-auto p-6 lg:p-8">
+      <GmatProgressClient data={progressData} />
     </div>
   )
+}
+
+function getEmptyProgressData() {
+  return {
+    summary: { totalSessions: 0, totalMinutes: 0, totalQuestions: 0, totalCorrect: 0, overallAccuracy: 0 },
+    sectionStats: {} as Record<string, { totalAttempts: number; correctAttempts: number; topics: number }>,
+    errorTypeBreakdown: {} as Record<string, number>,
+    topicProgress: [] as any[],
+    sessions: [] as any[],
+    mockTests: [] as any[],
+    learnerProfile: null,
+  }
 }

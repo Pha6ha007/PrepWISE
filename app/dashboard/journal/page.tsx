@@ -1,140 +1,70 @@
-import { redirect } from 'next/navigation'
-import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { BookOpen, Calendar, MessageCircle, Sparkles } from 'lucide-react'
-import { DiaryList } from '@/components/diary/DiaryList'
+import { StudyJournalClient } from '@/components/journal/StudyJournalClient'
 
 export default async function JournalPage() {
-  // Auth check
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  let entries: any[] = []
+  let streakDays = 0
 
-  if (!user) {
-    redirect('/login')
+  try {
+    const { createClient } = await import('@/lib/supabase/server')
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (user) {
+      const { prisma } = await import('@/lib/prisma')
+
+      // Fetch last 90 days of journal entries
+      const ninetyDaysAgo = new Date()
+      ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
+
+      const dbEntries = await prisma.studyJournalEntry.findMany({
+        where: {
+          userId: user.id,
+          date: { gte: ninetyDaysAgo },
+        },
+        orderBy: { date: 'desc' },
+      })
+
+      entries = dbEntries.map(e => ({
+        id: e.id,
+        date: e.date.toISOString().split('T')[0],
+        totalMinutes: e.totalMinutes,
+        sessionsCount: e.sessionsCount,
+        questionsTotal: e.questionsTotal,
+        questionsCorrect: e.questionsCorrect,
+        accuracy: e.accuracy,
+        topicsCovered: e.topicsCovered,
+        sectionsWorked: e.sectionsWorked,
+        errorsCount: e.errorsCount,
+        errorTypes: e.errorTypes,
+        samInsight: e.samInsight,
+        milestones: e.milestones,
+        userNote: e.userNote,
+        confidenceLevel: e.confidenceLevel,
+      }))
+
+      // Calculate streak
+      const sortedDates = entries.map(e => e.date).sort().reverse()
+      const today = new Date().toISOString().split('T')[0]
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
+
+      if (sortedDates[0] === today || sortedDates[0] === yesterday) {
+        streakDays = 1
+        for (let i = 1; i < sortedDates.length; i++) {
+          const prev = new Date(sortedDates[i - 1])
+          const curr = new Date(sortedDates[i])
+          const diffDays = (prev.getTime() - curr.getTime()) / 86400000
+          if (diffDays <= 1) streakDays++
+          else break
+        }
+      }
+    }
+  } catch (error: any) {
+    console.warn('Journal: Could not load —', error.message?.slice(0, 60))
   }
 
-  // Получить журнальные записи
-  const journalEntries = await prisma.journalEntry.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: 'desc' },
-    take: 50,
-  })
-
-  const hasEntries = journalEntries.length > 0
-
   return (
-    <div className="max-w-4xl mx-auto p-8 space-y-12 animate-fade-in-up">
-      {/* Header */}
-      <div>
-        <h1 className="font-serif text-4xl font-semibold text-foreground">Your Journal</h1>
-        <p className="text-muted-foreground mt-2 text-lg">
-          Insights saved from your conversations
-        </p>
-      </div>
-
-      {/* Monthly Diaries Section */}
-      <section className="space-y-4">
-        <div className="border-t border-border pt-8">
-          <DiaryList />
-        </div>
-      </section>
-
-      {/* Divider */}
-      <div className="border-t border-border" />
-
-      {/* Daily Insights Section */}
-      <section className="space-y-4">
-        <div>
-          <h2 className="font-serif text-2xl font-semibold text-foreground">Daily Insights</h2>
-          <p className="text-muted-foreground mt-1">
-            Moments saved from your conversations
-          </p>
-        </div>
-
-        {/* Empty State */}
-        {!hasEntries && (
-        <Card className="glass-button border border-white/20 shadow-large rounded-3xl transition-smooth hover-lift">
-          <CardContent className="p-12 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-              <BookOpen className="w-10 h-10 text-white" />
-            </div>
-            <h2 className="font-serif text-2xl font-semibold text-foreground mb-3">
-              No insights yet
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8 max-w-md mx-auto">
-              Start a conversation and save moments that matter. Your journal will grow with each meaningful exchange.
-            </p>
-            <Link href="/dashboard/chat">
-              <Button className="bg-gradient-to-r from-[#6366F1] to-[#EC4899] text-white font-semibold hover:shadow-lg transition-all">
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Go to Chat
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-        )}
-
-        {/* Journal Entries List */}
-        {hasEntries && (
-          <div className="space-y-6">
-          {journalEntries.map((entry) => (
-            <Card
-              key={entry.id}
-              className="glass-button border border-white/20 shadow-large rounded-2xl transition-smooth hover-lift overflow-hidden"
-            >
-              <CardContent className="p-6">
-                {/* Date */}
-                <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
-                  <Calendar className="w-4 h-4" />
-                  <span>
-                    {new Date(entry.createdAt).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
-                </div>
-
-                {/* Saved Content */}
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-[#F59E0B] to-[#FBBF24] rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <Sparkles className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-foreground leading-relaxed">{entry.content}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-          </div>
-        )}
-
-        {/* Info Card внизу если есть записи */}
-        {hasEntries && (
-        <Card className="glass border border-white/20 rounded-2xl">
-          <CardContent className="p-6">
-            <div className="flex items-start space-x-3">
-              <Sparkles className="w-5 h-5 text-[#6366F1] flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  <strong className="text-foreground">Note:</strong> Your journal entries are
-                  private and never used to train AI models. They're saved here for your personal
-                  reflection and growth tracking.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        )}
-      </section>
+    <div className="min-h-full max-w-5xl mx-auto p-6 lg:p-8">
+      <StudyJournalClient entries={entries} streakDays={streakDays} />
     </div>
   )
 }
