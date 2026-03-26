@@ -115,7 +115,7 @@ function RegisterForm() {
               {plan ? 'Create your account' : 'Start your GMAT prep'}
             </h1>
             <p className="text-slate-400 text-sm">
-              {plan ? 'Your plan activates after verification' : 'Create an account — 14-day free trial'}
+              {plan ? 'Your plan activates after verification' : 'Create an account — 7-day free trial'}
             </p>
           </div>
 
