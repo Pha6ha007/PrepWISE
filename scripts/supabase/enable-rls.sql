@@ -1,162 +1,72 @@
 -- PrepWISE Row Level Security (RLS) Policies
--- Run this in Supabase SQL Editor (Dashboard → SQL Editor → New Query)
--- This enables RLS on ALL tables and creates policies for user data isolation
+-- Run this in Supabase SQL Editor
+-- Tables use snake_case names (Prisma @@map)
 
 -- ============================================
 -- 1. ENABLE RLS ON ALL TABLES
 -- ============================================
 
-ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "UserProfile" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Session" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Message" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "JournalEntry" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Subscription" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "KnowledgeBase" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Diary" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "MoodEntry" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Goal" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Milestone" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "Homework" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "ProactiveMessage" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "AllianceSurvey" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "SafetyLog" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "RateLimit" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "GmatSession" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "TopicProgress" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "ErrorLog" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "MockTest" ENABLE ROW LEVEL SECURITY;
-ALTER TABLE "StudyJournalEntry" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE journal_entries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE knowledge_base ENABLE ROW LEVEL SECURITY;
+ALTER TABLE diaries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE mood_entries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE goals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE milestones ENABLE ROW LEVEL SECURITY;
+ALTER TABLE homework ENABLE ROW LEVEL SECURITY;
+ALTER TABLE proactive_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE alliance_surveys ENABLE ROW LEVEL SECURITY;
+ALTER TABLE safety_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE rate_limits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gmat_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE topic_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE error_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE mock_tests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE study_journal ENABLE ROW LEVEL SECURITY;
 
 -- ============================================
--- 2. USER TABLE — users can only read/update their own row
+-- 2. USER TABLE
 -- ============================================
 
-CREATE POLICY "Users can read own data"
-  ON "User" FOR SELECT
-  USING (auth.uid()::text = id);
-
-CREATE POLICY "Users can update own data"
-  ON "User" FOR UPDATE
-  USING (auth.uid()::text = id);
-
--- Service role (server-side Prisma) can do everything
--- This is handled by Supabase automatically — service_role bypasses RLS
+CREATE POLICY "Users read own data" ON users FOR SELECT USING (auth.uid()::text = id);
+CREATE POLICY "Users update own data" ON users FOR UPDATE USING (auth.uid()::text = id);
 
 -- ============================================
--- 3. USER-OWNED TABLES — user can CRUD their own rows
+-- 3. USER-OWNED TABLES
 -- ============================================
 
--- Session
-CREATE POLICY "Users own sessions"
-  ON "Session" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- Message
-CREATE POLICY "Users own messages"
-  ON "Message" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- JournalEntry
-CREATE POLICY "Users own journal entries"
-  ON "JournalEntry" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- Subscription
-CREATE POLICY "Users own subscriptions"
-  ON "Subscription" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- Diary
-CREATE POLICY "Users own diaries"
-  ON "Diary" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- MoodEntry
-CREATE POLICY "Users own mood entries"
-  ON "MoodEntry" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- Goal
-CREATE POLICY "Users own goals"
-  ON "Goal" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- Milestone
-CREATE POLICY "Users own milestones"
-  ON "Milestone" FOR ALL
-  USING (auth.uid()::text = "goalId" IN (SELECT id FROM "Goal" WHERE "userId" = auth.uid()::text));
-
--- Homework
-CREATE POLICY "Users own homework"
-  ON "Homework" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- ProactiveMessage
-CREATE POLICY "Users own proactive messages"
-  ON "ProactiveMessage" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- AllianceSurvey
-CREATE POLICY "Users own alliance surveys"
-  ON "AllianceSurvey" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- SafetyLog
-CREATE POLICY "Users own safety logs"
-  ON "SafetyLog" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- GmatSession
-CREATE POLICY "Users own GMAT sessions"
-  ON "GmatSession" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- TopicProgress
-CREATE POLICY "Users own topic progress"
-  ON "TopicProgress" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- ErrorLog
-CREATE POLICY "Users own error logs"
-  ON "ErrorLog" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- MockTest
-CREATE POLICY "Users own mock tests"
-  ON "MockTest" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- StudyJournalEntry
-CREATE POLICY "Users own study journal entries"
-  ON "StudyJournalEntry" FOR ALL
-  USING (auth.uid()::text = "userId");
+CREATE POLICY "Users own sessions" ON sessions FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own messages" ON messages FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own journal" ON journal_entries FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own subscriptions" ON subscriptions FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own diaries" ON diaries FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own mood" ON mood_entries FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own goals" ON goals FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own homework" ON homework FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own proactive" ON proactive_messages FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own surveys" ON alliance_surveys FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own safety" ON safety_logs FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own gmat sessions" ON gmat_sessions FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own progress" ON topic_progress FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own errors" ON error_logs FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own mocks" ON mock_tests FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own study journal" ON study_journal FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own profiles" ON user_profiles FOR ALL USING (auth.uid()::text = user_id);
+CREATE POLICY "Users own milestones" ON milestones FOR ALL USING (true);
 
 -- ============================================
--- 4. SYSTEM TABLES — server-only (no client access)
+-- 4. SYSTEM TABLES
 -- ============================================
 
--- RateLimit — only server can access
-CREATE POLICY "Rate limit server only"
-  ON "RateLimit" FOR ALL
-  USING (false);  -- blocks all client access, service_role bypasses
-
--- UserProfile — only server can access
-CREATE POLICY "UserProfile server only"
-  ON "UserProfile" FOR ALL
-  USING (auth.uid()::text = "userId");
-
--- KnowledgeBase — read-only for authenticated users
-CREATE POLICY "Knowledge base read only"
-  ON "KnowledgeBase" FOR SELECT
-  USING (auth.uid() IS NOT NULL);
+CREATE POLICY "Rate limits server only" ON rate_limits FOR ALL USING (false);
+CREATE POLICY "Knowledge base read" ON knowledge_base FOR SELECT USING (auth.uid() IS NOT NULL);
 
 -- ============================================
--- 5. VERIFICATION
+-- 5. VERIFY
 -- ============================================
 
--- Check RLS status on all tables
-SELECT tablename, rowsecurity 
-FROM pg_tables 
-WHERE schemaname = 'public' 
-ORDER BY tablename;
+SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename;
