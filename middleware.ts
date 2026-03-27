@@ -2,16 +2,22 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 /**
- * Middleware для защиты роутов через Supabase Auth
+ * Prepwise Middleware — route protection via Supabase Auth
  *
- * Защищённые роуты:
- * - /dashboard/* — требует аутентификации
+ * Protected routes:
+ * - /dashboard/* — requires authentication + completed onboarding
+ * - /onboarding — requires authentication
  *
- * Публичные роуты:
+ * Public routes:
  * - / — landing page
  * - /login, /register — auth pages
  */
 export async function middleware(request: NextRequest) {
+  // Skip middleware if Supabase is not configured (local dev without DB)
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return NextResponse.next()
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -39,14 +45,13 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Проверяем сессию пользователя
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
 
-  // Защищённые роуты — требуется auth
+  // Protected routes — require auth
   if (pathname.startsWith('/dashboard')) {
     if (!user) {
       const redirectUrl = request.nextUrl.clone()
@@ -55,23 +60,27 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(redirectUrl)
     }
 
-    // Проверяем завершён ли онбординг (есть ли companionName)
-    // Если нет — редирект на /onboarding
-    const { data: dbUser } = await supabase
-      .from('users')
-      .select('companion_name')
-      .eq('id', user.id)
-      .single()
+    // Check if onboarding is complete (preferred_name set)
+    // If DB query fails (no connection), skip onboarding check — let user through
+    try {
+      const { data: dbUser, error: dbError } = await supabase
+        .from('users')
+        .select('preferred_name')
+        .eq('id', user.id)
+        .single()
 
-    // Если companionName пустой — показать онбординг
-    if (!dbUser || !dbUser.companion_name || dbUser.companion_name.trim() === '') {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/onboarding'
-      return NextResponse.redirect(redirectUrl)
+      if (!dbError && dbUser && (!dbUser.preferred_name || dbUser.preferred_name.trim() === '')) {
+        const redirectUrl = request.nextUrl.clone()
+        redirectUrl.pathname = '/onboarding'
+        return NextResponse.redirect(redirectUrl)
+      }
+      // If dbError or no dbUser — skip onboarding check (DB not set up yet)
+    } catch {
+      // DB unreachable — let user through to dashboard
     }
   }
 
-  // Защищённый роут /onboarding — требуется auth но не требуется companionName
+  // Onboarding — require auth but not completed profile
   if (pathname === '/onboarding') {
     if (!user) {
       const redirectUrl = request.nextUrl.clone()
@@ -80,25 +89,26 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Роуты auth — если пользователь уже залогинен, редирект на dashboard
+  // Auth routes — if already logged in, redirect to session
   if ((pathname === '/login' || pathname === '/register') && user) {
     const redirectUrl = request.nextUrl.clone()
-    redirectUrl.pathname = '/dashboard/chat'
+    redirectUrl.pathname = '/dashboard/session'
     return NextResponse.redirect(redirectUrl)
   }
 
-  return supabaseResponse
+  // Add security headers to all responses
+  const response = supabaseResponse
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('X-XSS-Protection', '1; mode=block')
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(self), geolocation=()')
+
+  return response
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico (favicon)
-     * - public assets
-     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

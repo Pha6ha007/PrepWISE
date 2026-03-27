@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { Resend } from "resend";
+import { resend, FROM_EMAIL } from "@/lib/resend/client";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Simple in-memory rate limit for contact form (3 per minute per IP)
+const contactRateMap = new Map<string, { count: number; resetAt: number }>();
+function checkContactRate(ip: string): boolean {
+  const now = Date.now();
+  const entry = contactRateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    contactRateMap.set(ip, { count: 1, resetAt: now + 60000 });
+    return true;
+  }
+  if (entry.count >= 3) return false;
+  entry.count++;
+  return true;
+}
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -17,6 +29,12 @@ const contactSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    if (!checkContactRate(ip)) {
+      return NextResponse.json({ error: 'Too many requests. Please wait a minute.' }, { status: 429 });
+    }
+
     const body = await request.json();
 
     // Validate input
@@ -26,8 +44,8 @@ export async function POST(request: NextRequest) {
 
     // Prepare email content
     const emailSubject = type === "partnership" && company
-      ? `[Confide Partnership] ${company}`
-      : `[Confide Contact] ${name}`;
+      ? `[Prepwise Partnership] ${company}`
+      : `[Prepwise Contact] ${name}`;
 
     const htmlContent = `
       <h2>New Contact Form Submission</h2>
@@ -44,8 +62,8 @@ export async function POST(request: NextRequest) {
 
     // Send email via Resend
     await resend.emails.send({
-      from: "Confide Contact Form <noreply@confide.app>",
-      to: "hello@confide.app",
+      from: "Prepwise Contact Form <noreply@prepwise.app>",
+      to: "hello@prepwise.app",
       replyTo: email,
       subject: emailSubject,
       html: htmlContent,
