@@ -4,26 +4,28 @@ import { useEffect, useRef } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 
 /**
- * Монтируется в dashboard layout.
- * Если в URL есть ?checkout=pro или ?checkout=premium —
- * автоматически создаёт Dodo Payments checkout и редиректит.
+ * Mounted in dashboard layout.
+ * If URL has ?checkout=starter|pro|intensive —
+ * automatically creates Paddle checkout and redirects.
  */
 export function AutoCheckout() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
-  const plan = searchParams.get('checkout') // 'pro' | 'premium'
+  const plan = searchParams.get('checkout') // 'starter' | 'pro' | 'intensive'
   const hasTriggered = useRef(false)
 
   useEffect(() => {
     if (!plan || hasTriggered.current) return
 
     const productId =
-      plan === 'pro'
-        ? process.env.NEXT_PUBLIC_DODO_PRODUCT_PRO_ID
-        : plan === 'premium'
-          ? process.env.NEXT_PUBLIC_DODO_PRODUCT_PREMIUM_ID
-          : null
+      plan === 'starter'
+        ? process.env.NEXT_PUBLIC_PADDLE_PRODUCT_STARTER
+        : plan === 'pro'
+          ? process.env.NEXT_PUBLIC_PADDLE_PRODUCT_PRO
+          : plan === 'intensive'
+            ? process.env.NEXT_PUBLIC_PADDLE_PRODUCT_INTENSIVE
+            : null
 
     if (!productId) return
 
@@ -44,9 +46,8 @@ export function AutoCheckout() {
           return
         }
       } catch {
-        // Тихо игнорируем — пользователь может вручную перейти в settings
+        // Silently ignore — user can manually go to settings
       } finally {
-        // Убираем ?checkout из URL в любом случае
         router.replace(pathname)
       }
     }

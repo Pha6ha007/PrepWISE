@@ -78,7 +78,7 @@ Pinecone Score: ${chunk.score.toFixed(4)}`
       })
       .join('\n\n')
 
-    const systemPrompt = `You are a relevance scoring assistant for a psychology RAG (Retrieval-Augmented Generation) system.
+    const systemPrompt = `You are a relevance scoring assistant for a GMAT tutoring RAG (Retrieval-Augmented Generation) system.
 
 Your task: Evaluate how relevant each chunk of text is to answering the user's query. Consider:
 - Semantic relevance (does it address the query topic?)

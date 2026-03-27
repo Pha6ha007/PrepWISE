@@ -1,0 +1,37 @@
+# railway.yaml
+# Prepwise — Railway deployment configuration
+# AI agents backend with persistent containers (no time limits)
+
+services:
+  # Main GMAT agent service — handles voice sessions, routing, RAG retrieval
+  - name: gmat-agents
+    type: web
+    buildCommand: npm install && npx prisma generate
+    startCommand: npx ts-node agents/server.ts
+    healthcheckPath: /health
+    envVars:
+      - ANTHROPIC_API_KEY
+      - GROQ_API_KEY
+      - OPENAI_API_KEY
+      - PINECONE_API_KEY
+      - PINECONE_INDEX_NAME
+      - ELEVENLABS_API_KEY
+      - ELEVENLABS_VOICE_ID
+      - DEEPGRAM_API_KEY
+      - DATABASE_URL
+      - REDIS_URL
+
+  # Memory worker — runs after each session to update learner profiles
+  - name: memory-worker
+    type: worker
+    buildCommand: npm install && npx prisma generate
+    startCommand: npx ts-node agents/memory-worker.ts
+    envVars:
+      - ANTHROPIC_API_KEY
+      - GROQ_API_KEY
+      - DATABASE_URL
+      - REDIS_URL
+
+  # Redis for session cache and real-time state
+  - name: redis
+    type: redis

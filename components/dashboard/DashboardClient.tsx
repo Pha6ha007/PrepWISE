@@ -27,6 +27,8 @@ import { getTrialStatus, getTrialDaysRemaining } from '@/lib/billing/trial'
 import { StreakRing } from '@/components/gamification/StreakRing'
 import { calculateStreak } from '@/lib/gmat/gamification'
 import { QuestionOfTheDay } from '@/components/dashboard/QuestionOfTheDay'
+import { PreExamBanner } from '@/components/dashboard/PreExamBanner'
+import { isPreExamMode } from '@/lib/gmat/pre-exam'
 
 interface DashboardClientProps {
   user: User
@@ -34,6 +36,8 @@ interface DashboardClientProps {
   trialStartDate: string | null
   trialEndDate: string | null
   studyDates?: string[]       // YYYY-MM-DD dates the user studied
+  gmatTestDate?: string | null     // ISO date string from learner profile
+  gmatWeakTopics?: string[]        // weak topics from learner profile
   signOut: () => Promise<void>
   children: React.ReactNode
 }
@@ -56,12 +60,15 @@ export default function DashboardClient({
   trialStartDate,
   trialEndDate,
   studyDates = [],
+  gmatTestDate = null,
+  gmatWeakTopics = [],
   signOut,
   children,
 }: DashboardClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const currentPath = usePathname()
   const streakData = useMemo(() => calculateStreak(studyDates), [studyDates])
+  const showPreExamBanner = useMemo(() => isPreExamMode(gmatTestDate), [gmatTestDate])
 
   return (
     <div className="h-screen flex bg-[#0B1120]">
@@ -214,6 +221,12 @@ export default function DashboardClient({
         </div>
 
         <main className="flex-1 overflow-auto relative">
+          {showPreExamBanner && gmatTestDate && (
+            <PreExamBanner
+              testDate={gmatTestDate}
+              weakTopics={gmatWeakTopics}
+            />
+          )}
           <div className="min-h-full">{children}</div>
         </main>
       </div>

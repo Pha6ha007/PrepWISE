@@ -138,8 +138,8 @@ export const DEFAULT_VOICE_IDS = {
 
 // Предложенные имена компаньонов
 export const SUGGESTED_NAMES = {
-  male: ['Alex', 'Sam', 'Jordan', 'Morgan'],
-  female: ['Alex', 'Anna', 'Mia', 'Taylor'],
+  male: ['Sam', 'Sam', 'Jordan', 'Morgan'],
+  female: ['Sam', 'Anna', 'Mia', 'Taylor'],
 } as const
 
 /**

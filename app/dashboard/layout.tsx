@@ -24,6 +24,7 @@ export default async function DashboardLayout({
     trialStartDate: null,
     trialEndDate: null,
   }
+  let gmatProfile: Record<string, unknown> | null = null
 
   try {
     const { createClient } = await import('@/lib/supabase/server')
@@ -40,13 +41,14 @@ export default async function DashboardLayout({
       const { prisma } = await import('@/lib/prisma')
       const dbUser = await prisma.user.findUnique({
         where: { id: user.id },
-        select: { plan: true, trialStartDate: true, trialEndDate: true },
+        select: { plan: true, trialStartDate: true, trialEndDate: true, gmatProfile: true },
       })
       userPlan = dbUser?.plan || 'free'
       trialData = {
         trialStartDate: dbUser?.trialStartDate ?? null,
         trialEndDate: dbUser?.trialEndDate ?? null,
       }
+      gmatProfile = (dbUser?.gmatProfile as Record<string, unknown>) ?? null
 
       // Load distinct study dates for streak calculation
       try {
@@ -84,6 +86,8 @@ export default async function DashboardLayout({
       trialEndDate={trialData.trialEndDate?.toISOString() ?? null}
       trialStartDate={trialData.trialStartDate?.toISOString() ?? null}
       studyDates={studyDates}
+      gmatTestDate={(gmatProfile?.testDate as string) ?? null}
+      gmatWeakTopics={(gmatProfile?.weakTopics as string[]) ?? []}
       signOut={signOut}
     >
       {children}

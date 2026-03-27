@@ -1,4 +1,4 @@
-// Confide — Rate Limiting Utility
+// Prepwise — Rate Limiting Utility
 // PostgreSQL-based rate limiting for serverless environment (Vercel)
 // CRITICAL: In-memory storage does NOT work in serverless — each invocation is separate
 

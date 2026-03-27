@@ -1,165 +1,91 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
-import { ErrorResponse } from '@/types'
 
-// Валидация входных данных
-const JournalEntrySchema = z.object({
-  content: z.string().min(1).max(10000),
-  sourceMessageId: z.string().uuid(),
-})
+/**
+ * GET /api/journal — Get journal entries for a date range
+ * Query params: from=YYYY-MM-DD&to=YYYY-MM-DD
+ *
+ * POST /api/journal — Add a user note or confidence level to today's entry
+ * Body: { note?: string, confidenceLevel?: number }
+ */
+export async function GET(request: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-export async function POST(request: NextRequest) {
   try {
-    // ============================================
-    // 1. AUTH CHECK (всегда первым!)
-    // ============================================
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    const { prisma } = await import('@/lib/prisma')
+    const { searchParams } = new URL(request.url)
 
-    if (!user) {
-      return NextResponse.json<ErrorResponse>(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+    const from = searchParams.get('from')
+    const to = searchParams.get('to')
 
-    // ============================================
-    // 2. ВАЛИДАЦИЯ ВХОДНЫХ ДАННЫХ
-    // ============================================
-    const body = await request.json()
-    const validation = JournalEntrySchema.safeParse(body)
+    const where: any = { userId: user.id }
+    if (from) where.date = { ...where.date, gte: new Date(from) }
+    if (to) where.date = { ...where.date, lte: new Date(to) }
 
-    if (!validation.success) {
-      return NextResponse.json<ErrorResponse>(
-        { error: 'Invalid request', details: validation.error.message },
-        { status: 400 }
-      )
-    }
-
-    const { content, sourceMessageId } = validation.data
-
-    // ============================================
-    // 3. ПРОВЕРИТЬ ЧТО СООБЩЕНИЕ СУЩЕСТВУЕТ И ПРИНАДЛЕЖИТ ПОЛЬЗОВАТЕЛЮ
-    // ============================================
-    const message = await prisma.message.findUnique({
-      where: { id: sourceMessageId },
+    const entries = await prisma.studyJournalEntry.findMany({
+      where,
+      orderBy: { date: 'desc' },
+      take: 90,
     })
 
-    if (!message) {
-      return NextResponse.json<ErrorResponse>(
-        { error: 'Message not found' },
-        { status: 404 }
-      )
-    }
-
-    if (message.userId !== user.id) {
-      return NextResponse.json<ErrorResponse>(
-        { error: 'Forbidden' },
-        { status: 403 }
-      )
-    }
-
-    // Проверить что это сообщение от assistant
-    if (message.role !== 'assistant') {
-      return NextResponse.json<ErrorResponse>(
-        { error: 'Only assistant messages can be saved as insights' },
-        { status: 400 }
-      )
-    }
-
-    // ============================================
-    // 4. ПРОВЕРИТЬ ЧТО ЭТО СООБЩЕНИЕ УЖЕ НЕ СОХРАНЕНО
-    // ============================================
-    const existingEntry = await prisma.journalEntry.findFirst({
-      where: {
-        userId: user.id,
-        sourceMessageId,
-      },
-    })
-
-    if (existingEntry) {
-      // Уже сохранено — вернуть success без дублирования
-      return NextResponse.json({
-        success: true,
-        alreadySaved: true,
-        entryId: existingEntry.id,
-      })
-    }
-
-    // ============================================
-    // 5. СОЗДАТЬ JOURNAL ENTRY
-    // ============================================
-    const journalEntry = await prisma.journalEntry.create({
-      data: {
-        userId: user.id,
-        content,
-        sourceMessageId,
-      },
-    })
-
-    // ============================================
-    // 6. ВЕРНУТЬ SUCCESS
-    // ============================================
     return NextResponse.json({
-      success: true,
-      alreadySaved: false,
-      entryId: journalEntry.id,
+      entries: entries.map(e => ({
+        id: e.id,
+        date: e.date.toISOString().split('T')[0],
+        totalMinutes: e.totalMinutes,
+        sessionsCount: e.sessionsCount,
+        questionsTotal: e.questionsTotal,
+        questionsCorrect: e.questionsCorrect,
+        accuracy: e.accuracy,
+        topicsCovered: e.topicsCovered,
+        sectionsWorked: e.sectionsWorked,
+        errorsCount: e.errorsCount,
+        errorTypes: e.errorTypes,
+        samInsight: e.samInsight,
+        milestones: e.milestones,
+        userNote: e.userNote,
+        confidenceLevel: e.confidenceLevel,
+      })),
     })
-  } catch (error) {
-    console.error('Journal API error:', error)
-
-    return NextResponse.json<ErrorResponse>(
-      {
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
-    )
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
 
-// GET endpoint для получения всех записей журнала
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
   try {
-    // ============================================
-    // 1. AUTH CHECK
-    // ============================================
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    const { prisma } = await import('@/lib/prisma')
+    const body = await request.json()
+    const { note, confidenceLevel } = body
 
-    if (!user) {
-      return NextResponse.json<ErrorResponse>(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
 
-    // ============================================
-    // 2. ПОЛУЧИТЬ ВСЕ ЗАПИСИ ЖУРНАЛА
-    // ============================================
-    const entries = await prisma.journalEntry.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: 'desc' },
-    })
-
-    return NextResponse.json({
-      entries,
-    })
-  } catch (error) {
-    console.error('Journal API error:', error)
-
-    return NextResponse.json<ErrorResponse>(
-      {
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error',
+    // Upsert today's entry (create if doesn't exist)
+    const entry = await prisma.studyJournalEntry.upsert({
+      where: {
+        userId_date: { userId: user.id, date: today },
       },
-      { status: 500 }
-    )
+      create: {
+        userId: user.id,
+        date: today,
+        userNote: note || null,
+        confidenceLevel: confidenceLevel || null,
+      },
+      update: {
+        ...(note !== undefined && { userNote: note }),
+        ...(confidenceLevel !== undefined && { confidenceLevel }),
+      },
+    })
+
+    return NextResponse.json({ success: true, entry })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

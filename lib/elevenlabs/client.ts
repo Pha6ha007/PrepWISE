@@ -8,7 +8,7 @@
  * - По умолчанию используется Rachel (хороший тёплый женский голос)
  * - Starter план: 10,000 символов/месяц
  *
- * PsyGUARD Upgrade (март 2026):
+ * Voice safety check:
  * - Добавлен streaming TTS через @elevenlabs/elevenlabs-js SDK
  * - textToSpeechStream() возвращает ReadableStream для chunked transfer
  */

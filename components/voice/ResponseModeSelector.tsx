@@ -5,7 +5,7 @@ import { Type, Volume2, Layers } from 'lucide-react'
 
 export type ResponseMode = 'text' | 'voice' | 'both'
 
-const STORAGE_KEY = 'confide_response_mode'
+const STORAGE_KEY = 'prepwise_response_mode'
 
 interface ResponseModeSelectorProps {
   mode: ResponseMode

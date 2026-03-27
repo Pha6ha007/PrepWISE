@@ -80,3 +80,7 @@ tmp/
 # Playwright
 test-results/
 playwright-report/
+
+# Prepwise — GMAT PDF books (large binary files)
+scripts/gmat/data/*.pdf
+scripts/gmat/data/*.epub

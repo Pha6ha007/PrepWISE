@@ -2,20 +2,20 @@ import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30_000,
-  retries: 1, // retry once for flaky network/compile delays
+  timeout: 20_000,
+  retries: 1,
   workers: 1,
   reporter: [['list']],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'http://localhost:3001',
     headless: true,
     screenshot: 'only-on-failure',
     trace: 'off',
   },
   webServer: {
-    command: 'npm run dev',
-    port: 3000,
-    timeout: 30_000,
+    command: 'DATABASE_URL="postgresql://d:d@localhost:5432/d" npx next dev --port 3001',
+    port: 3001,
+    timeout: 60_000,
     reuseExistingServer: true,
   },
 })

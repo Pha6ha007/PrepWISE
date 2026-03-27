@@ -1,10 +1,10 @@
 {
-  "name": "Confide — AI Emotional Support",
-  "short_name": "Confide",
-  "description": "Someone who truly listens. AI companion for mental health support.",
-  "start_url": "/dashboard/chat",
+  "name": "Prepwise — AI GMAT Tutor",
+  "short_name": "Prepwise",
+  "description": "AI voice tutor for GMAT preparation. Remembers your progress, adapts to your weak spots.",
+  "start_url": "/dashboard/session",
   "display": "standalone",
-  "background_color": "#FAFAF9",
+  "background_color": "#0F172A",
   "theme_color": "#6366F1",
   "orientation": "portrait",
   "icons": [
@@ -21,6 +21,5 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [],
-  "categories": ["health", "lifestyle", "medical"]
+  "categories": ["education", "productivity"]
 }

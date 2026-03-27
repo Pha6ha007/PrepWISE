@@ -1,424 +1,359 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { MessageCircle, Shield, ArrowRight, Check, User, Sparkles, Crown } from 'lucide-react'
-import { VoiceQuiz } from '@/components/onboarding/VoiceQuiz'
-import { getDefaultVoiceId } from '@/lib/voices/config'
+import { Brain, Target, Clock, BookOpen, ArrowRight, Check } from 'lucide-react'
 
-const AGE_GROUPS = ['18–25', '26–35', '36–45', '45+']
-const GENDER_OPTIONS = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' },
-  { value: 'not_specified', label: 'Prefer not to say' },
-]
+type Step = 'welcome' | 'profile' | 'diagnostic' | 'plan' | 'ready'
+
+const GMAT_SECTIONS = ['Quantitative', 'Verbal', 'Data Insights'] as const
+const TARGET_RANGES = [
+  { label: '600–650', description: 'Competitive for many programs' },
+  { label: '650–700', description: 'Top 20 MBA programs' },
+  { label: '700–750', description: 'Top 10 MBA programs' },
+  { label: '750+', description: 'Harvard, Stanford, Wharton' },
+] as const
+
+const STUDY_TIMELINES = [
+  { label: '2–4 weeks', value: '1month' },
+  { label: '1–2 months', value: '2months' },
+  { label: '3–6 months', value: '6months' },
+  { label: 'No date set', value: 'flexible' },
+] as const
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const [step, setStep] = useState(1)
-  const [userPlan, setUserPlan] = useState<string>('free')
-  const [isLoadingPlan, setIsLoadingPlan] = useState(true)
-
-  // Step 1 — About You
-  const [preferredName, setPreferredName] = useState('')
-  const [ageGroup, setAgeGroup] = useState('')
-  const [userGender, setUserGender] = useState('')
-
-  // Voice Quiz data (для PRO/PREMIUM)
-  const [voiceQuizData, setVoiceQuizData] = useState<{
-    companionGender: 'male' | 'female'
-    companionName: string
-    voiceKey: string
-    voiceId: string
-  } | null>(null)
-
+  const [step, setStep] = useState<Step>('welcome')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Загрузить план пользователя при монтировании
-  useEffect(() => {
-    async function fetchUserPlan() {
-      try {
-        const response = await fetch('/api/user/me')
-        if (response.ok) {
-          const data = await response.json()
-          setUserPlan(data.plan || 'free')
-        }
-      } catch (error) {
-        console.error('Failed to fetch user plan:', error)
-      } finally {
-        setIsLoadingPlan(false)
-      }
-    }
-    fetchUserPlan()
-  }, [])
+  // Profile data
+  const [preferredName, setPreferredName] = useState('')
+  const [targetScore, setTargetScore] = useState('')
+  const [timeline, setTimeline] = useState('')
+  const [weakSections, setWeakSections] = useState<string[]>([])
+  const [previousScore, setPreviousScore] = useState('')
+  const [studyHours, setStudyHours] = useState('')
 
-  const isPaidPlan = userPlan === 'pro' || userPlan === 'premium'
-
-  const handleAboutYouSubmit = () => {
-    if (!preferredName.trim() || !ageGroup || !userGender) return
-    setStep(2)
+  const toggleWeakSection = (section: string) => {
+    setWeakSections(prev =>
+      prev.includes(section)
+        ? prev.filter(s => s !== section)
+        : [...prev, section]
+    )
   }
 
-  const handleVoiceQuizComplete = (data: {
-    companionGender: 'male' | 'female'
-    companionName: string
-    voiceKey: string
-    voiceId: string
-  }) => {
-    setVoiceQuizData(data)
-    setStep(3) // Переход к дисклеймеру
-  }
-
-  const handleFinish = async () => {
+  const handleSubmit = async () => {
+    if (!preferredName.trim()) return
     setIsSubmitting(true)
 
     try {
-      // Для FREE плана — дефолтные значения
-      const companionName = isPaidPlan && voiceQuizData
-        ? voiceQuizData.companionName
-        : 'Alex'
-
-      const companionGender = isPaidPlan && voiceQuizData
-        ? voiceQuizData.companionGender
-        : 'male'
-
-      const voiceId = isPaidPlan && voiceQuizData
-        ? voiceQuizData.voiceId
-        : getDefaultVoiceId('male')
-
       const response = await fetch('/api/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           preferredName: preferredName.trim(),
-          ageGroup,
-          userGender,
-          companionName,
-          companionGender,
-          voicePreference: voiceId,
+          companionName: 'Sam',
+          targetScore: targetScore || null,
+          timeline: timeline || null,
+          weakSections,
+          previousScore: previousScore || null,
+          studyHours: studyHours || null,
         }),
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to save onboarding data')
+      if (response.ok) {
+        localStorage.setItem('prepwise_onboarding_complete', 'true')
+        router.push('/dashboard/session')
+        return
       }
 
-      // Редирект на чат
-      router.push('/dashboard/chat')
+      // API failed (no Supabase etc.) — still navigate, save to localStorage
+      console.warn('Onboarding API returned', response.status, '— saving locally')
+      localStorage.setItem('prepwise_onboarding_complete', 'true')
+      localStorage.setItem('prepwise_preferred_name', preferredName.trim())
+      localStorage.setItem('prepwise_target_score', targetScore || '')
+      window.location.href = '/dashboard/session'
     } catch (error) {
       console.error('Onboarding error:', error)
-      alert('Something went wrong. Please try again.')
+      // Even on network error — let user proceed
+      localStorage.setItem('prepwise_onboarding_complete', 'true')
+      localStorage.setItem('prepwise_preferred_name', preferredName.trim())
+      window.location.href = '/dashboard/session'
+    } finally {
       setIsSubmitting(false)
     }
   }
 
-  // Показать лоадер пока загружаем план
-  if (isLoadingPlan) {
-    return (
-      <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
-        {/* Animated Background */}
-        <div className="mesh-gradient fixed inset-0 -z-10" />
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-[#6366F1] rounded-full blur-orb animate-float" />
-          <div className="absolute bottom-20 right-20 w-80 h-80 bg-[#EC4899] rounded-full blur-orb animate-float-delayed" />
-        </div>
-
-        <div className="text-center glass-button px-8 py-6 rounded-2xl">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
-          <p className="mt-4 text-foreground font-medium">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
-      {/* Animated Mesh Gradient Background */}
-      <div className="mesh-gradient fixed inset-0 -z-10" />
+    <div className="min-h-screen bg-[#0A0F1E] flex items-center justify-center p-6">
+      <div className="max-w-lg w-full">
 
-      {/* Floating Blur Orbs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-[#6366F1] rounded-full blur-orb animate-float" />
-        <div className="absolute top-40 right-20 w-80 h-80 bg-[#EC4899] rounded-full blur-orb animate-float-delayed" />
-        <div className="absolute bottom-20 left-1/3 w-72 h-72 bg-[#F59E0B] rounded-full blur-orb animate-float" style={{ animationDelay: '2s' }} />
-      </div>
-      <div className="max-w-2xl w-full">
-        {/* Progress Indicator */}
-        <div className="flex items-center justify-center mb-8 space-x-3">
-          {[1, 2, 3].map((s) => (
-            <div
-              key={s}
-              className={`h-2.5 rounded-full transition-all duration-300 ${
-                s === step
-                  ? 'w-12 bg-primary shadow-card'
-                  : s < step
-                  ? 'w-2.5 bg-primary/60'
-                  : 'w-2.5 bg-border'
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Step 1 — About You */}
-        {step === 1 && (
-          <Card className="glass-button border border-white/20 shadow-large rounded-2xl animate-fade-in-up hover-lift">
-            <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <User className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="font-serif text-3xl font-semibold">First, tell us about yourself</CardTitle>
-              <CardDescription className="text-base mt-3 text-muted-foreground">
-                This helps your companion connect with you better
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Preferred Name */}
-              <div>
-                <label className="text-sm font-semibold text-foreground mb-2 block">
-                  What should your companion call you?
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Your name or nickname"
-                  value={preferredName}
-                  onChange={(e) => setPreferredName(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAboutYouSubmit()}
-                  className="h-12 rounded-lg focus:ring-2 focus:ring-primary transition-smooth"
-                  maxLength={30}
-                  autoFocus
-                />
-              </div>
-
-              {/* Age Group */}
-              <div>
-                <label className="text-sm font-semibold text-foreground mb-2 block">
-                  Your age group
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {AGE_GROUPS.map((age) => (
-                    <button
-                      key={age}
-                      onClick={() => setAgeGroup(age)}
-                      className={`p-3 border-2 rounded-xl text-center font-medium transition-smooth ${
-                        ageGroup === age
-                          ? 'border-primary bg-primary/10 text-primary shadow-subtle'
-                          : 'border-border hover:border-primary/50 text-foreground hover:shadow-subtle'
-                      }`}
-                    >
-                      {age}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Gender */}
-              <div>
-                <label className="text-sm font-semibold text-foreground mb-2 block">
-                  I identify as
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {GENDER_OPTIONS.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setUserGender(option.value)}
-                      className={`p-3 border-2 rounded-xl text-center font-medium transition-smooth ${
-                        userGender === option.value
-                          ? 'border-primary bg-primary/10 text-primary shadow-subtle'
-                          : 'border-border hover:border-primary/50 text-foreground hover:shadow-subtle'
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <Button
-                onClick={handleAboutYouSubmit}
-                disabled={!preferredName.trim() || !ageGroup || !userGender}
-                className="w-full h-12 text-base rounded-xl transition-smooth hover:scale-[1.02] shadow-card hover:shadow-large"
-                size="lg"
-              >
-                Continue
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Step: Welcome */}
+        {step === 'welcome' && (
+          <div className="text-center">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-400 flex items-center justify-center">
+              <Brain className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-3">Welcome to Prepwise</h1>
+            <p className="text-slate-400 text-lg mb-8">
+              I'm Sam, your AI GMAT tutor. Let me learn a bit about you so I can
+              personalize your study experience.
+            </p>
+            <Button
+              onClick={() => setStep('profile')}
+              className="bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-3 text-lg rounded-xl"
+            >
+              Let's get started <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <p className="text-xs text-slate-500 mt-6">
+              Sam is an AI tutor — not a human instructor. Your progress is saved and remembered across sessions.
+            </p>
+          </div>
         )}
 
-        {/* Step 2 — Voice Setup (зависит от плана) */}
-        {step === 2 && (
-          <>
-            {isPaidPlan ? (
-              /* PRO/PREMIUM: Voice Design Quiz */
-              <VoiceQuiz
-                onComplete={handleVoiceQuizComplete}
-                onBack={() => setStep(1)}
+        {/* Step: Profile */}
+        {step === 'profile' && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-6">About you</h2>
+
+            {/* Name */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                What should I call you?
+              </label>
+              <input
+                type="text"
+                value={preferredName}
+                onChange={e => setPreferredName(e.target.value)}
+                placeholder="Your first name"
+                className="w-full bg-[#1E293B] border border-[#283244] rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                autoFocus
               />
-            ) : (
-              /* FREE: Баннер с апгрейдом */
-              <Card className="glass-button border border-white/20 shadow-large rounded-2xl animate-fade-in-up hover-lift">
-                <CardHeader className="text-center pb-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#6366F1] to-[#818CF8] rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <MessageCircle className="w-8 h-8 text-white" />
-                  </div>
-                  <CardTitle className="font-serif text-3xl font-semibold">Meet Alex, your companion</CardTitle>
-                  <CardDescription className="text-base mt-3 text-muted-foreground">
-                    On the free plan, you'll have Alex as your default companion
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Info about Alex */}
-                  <div className="bg-muted/50 rounded-xl p-6 text-center">
-                    <p className="text-foreground leading-relaxed">
-                      Alex is a supportive, empathetic companion with a calm, reassuring voice.
-                      He's here to listen and help you navigate your thoughts and feelings.
-                    </p>
-                  </div>
+            </div>
 
-                  {/* Upgrade Banner */}
-                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border-2 border-warm/30 shadow-card">
-                    <div className="flex items-start space-x-3">
-                      <Crown className="w-6 h-6 text-warm mt-1 flex-shrink-0" />
-                      <div className="flex-1">
-                        <h3 className="font-serif font-semibold text-foreground text-xl">
-                          Upgrade to Pro for full customization
-                        </h3>
-                        <ul className="mt-4 space-y-3 text-sm text-foreground">
-                          <li className="flex items-center">
-                            <Sparkles className="w-4 h-4 mr-2 text-warm" />
-                            Choose your companion's gender and name
-                          </li>
-                          <li className="flex items-center">
-                            <Sparkles className="w-4 h-4 mr-2 text-warm" />
-                            Select from multiple unique voices
-                          </li>
-                          <li className="flex items-center">
-                            <Sparkles className="w-4 h-4 mr-2 text-warm" />
-                            Unlimited conversations
-                          </li>
-                        </ul>
-                        <Button
-                          className="w-full mt-4 rounded-xl transition-smooth hover:scale-[1.02] shadow-card"
-                          variant="default"
-                          onClick={() => router.push('/#pricing')}
-                        >
-                          <Crown className="w-4 h-4 mr-2" />
-                          Upgrade to Pro
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+            {/* Previous score */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Have you taken the GMAT before?
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setPreviousScore('no')}
+                  className={`p-3 rounded-xl border text-sm transition-all ${
+                    previousScore === 'no'
+                      ? 'border-cyan-500 bg-cyan-500/10 text-white'
+                      : 'border-[#283244] text-slate-400 hover:border-slate-600'
+                  }`}
+                >
+                  No, first time
+                </button>
+                <button
+                  onClick={() => setPreviousScore('yes')}
+                  className={`p-3 rounded-xl border text-sm transition-all ${
+                    previousScore === 'yes'
+                      ? 'border-cyan-500 bg-cyan-500/10 text-white'
+                      : 'border-[#283244] text-slate-400 hover:border-slate-600'
+                  }`}
+                >
+                  Yes, retaking
+                </button>
+              </div>
+            </div>
 
-                  {/* Continue with Free */}
-                  <div className="space-y-3">
-                    <Button
-                      onClick={() => setStep(3)}
-                      variant="outline"
-                      className="w-full h-12 text-base rounded-xl transition-smooth hover:shadow-subtle"
-                      size="lg"
-                    >
-                      Continue with Alex (Free)
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => setStep(1)}
-                      className="w-full rounded-xl transition-smooth hover:bg-muted"
-                    >
-                      ← Back
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </>
+            {/* Target score */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                <Target className="w-4 h-4 inline mr-1" />
+                Target score range
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                {TARGET_RANGES.map(range => (
+                  <button
+                    key={range.label}
+                    onClick={() => setTargetScore(range.label)}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      targetScore === range.label
+                        ? 'border-cyan-500 bg-cyan-500/10 text-white'
+                        : 'border-[#283244] text-slate-400 hover:border-slate-600'
+                    }`}
+                  >
+                    <div className="font-medium text-sm">{range.label}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{range.description}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Button
+              onClick={() => setStep('diagnostic')}
+              disabled={!preferredName.trim()}
+              className="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-3 rounded-xl"
+            >
+              Next <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
         )}
 
-        {/* Step 3 — Disclaimer */}
-        {step === 3 && (
-          <Card className="glass-button border border-white/20 shadow-large rounded-2xl animate-fade-in-up hover-lift">
-            <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="font-serif text-3xl font-semibold">Before we begin...</CardTitle>
-              <CardDescription className="text-base mt-3 text-muted-foreground">
-                A few important things to know
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4 bg-muted/50 rounded-xl p-6">
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-foreground">
-                      {isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'} is not a therapist
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                      This is a supportive companion, not a replacement for professional mental health care.
-                    </p>
-                  </div>
-                </div>
+        {/* Step: Diagnostic — weak areas + timeline */}
+        {step === 'diagnostic' && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-6">Your study plan</h2>
 
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-foreground">Your conversations are private</p>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                      All conversations are encrypted and stored securely. We never share your data.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-foreground">Crisis support is available</p>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                      If you're in crisis, we'll immediately provide emergency resources.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-foreground">
-                      {isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'} learns about you
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                      Every conversation helps your companion understand you better over time.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Button
-                  onClick={handleFinish}
-                  disabled={isSubmitting}
-                  className="w-full h-12 text-base rounded-xl transition-smooth hover:scale-[1.02] shadow-card hover:shadow-large"
-                  size="lg"
+            {/* Weak sections */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                <BookOpen className="w-4 h-4 inline mr-1" />
+                Which sections do you find hardest? (select all that apply)
+              </label>
+              <div className="space-y-2">
+                {GMAT_SECTIONS.map(section => (
+                  <button
+                    key={section}
+                    onClick={() => toggleWeakSection(section)}
+                    className={`w-full p-3 rounded-xl border text-left text-sm flex items-center justify-between transition-all ${
+                      weakSections.includes(section)
+                        ? 'border-cyan-500 bg-cyan-500/10 text-white'
+                        : 'border-[#283244] text-slate-400 hover:border-slate-600'
+                    }`}
+                  >
+                    <span>{section}</span>
+                    {weakSections.includes(section) && <Check className="w-4 h-4 text-cyan-400" />}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setWeakSections([])}
+                  className={`w-full p-3 rounded-xl border text-left text-sm transition-all ${
+                    weakSections.length === 0
+                      ? 'border-cyan-500 bg-cyan-500/10 text-white'
+                      : 'border-[#283244] text-slate-400 hover:border-slate-600'
+                  }`}
                 >
-                  {isSubmitting ? 'Setting up...' : `Start talking with ${isPaidPlan && voiceQuizData ? voiceQuizData.companionName : 'Alex'}`}
-                  {!isSubmitting && <MessageCircle className="w-4 h-4 ml-2" />}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  onClick={() => setStep(2)}
-                  className="w-full rounded-xl transition-smooth hover:bg-muted"
-                  disabled={isSubmitting}
-                >
-                  ← Back
-                </Button>
+                  Not sure yet — let Sam assess me
+                </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+
+            {/* Timeline */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                <Clock className="w-4 h-4 inline mr-1" />
+                When is your GMAT?
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                {STUDY_TIMELINES.map(t => (
+                  <button
+                    key={t.value}
+                    onClick={() => setTimeline(t.value)}
+                    className={`p-3 rounded-xl border text-sm transition-all ${
+                      timeline === t.value
+                        ? 'border-cyan-500 bg-cyan-500/10 text-white'
+                        : 'border-[#283244] text-slate-400 hover:border-slate-600'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Study hours */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Hours per week you can study
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {['5', '10', '15', '20+'].map(h => (
+                  <button
+                    key={h}
+                    onClick={() => setStudyHours(h)}
+                    className={`p-2 rounded-lg border text-sm transition-all ${
+                      studyHours === h
+                        ? 'border-cyan-500 bg-cyan-500/10 text-white'
+                        : 'border-[#283244] text-slate-400 hover:border-slate-600'
+                    }`}
+                  >
+                    {h}h
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setStep('profile')}
+                className="flex-1 border-[#283244] text-slate-300 hover:bg-[#1E293B] py-3 rounded-xl"
+              >
+                Back
+              </Button>
+              <Button
+                onClick={() => setStep('ready')}
+                className="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white py-3 rounded-xl"
+              >
+                Next <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Step: Ready */}
+        {step === 'ready' && (
+          <div className="text-center">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center">
+              <Check className="w-8 h-8 text-green-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-3">
+              You're all set, {preferredName || 'there'}!
+            </h2>
+            <p className="text-slate-400 mb-8">
+              Sam will personalize your sessions based on what you've shared.
+              {targetScore && ` Target: ${targetScore}.`}
+              {weakSections.length > 0 && ` Focus areas: ${weakSections.join(', ')}.`}
+              {timeline && timeline !== 'flexible' && ` Timeline: ${STUDY_TIMELINES.find(t => t.value === timeline)?.label}.`}
+            </p>
+
+            <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-4 mb-8 text-left">
+              <h3 className="text-sm font-medium text-slate-300 mb-2">What happens next:</h3>
+              <ul className="space-y-2 text-sm text-slate-400">
+                <li className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs text-cyan-400">1</span>
+                  </div>
+                  Start a voice or text session with Sam
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs text-cyan-400">2</span>
+                  </div>
+                  Sam assesses your level and adapts in real-time
+                </li>
+                <li className="flex items-start gap-2">
+                  <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs text-cyan-400">3</span>
+                  </div>
+                  Track your progress across all GMAT sections
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setStep('diagnostic')}
+                className="flex-1 border-[#283244] text-slate-300 hover:bg-[#1E293B] py-3 rounded-xl"
+              >
+                Back
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={isSubmitting || !preferredName.trim()}
+                className="flex-1 bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300 text-white py-3 rounded-xl"
+              >
+                {isSubmitting ? 'Setting up...' : 'Start my first session'}
+              </Button>
+            </div>
+          </div>
         )}
       </div>
     </div>

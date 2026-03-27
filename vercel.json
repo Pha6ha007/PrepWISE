@@ -1,8 +1,9 @@
 {
-  "crons": [
-    {
-      "path": "/api/cron/generate-diaries",
-      "schedule": "0 6 1 * *"
-    }
-  ]
+  "buildCommand": "npx prisma generate && next build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_APP_NAME": "Prepwise"
+  }
 }

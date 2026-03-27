@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Clock, ChevronRight, ChevronLeft } from 'lucide-react'
+import { Clock, ChevronRight, ChevronLeft, X } from 'lucide-react'
 import {
   type GmatQuestion,
   type AnswerOption,
@@ -10,6 +10,12 @@ import {
   TYPE_META,
   DIFFICULTY_META,
 } from '@/lib/gmat/question-types'
+import {
+  getMicroCoachingTip,
+  getErrorHistory,
+  shouldShowTip,
+  recordTipShown,
+} from '@/lib/gmat/micro-coaching'
 
 interface Props {
   question: GmatQuestion
@@ -64,8 +70,51 @@ export function QuestionCard({
   const timerWarning = timedMode && elapsed >= 90  // Amber at 1:30
   const timerDanger = timedMode && elapsed >= 110   // Red at 1:50
 
+  // ── Micro-coaching tip ────────────────────────────
+  const [tipDismissed, setTipDismissed] = useState(false)
+
+  // Reset tip dismissed state when question changes
+  useEffect(() => {
+    setTipDismissed(false)
+  }, [question.id])
+
+  const coaching = (() => {
+    if (disabled || tipDismissed) return null
+    const errorHistory = getErrorHistory()
+    const result = getMicroCoachingTip(question.type, question.topic, errorHistory)
+    if (!result.tip || !shouldShowTip(result.tipId)) return null
+    return result
+  })()
+
+  // Record tip shown on mount (once per tip)
+  useEffect(() => {
+    if (coaching?.tipId) {
+      recordTipShown(coaching.tipId)
+    }
+  // Only run when tipId changes — coaching object ref changes every render
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coaching?.tipId])
+
   return (
     <div className="w-full">
+      {/* ── Micro-coaching tip ────────────────────── */}
+      {coaching?.tip && (
+        <div className="mb-5 flex items-start gap-3 px-4 py-3 rounded-xl border border-amber-500/20 bg-amber-500/[0.04]">
+          <span className="shrink-0 text-base mt-0.5">💡</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-amber-300/80 mb-0.5">Sam&apos;s tip</p>
+            <p className="text-sm text-slate-300 leading-relaxed">{coaching.tip}</p>
+          </div>
+          <button
+            onClick={() => setTipDismissed(true)}
+            className="shrink-0 p-1 rounded-md text-slate-600 hover:text-slate-400 hover:bg-white/[0.04] transition-colors"
+            aria-label="Dismiss tip"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* ── Header bar ─────────────────────────────── */}
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">

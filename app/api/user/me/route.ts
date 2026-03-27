@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     })
 
     return NextResponse.json({
-      companionName: dbUser.companionName || 'Alex',
+      companionName: dbUser.companionName || 'Sam',
       companionGender: dbUser.companionGender,
       preferredName: dbUser.preferredName,
       ageGroup: dbUser.ageGroup,

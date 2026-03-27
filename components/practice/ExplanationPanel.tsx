@@ -1,9 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import { CheckCircle, XCircle, Mic, ArrowRight, Clock, Lightbulb } from 'lucide-react'
 import type { GmatQuestion, AnswerOption } from '@/lib/gmat/question-types'
 import { DS_OPTIONS } from '@/lib/gmat/question-types'
 import { AudioExplanation } from './AudioExplanation'
+import { SocraticDebrief } from './SocraticDebrief'
 
 interface Props {
   question: GmatQuestion
@@ -14,6 +16,8 @@ interface Props {
 }
 
 export function ExplanationPanel({ question, userAnswer, timeTaken, onNext, onAskSam }: Props) {
+  const [debriefComplete, setDebriefComplete] = useState(false)
+
   const correctAnswer = question.type === 'RC'
     ? question.questions?.[0]?.correctAnswer || ''
     : (question as any).correctAnswer || ''
@@ -37,6 +41,17 @@ export function ExplanationPanel({ question, userAnswer, timeTaken, onNext, onAs
   const mins = Math.floor(timeTaken / 60)
   const secs = timeTaken % 60
 
+  // One-liner for correct answers
+  const correctOneLiner = (() => {
+    if (!isCorrect || !correctOption) return null
+    // Extract first sentence from explanation or generate a brief one
+    if (explanation) {
+      const firstSentence = explanation.split(/\.\s/)[0]
+      return firstSentence.length <= 120 ? firstSentence + '.' : `${correctOption.text.slice(0, 80)} is correct.`
+    }
+    return `${correctOption.text.slice(0, 80)} is correct.`
+  })()
+
   return (
     <div className="mt-6 space-y-4 animate-fade-in">
       {/* Result banner */}
@@ -51,18 +66,25 @@ export function ExplanationPanel({ question, userAnswer, timeTaken, onNext, onAs
           <XCircle className="w-6 h-6 text-red-400 shrink-0" />
         )}
         <div className="flex-1">
-          <p className={`font-semibold ${isCorrect ? 'text-emerald-400' : 'text-red-400'}`}>
-            {isCorrect ? 'Correct!' : 'Incorrect'}
-          </p>
-          {!isCorrect && (
-            <p className="text-sm text-slate-400 mt-0.5">
-              Your answer: <span className="text-red-300 font-medium">{userAnswer}</span>
-              {' · '}
-              Correct answer: <span className="text-emerald-300 font-medium">{correctAnswer}</span>
-              {correctOption && (
-                <span className="text-slate-500"> — {correctOption.text.slice(0, 60)}{correctOption.text.length > 60 ? '...' : ''}</span>
+          {isCorrect ? (
+            <div>
+              <p className="font-semibold text-emerald-400">Correct!</p>
+              {correctOneLiner && (
+                <p className="text-sm text-slate-400 mt-0.5">{correctOneLiner}</p>
               )}
-            </p>
+            </div>
+          ) : (
+            <div>
+              <p className="font-semibold text-red-400">Incorrect</p>
+              <p className="text-sm text-slate-400 mt-0.5">
+                Your answer: <span className="text-red-300 font-medium">{userAnswer}</span>
+                {' · '}
+                Correct answer: <span className="text-emerald-300 font-medium">{correctAnswer}</span>
+                {correctOption && (
+                  <span className="text-slate-500"> — {correctOption.text.slice(0, 60)}{correctOption.text.length > 60 ? '...' : ''}</span>
+                )}
+              </p>
+            </div>
           )}
         </div>
         <div className="flex items-center gap-1.5 text-xs text-slate-500">
@@ -70,6 +92,16 @@ export function ExplanationPanel({ question, userAnswer, timeTaken, onNext, onAs
           {mins > 0 ? `${mins}m ${secs}s` : `${secs}s`}
         </div>
       </div>
+
+      {/* Socratic debrief — only for wrong answers, before the explanation */}
+      {!isCorrect && (
+        <SocraticDebrief
+          question={question}
+          userAnswer={userAnswer}
+          correctAnswer={correctAnswer}
+          onComplete={() => setDebriefComplete(true)}
+        />
+      )}
 
       {/* Answer options — colored */}
       <div className="space-y-1.5">

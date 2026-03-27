@@ -18,6 +18,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://confide-app-mu.vercel.app/sitemap.xml",
+    sitemap: "https://prepwise-app-mu.vercel.app/sitemap.xml",
   };
 }

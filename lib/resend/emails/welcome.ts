@@ -19,9 +19,9 @@ export async function sendWelcomeEmail({
 
   try {
     const { data, error } = await resend.emails.send({
-      from: `Confide <${FROM_EMAIL}>`,
+      from: `Prepwise <${FROM_EMAIL}>`,
       to: email,
-      subject: `Welcome to Confide — ${companionName} is ready for you`,
+      subject: `Welcome to Prepwise — ${companionName} is ready for you`,
       html: getWelcomeEmailHTML({
         preferredName,
         companionName,
@@ -57,7 +57,7 @@ function getWelcomeEmailHTML({
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Confide</title>
+  <title>Welcome to Prepwise</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #FAFAF9;">
 
@@ -73,7 +73,7 @@ function getWelcomeEmailHTML({
           <tr>
             <td style="background: linear-gradient(135deg, #6366F1 0%, #818CF8 100%); padding: 50px 40px; text-align: center;">
               <h1 style="margin: 0; color: #FFFFFF; font-size: 32px; font-weight: 600;">
-                Welcome to Confide
+                Welcome to Prepwise
               </h1>
             </td>
           </tr>
@@ -123,13 +123,13 @@ function getWelcomeEmailHTML({
           <tr>
             <td style="background-color: #F9FAFB; padding: 30px 40px; border-top: 1px solid #E5E7EB;">
               <p style="margin: 0 0 10px; color: #9CA3AF; font-size: 12px; line-height: 1.5; text-align: center;">
-                <strong>Disclaimer:</strong> Confide is an AI companion for emotional support,
+                <strong>Disclaimer:</strong> Prepwise is an AI companion for emotional support,
                 not a replacement for professional mental health care.
                 If you're experiencing a crisis, please contact emergency services
                 or a mental health professional.
               </p>
               <p style="margin: 10px 0 0; color: #9CA3AF; font-size: 12px; text-align: center;">
-                © ${new Date().getFullYear()} Confide. All rights reserved.
+                © ${new Date().getFullYear()} Prepwise. All rights reserved.
               </p>
             </td>
           </tr>

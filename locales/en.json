@@ -1,7 +1,7 @@
 {
   "common": {
-    "appName": "Confide",
-    "tagline": "A conversation from the heart — where you're always heard"
+    "appName": "Prepwise",
+    "tagline": "Your AI GMAT tutor that remembers, adapts, and helps you score 700+"
   },
   "auth": {
     "login": "Log in",
@@ -11,27 +11,29 @@
     "logout": "Log out"
   },
   "onboarding": {
-    "welcome": "Welcome to Confide",
-    "disclaimer": "Confide is an AI companion for emotional support, not a medical service or replacement for professional therapy.",
-    "chooseVoice": "Choose your companion's voice"
+    "welcome": "Welcome to Prepwise",
+    "disclaimer": "Prepwise is an AI tutoring platform for GMAT preparation. Sam is your AI tutor — not a human instructor.",
+    "chooseVoice": "Choose your tutor's voice"
   },
   "chat": {
-    "placeholder": "Share what's on your mind...",
+    "placeholder": "Ask Sam about any GMAT topic...",
     "send": "Send",
     "listening": "Listening...",
     "thinking": "Thinking...",
     "speaking": "Speaking..."
   },
   "dashboard": {
-    "chat": "Chat",
-    "journal": "Journal",
+    "session": "Session",
+    "practice": "Practice",
     "progress": "Progress",
+    "mockTest": "Mock Test",
     "settings": "Settings"
   },
   "plans": {
     "free": "Free",
+    "starter": "Starter",
     "pro": "Pro",
-    "premium": "Premium",
+    "intensive": "Intensive",
     "upgrade": "Upgrade"
   }
 }

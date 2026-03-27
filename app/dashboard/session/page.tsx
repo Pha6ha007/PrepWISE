@@ -8,6 +8,7 @@ import { VoiceRecorder } from '@/components/voice/VoiceRecorder'
 import { AudioPlayer } from '@/components/voice/AudioPlayer'
 import { useAudioQueue } from '@/components/voice/AudioQueue'
 import { AgentStatus } from '@/components/session/AgentStatus'
+import { WeeklyReview } from '@/components/dashboard/WeeklyReview'
 
 interface Message {
   id: string
@@ -91,13 +92,25 @@ function SessionPageInner() {
 
   // ── Start session ──────────────────────────────────────────
 
-  const startSession = useCallback(() => {
+  const startSession = useCallback(async () => {
     setSessionStarted(true)
     setSessionDuration(0)
+
+    // Fetch personalized greeting from Sam based on learner profile
+    let greeting =
+      "Hey, I'm Sam — your GMAT tutor. What would you like to work on today? We can tackle Quant, Verbal, Data Insights, or talk strategy. What's on your mind?"
+    try {
+      const res = await fetch('/api/agents/session-start')
+      if (res.ok) {
+        const data = await res.json()
+        if (data.greeting) greeting = data.greeting
+      }
+    } catch { /* use default */ }
+
     setMessages([{
       id: crypto.randomUUID(),
       role: 'assistant',
-      content: "Hey, I'm Sam — your GMAT tutor. What would you like to work on today? We can tackle Quant, Verbal, Data Insights, or talk strategy. What's on your mind?",
+      content: greeting,
       timestamp: new Date(),
     }])
   }, [])
@@ -331,6 +344,9 @@ function SessionPageInner() {
           </button>
         </div>
       </div>
+
+      {/* Weekly Review Widget */}
+      <WeeklyReview />
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 space-y-4">

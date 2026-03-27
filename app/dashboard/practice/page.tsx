@@ -8,12 +8,16 @@ import { ExplanationPanel } from '@/components/practice/ExplanationPanel'
 import { PracticeSummary } from '@/components/practice/PracticeSummary'
 import { SelfRatingButtons } from '@/components/practice/SelfRatingButtons'
 import { SmartReviewPanel } from '@/components/practice/SmartReviewPanel'
+import { MicroCoachTip } from '@/components/practice/MicroCoachTip'
+import { SamMotivator } from '@/components/practice/SamMotivator'
+import { WeeklyReview } from '@/components/dashboard/WeeklyReview'
 import {
   type GmatQuestion,
   type Section,
   type QuestionType,
   type Difficulty,
 } from '@/lib/gmat/question-types'
+import { recordError } from '@/lib/gmat/micro-coaching'
 import type { ReviewCard, ReviewSchedule } from '@/lib/gmat/spaced-repetition'
 
 type PracticeState = 'setup' | 'practicing' | 'explanation' | 'summary' | 'review-mistakes'
@@ -143,6 +147,11 @@ export default function PracticePage() {
 
     setAnswers(prev => [...prev, { question: q, userAnswer: answerId, timeTaken, correct }])
 
+    // Record error to micro-coaching history
+    if (!correct) {
+      recordError(q.type, q.topic, timeTaken)
+    }
+
     // Record to FSRS in background
     try {
       fetch('/api/review', {
@@ -199,6 +208,9 @@ export default function PracticePage() {
   if (state === 'setup') {
     return (
       <div className="min-h-full max-w-4xl mx-auto p-6 lg:p-8">
+        {/* Weekly Review nudge — same as on session page */}
+        <WeeklyReview />
+
         {/* Smart Review Panel */}
         {reviewSchedule && (
           (reviewSchedule.dueNow?.length > 0 || reviewSchedule.dueToday?.length > 0) && (
@@ -237,6 +249,7 @@ export default function PracticePage() {
   if (state === 'summary') {
     return (
       <div className="min-h-full max-w-4xl mx-auto p-6 lg:p-8">
+        <SamMotivator answers={answers} totalTime={totalTime} />
         <PracticeSummary
           answers={answers}
           totalTime={totalTime}
@@ -332,6 +345,14 @@ export default function PracticePage() {
 
       {/* Question card */}
       <div className="glass-card p-6 lg:p-8">
+        {/* Sam's contextual micro-coaching tip — shown before the question */}
+        {state === 'practicing' && (
+          <MicroCoachTip
+            questionType={currentQuestion.type}
+            topic={currentQuestion.topic}
+          />
+        )}
+
         <QuestionCard
           question={currentQuestion}
           questionNumber={currentIndex + 1}

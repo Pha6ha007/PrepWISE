@@ -1,6 +1,5 @@
 import { Pinecone } from '@pinecone-database/pinecone'
 
-// Lazy initialization - создаём клиент только при первом обращении
 let _pinecone: Pinecone | null = null
 
 function getPineconeClient() {
@@ -12,17 +11,21 @@ function getPineconeClient() {
   return _pinecone
 }
 
-// Имя индекса из env
-export const INDEX_NAME = process.env.PINECONE_INDEX_NAME || 'confide-knowledge'
+export const INDEX_NAME = process.env.PINECONE_INDEX_NAME || 'gmat-tutor-prod'
 
-// Получить индекс
 export function getPineconeIndex() {
   const pinecone = getPineconeClient()
   return pinecone.index(INDEX_NAME)
 }
 
-// Re-export constants to maintain backward compatibility
+// Re-export constants
 export { NAMESPACES, type Namespace } from './constants'
 
-// Re-export namespace utilities for convenience
-export { getNamespaceForAgent, AGENT_NAMESPACE_MAP, getAvailableNamespaces } from './namespace-mapping'
+// Re-export namespace utilities
+export {
+  GMAT_AGENT_NAMESPACE_MAP,
+  GMAT_AGENT_SECONDARY_MAP,
+  getNamespaceForGmatAgent,
+  getGmatSecondaryNamespace,
+  getAvailableNamespaces,
+} from './namespace-mapping'
