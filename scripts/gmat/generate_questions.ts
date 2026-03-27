@@ -38,6 +38,22 @@ const DATA_DIR = path.join(__dirname, '../../data/questions')
 // ── Prompts ───────────────────────────────────────────────
 
 const PROMPTS: Record<string, { file: string; batches: Array<{ count: number; difficulty: string; subtopics: string[] }> }> = {
+  rc: {
+    file: 'gen-rc.json',
+    // 200 passages total = 10 batches × ~10-12 passages each
+    batches: [
+      { count: 10, difficulty: '4 easy, 4 medium, 2 hard', subtopics: ['business', 'science'] },
+      { count: 10, difficulty: '2 easy, 5 medium, 3 hard', subtopics: ['social-science', 'humanities'] },
+      { count: 10, difficulty: '2 easy, 4 medium, 3 hard, 1 "700+"', subtopics: ['technology', 'business'] },
+      { count: 10, difficulty: '1 easy, 4 medium, 3 hard, 2 "700+"', subtopics: ['science', 'social-science'] },
+      { count: 10, difficulty: '1 easy, 3 medium, 4 hard, 2 "700+"', subtopics: ['humanities', 'technology'] },
+      { count: 10, difficulty: '1 easy, 3 medium, 4 hard, 2 "700+"', subtopics: ['business', 'science'] },
+      { count: 10, difficulty: '1 easy, 3 medium, 3 hard, 3 "700+"', subtopics: ['social-science', 'humanities', 'technology'] },
+      { count: 10, difficulty: '1 easy, 2 medium, 4 hard, 3 "700+"', subtopics: ['business', 'science', 'social-science'] },
+      { count: 10, difficulty: '1 easy, 2 medium, 4 hard, 3 "700+"', subtopics: ['technology', 'humanities', 'business'] },
+      { count: 10, difficulty: '2 medium, 4 hard, 4 "700+"', subtopics: ['science', 'social-science', 'humanities'] },
+    ],
+  },
   ta: {
     file: 'gen-ta.json',
     batches: [
@@ -183,6 +199,69 @@ Each question MUST have:
 Output ONLY the JSON array. Start with [.`
 }
 
+function buildRCPrompt(count: number, difficulty: string, topics: string[], startId: number): string {
+  return `Generate ${count} GMAT Focus Edition Reading Comprehension passages, each with 3-4 questions.
+
+Difficulty distribution of passages: ${difficulty}
+Topic areas: ${topics.join(', ')}
+Passage ID numbering: start from gen-rc-${String(startId).padStart(4, '0')}
+
+Passage requirements:
+- Length: 250-350 words (GMAT Focus Edition standard — longer than old GMAT)
+- Academic, precise prose — not casual or journalistic
+- Each passage must have a clear argument or position the author advances, not just neutral description
+- Topics must be distinct from each other — no two passages on the same subject
+- Topic areas to use: business (strategy, markets, regulation, corporate governance), science (biology, physics, climate, neuroscience), social-science (economics, psychology, sociology, anthropology), humanities (history, literature, philosophy, art), technology (AI, biotech, computing, energy)
+
+Question requirements (3-4 per passage):
+- Must cover DIFFERENT question types across the 3-4 questions for each passage:
+  - Primary Purpose / Main Idea
+  - Specific Detail (requires going back to passage)
+  - Inference (must be true based on passage)
+  - Author's Tone or Attitude
+  - Function / Purpose of a paragraph or phrase
+- Answer choices must be carefully crafted: 1 clearly correct, 4 plausible but wrong
+- Wrong answers must fail for identifiable reasons: too extreme, out of scope, opposite, half-right, uses passage words but distorts meaning
+- Explanation must name why the correct answer is correct AND why the 2 most tempting wrong answers fail
+
+Hard/700+ passages should:
+- Contain qualified language and nuanced positions (not black-and-white claims)
+- Have questions where the wrong answer is supported by something literally in the passage (but misapplied)
+- Test subtle tone distinctions (skeptical vs dismissive, cautious vs opposed)
+
+Output format — ONLY valid JSON array of passage objects:
+
+[
+  {
+    "id": "gen-rc-XXXX",
+    "type": "RC",
+    "section": "verbal",
+    "difficulty": "medium",
+    "topic": "reading-comprehension",
+    "passageTitle": "Descriptive Title Here",
+    "passage": "Full passage text here (250-350 words)...",
+    "source": "PrepWISE Generated",
+    "questions": [
+      {
+        "id": "gen-rc-XXXX-q1",
+        "questionStem": "The primary purpose of the passage is to",
+        "options": [
+          {"id": "A", "text": "..."},
+          {"id": "B", "text": "..."},
+          {"id": "C", "text": "..."},
+          {"id": "D", "text": "..."},
+          {"id": "E", "text": "..."}
+        ],
+        "correctAnswer": "B",
+        "explanation": "..."
+      }
+    ]
+  }
+]
+
+Generate all ${count} passages with their questions. ONLY the JSON array. Start with [.`
+}
+
 function buildTPAPrompt(count: number, difficulty: string, subtopics: string[], startId: number): string {
   return `Generate ${count} GMAT Focus Edition Two-Part Analysis (TPA) questions.
 
@@ -232,7 +311,7 @@ async function generateBatch(
       { role: 'user', content: prompt },
     ],
     temperature: 0.85,
-    max_tokens: 16000,
+    max_tokens: type === 'rc' ? 32000 : 16000,
   })
 
   const raw = response.choices[0]?.message?.content?.trim() || '[]'
@@ -289,19 +368,26 @@ async function generateType(type: string): Promise<void> {
 
   console.log(`\n=== Generating ${type.toUpperCase()} questions ===`)
 
-  // Load existing (skip if already has real data)
+  // Load existing
   const existing = loadExisting(config.file)
-  const realExisting = existing.filter(q => q.id && q.explanation)
-  console.log(`  Existing valid questions: ${realExisting.length}`)
+
+  // RC: items are passages with nested questions — count passages, not questions
+  const isRC = type === 'rc'
+  const realExisting = isRC
+    ? existing.filter((p: any) => p.id && Array.isArray(p.questions) && p.questions.length > 0)
+    : existing.filter((q: any) => q.id && q.explanation)
+
+  console.log(`  Existing valid ${isRC ? 'passages' : 'questions'}: ${realExisting.length}`)
 
   let startId = realExisting.length + 1
-  const allQuestions = [...realExisting]
+  const allItems = [...realExisting]
 
   for (let i = 0; i < config.batches.length; i++) {
     const batch = config.batches[i]
 
     let prompt: string
     switch (type) {
+      case 'rc':  prompt = buildRCPrompt(batch.count, batch.difficulty, batch.subtopics, startId); break
       case 'ta': prompt = buildTAPrompt(batch.count, batch.difficulty, batch.subtopics, startId); break
       case 'gi': prompt = buildGIPrompt(batch.count, batch.difficulty, batch.subtopics, startId); break
       case 'msr': prompt = buildMSRPrompt(batch.count, batch.difficulty, batch.subtopics, startId); break
@@ -312,20 +398,24 @@ async function generateType(type: string): Promise<void> {
     const newQuestions = await generateBatch(type, prompt, i)
 
     if (newQuestions.length > 0) {
-      allQuestions.push(...newQuestions)
+      allItems.push(...newQuestions)
       startId += newQuestions.length
-      // Save after each batch — don't lose progress
-      save(config.file, allQuestions)
-      console.log(`  Saved — total so far: ${allQuestions.length}`)
+      save(config.file, allItems)
+      const totalQ = isRC
+        ? allItems.reduce((s: number, p: any) => s + (p.questions?.length || 0), 0)
+        : allItems.length
+      console.log(`  Saved — ${isRC ? `${allItems.length} passages / ${totalQ} questions` : `${allItems.length} questions`}`)
     }
 
-    // Brief pause between batches
     if (i < config.batches.length - 1) {
       await new Promise(r => setTimeout(r, 2000))
     }
   }
 
-  console.log(`  ✓ ${type.toUpperCase()} complete: ${allQuestions.length} questions in ${config.file}`)
+  const finalCount = isRC
+    ? `${allItems.length} passages / ${allItems.reduce((s: number, p: any) => s + (p.questions?.length || 0), 0)} questions`
+    : `${allItems.length} questions`
+  console.log(`  ✓ ${type.toUpperCase()} complete: ${finalCount} in ${config.file}`)
 }
 
 // ── Entry point ───────────────────────────────────────────
