@@ -22,8 +22,9 @@ interface Props {
   questionNumber: number
   totalQuestions: number
   onSubmit: (answerId: string, timeTaken: number) => void
-  timedMode?: boolean    // 2-min countdown when true
-  disabled?: boolean     // After submission
+  timedMode?: boolean
+  disabled?: boolean
+  initialAnswer?: string   // pre-select an answer (Review mode)
 }
 
 export function QuestionCard({
@@ -33,17 +34,18 @@ export function QuestionCard({
   onSubmit,
   timedMode = false,
   disabled = false,
+  initialAnswer,
 }: Props) {
-  const [selected, setSelected] = useState<string | null>(null)
+  const [selected, setSelected] = useState<string | null>(initialAnswer ?? null)
   const [elapsed, setElapsed] = useState(0)
   const startTime = useRef(Date.now())
 
   // Reset when question changes
   useEffect(() => {
-    setSelected(null)
+    setSelected(initialAnswer ?? null)
     setElapsed(0)
     startTime.current = Date.now()
-  }, [question.id])
+  }, [question.id, initialAnswer])
 
   // Timer
   useEffect(() => {

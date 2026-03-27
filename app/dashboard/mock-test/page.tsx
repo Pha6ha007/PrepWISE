@@ -1,402 +1,760 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Clock, Target, BarChart3, Play, AlertCircle } from 'lucide-react'
+import {
+  Clock, Target, BarChart3, Play, BookmarkIcon, ChevronLeft,
+  ChevronRight, AlertCircle, CheckCircle2, Coffee,
+} from 'lucide-react'
 import { GMAT_SECTIONS } from '@/lib/gmat/topics'
 import {
   type GmatQuestion,
   type Section,
   SECTION_META,
-  TYPE_META,
-  DIFFICULTY_META,
 } from '@/lib/gmat/question-types'
+import {
+  type MockTestSession,
+  type MockTestSection,
+  type MockTestQuestion,
+  type ScoreReport,
+  createMockTest,
+  selectNextQuestion,
+  submitAnswer,
+  bookmarkQuestion,
+  changeAnswer,
+  generateScoreReport,
+  serializeSession,
+} from '@/lib/gmat/mock-test-engine'
 import { QuestionCard } from '@/components/practice/QuestionCard'
-import { ExplanationPanel } from '@/components/practice/ExplanationPanel'
-import { PracticeSummary } from '@/components/practice/PracticeSummary'
+import ScoreReportComponent from '@/components/mock-test/ScoreReport'
 
-type Mode = null | 'full' | 'section'
-type TestState = 'setup' | 'testing' | 'explanation' | 'summary'
+// ── Types ──────────────────────────────────────────────────
 
-interface AnswerRecord {
-  question: GmatQuestion
-  userAnswer: string
-  timeTaken: number
-  correct: boolean
+type PageState =
+  | 'setup'          // choose full / section
+  | 'break'          // 10-min optional break between sections
+  | 'section-intro'  // "You are about to start Verbal Reasoning"
+  | 'testing'        // active question
+  | 'review'         // Review & Edit — see all questions in section
+  | 'section-done'   // "Section complete" — next section or finish
+  | 'report'         // final ScoreReport
+
+// ── Constants ─────────────────────────────────────────────
+
+const SECTION_TIME = 45 * 60  // 45 minutes per section in seconds
+const BREAK_TIME   = 10 * 60  // 10 minutes optional break
+
+const SECTION_NAMES: Record<Section, string> = {
+  quant: 'Quantitative Reasoning',
+  verbal: 'Verbal Reasoning',
+  'data-insights': 'Data Insights',
 }
+
+const SECTION_QUESTION_COUNTS: Record<Section, number> = {
+  quant: 21,
+  verbal: 23,
+  'data-insights': 20,
+}
+
+// ── Main Page ──────────────────────────────────────────────
 
 export default function MockTestPage() {
   const router = useRouter()
-  const [selectedMode, setSelectedMode] = useState<Mode>(null)
-  const [selectedSection, setSelectedSection] = useState<string | null>(null)
-  const [testState, setTestState] = useState<TestState>('setup')
-  const [questions, setQuestions] = useState<GmatQuestion[]>([])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [answers, setAnswers] = useState<AnswerRecord[]>([])
-  const [currentUserAnswer, setCurrentUserAnswer] = useState<string | null>(null)
-  const [currentTimeTaken, setCurrentTimeTaken] = useState(0)
-  const [startTime, setStartTime] = useState(0)
+
+  // Page state machine
+  const [pageState, setPageState] = useState<PageState>('setup')
+  const [selectedMode, setSelectedMode] = useState<'full' | 'section' | null>(null)
+  const [selectedSection, setSelectedSection] = useState<Section | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Section-based state for full mock test
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0)
-  const [sectionBreaks, setSectionBreaks] = useState<number[]>([]) // indices where new sections start
-  const [sectionTimerEnd, setSectionTimerEnd] = useState(0) // timestamp when current section expires
-  const [sectionTimeLeft, setSectionTimeLeft] = useState('') // formatted time remaining
+  // Test engine state
+  const [session, setSession] = useState<MockTestSession | null>(null)
+  const [questionPool, setQuestionPool] = useState<GmatQuestion[]>([])
+  const [currentQuestion, setCurrentQuestion] = useState<MockTestQuestion | null>(null)
+  const [pendingAnswer, setPendingAnswer] = useState<string | null>(null)  // staged but not submitted
+  const [report, setReport] = useState<ScoreReport | null>(null)
 
-  // Section timer effect
-  const updateTimer = useCallback(() => {
-    if (sectionTimerEnd <= 0) return
-    const remaining = Math.max(0, Math.floor((sectionTimerEnd - Date.now()) / 1000))
-    const mins = Math.floor(remaining / 60)
-    const secs = remaining % 60
-    setSectionTimeLeft(`${mins}:${secs.toString().padStart(2, '0')}`)
-  }, [sectionTimerEnd])
+  // Timer state
+  const [timeLeft, setTimeLeft] = useState(SECTION_TIME)
+  const [breakTimeLeft, setBreakTimeLeft] = useState(BREAK_TIME)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const questionStartTime = useRef(Date.now())
 
-  // Tick the timer every second
+  // Review mode state
+  const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0)
+
+  // ── Helpers ──────────────────────────────────────────────
+
+  const currentSection = session
+    ? session.sections[session.currentSectionIndex]
+    : null
+
+  const currentSectionIndex = session?.currentSectionIndex ?? 0
+
+  function formatTime(seconds: number) {
+    const m = Math.floor(seconds / 60)
+    const s = seconds % 60
+    return `${m}:${s.toString().padStart(2, '0')}`
+  }
+
+  // ── Fetch question pool for section(s) ───────────────────
+
+  const fetchQuestionPool = useCallback(async (mode: 'full' | 'section', section?: Section) => {
+    const sections: Section[] = mode === 'full'
+      ? ['quant', 'verbal', 'data-insights']
+      : [section!]
+
+    const pools: GmatQuestion[] = []
+    for (const sec of sections) {
+      const count = SECTION_QUESTION_COUNTS[sec] * 3  // 3× buffer for adaptive selection
+      const res = await fetch(`/api/practice/questions?section=${sec}&limit=${count}`)
+      if (res.ok) {
+        const data = await res.json()
+        pools.push(...(data.questions as GmatQuestion[]))
+      }
+    }
+    return pools
+  }, [])
+
+  // ── Timer management ─────────────────────────────────────
+
+  const startSectionTimer = useCallback((seconds: number) => {
+    setTimeLeft(seconds)
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current!)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }, [])
+
+  const stopTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+  }, [])
+
+  // Auto-advance when section timer hits 0
   useEffect(() => {
-    if (sectionTimerEnd <= 0) return
-    const interval = setInterval(updateTimer, 1000)
-    updateTimer() // run immediately
-    return () => clearInterval(interval)
-  }, [sectionTimerEnd, updateTimer])
+    if (timeLeft === 0 && pageState === 'testing') {
+      handleFinishSection()
+    }
+  }, [timeLeft, pageState])
 
-  const startTest = async () => {
+  // Break timer
+  useEffect(() => {
+    if (pageState !== 'break') return
+    setBreakTimeLeft(BREAK_TIME)
+    const interval = setInterval(() => {
+      setBreakTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          handleBreakEnd()
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [pageState])
+
+  // Cleanup on unmount
+  useEffect(() => () => stopTimer(), [stopTimer])
+
+  // ── Start test ───────────────────────────────────────────
+
+  const handleStart = async () => {
+    if (!selectedMode) return
+    if (selectedMode === 'section' && !selectedSection) return
+
     setIsLoading(true)
     try {
-      let allQuestions: GmatQuestion[] = []
-      const breaks: number[] = [0]
+      const pool = await fetchQuestionPool(selectedMode, selectedSection ?? undefined)
+      setQuestionPool(pool)
 
-      if (selectedMode === 'full') {
-        // Full test: 21 quant + 23 verbal + 20 DI
-        const sections: { section: Section; count: number }[] = [
-          { section: 'quant', count: 21 },
-          { section: 'verbal', count: 23 },
-          { section: 'data-insights', count: 20 },
-        ]
-
-        for (const { section, count } of sections) {
-          const params = new URLSearchParams({ section, limit: String(count) })
-          try {
-            const res = await fetch(`/api/practice/questions?${params}`)
-            if (res.ok) {
-              const data = await res.json()
-              const fetched = data.questions as GmatQuestion[]
-              if (allQuestions.length > 0 && fetched.length > 0) {
-                breaks.push(allQuestions.length) // mark section boundary
-              }
-              allQuestions.push(...fetched)
-            }
-          } catch {
-            // Section failed to load — continue with what we have
-          }
-        }
-      } else if (selectedMode === 'section' && selectedSection) {
-        // Section practice: fetch the correct count for the section
-        const sectionInfo = GMAT_SECTIONS.find(s => s.id === selectedSection)
-        const count = sectionInfo?.questionCount ?? 20
-        const params = new URLSearchParams({
-          section: selectedSection,
-          limit: String(count),
-        })
-        try {
-          const res = await fetch(`/api/practice/questions?${params}`)
-          if (res.ok) {
-            const data = await res.json()
-            allQuestions = data.questions as GmatQuestion[]
-          }
-        } catch {
-          // Fetch failed
-        }
-      }
-
-      if (allQuestions.length === 0) {
-        setIsLoading(false)
-        return
-      }
-
-      setQuestions(allQuestions)
-      setSectionBreaks(breaks)
-      setCurrentSectionIndex(0)
-      setCurrentIndex(0)
-      setAnswers([])
-      setCurrentUserAnswer(null)
-      setTestState('testing')
-      setStartTime(Date.now())
-      // Start 45 minute section timer
-      setSectionTimerEnd(Date.now() + 45 * 60 * 1000)
+      const sess = createMockTest(
+        selectedMode,
+        selectedMode === 'section' ? selectedSection! : undefined,
+      )
+      setSession(sess)
+      setPageState('section-intro')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleSubmitAnswer = (answerId: string, timeTaken: number) => {
-    const q = questions[currentIndex]
-    if (!q) return
+  // ── Section intro → start ─────────────────────────────────
 
-    const correctAnswer = q.type === 'RC' ? q.questions[0]?.correctAnswer : (q as any).correctAnswer
-    const correct = answerId === correctAnswer
+  const handleSectionIntroStart = useCallback(() => {
+    if (!session) return
+    const sec = session.sections[session.currentSectionIndex]
+    if (!sec) return
 
-    setCurrentUserAnswer(answerId)
-    setCurrentTimeTaken(timeTaken)
-    setAnswers(prev => [...prev, { question: q, userAnswer: answerId, timeTaken, correct }])
-    setTestState('explanation')
-  }
+    // Load first question
+    const q = selectNextQuestion(session, session.currentSectionIndex, questionPool)
+    setCurrentQuestion(q)
+    setPendingAnswer(null)
+    questionStartTime.current = Date.now()
 
-  // Determine which section the current question belongs to
-  const getCurrentSectionName = (): string => {
-    if (!questions[currentIndex]) return ''
-    const section = questions[currentIndex].section
-    return SECTION_META[section]?.label ?? section
-  }
+    startSectionTimer(SECTION_TIME)
+    setPageState('testing')
+    setSession({ ...session })
+  }, [session, questionPool, startSectionTimer])
 
-  const handleNext = () => {
-    const nextIdx = currentIndex + 1
-    if (nextIdx >= questions.length) {
-      setTestState('summary')
-      return
+  // ── Submit answer ─────────────────────────────────────────
+
+  const handleSubmitAnswer = useCallback((answerId: string) => {
+    if (!session || !currentSection || !currentQuestion) return
+
+    const timeTaken = Math.floor((Date.now() - questionStartTime.current) / 1000)
+
+    // Submit to engine — updates adaptive difficulty
+    submitAnswer(session, currentQuestion.question.id, answerId, timeTaken)
+    setSession({ ...session })
+    setPendingAnswer(answerId)
+
+    // Advance to next question or section
+    const answered = currentSection.questions.filter(q => q.userAnswer !== null).length
+    const sectionCount = SECTION_QUESTION_COUNTS[currentSection.section]
+
+    if (answered >= sectionCount) {
+      // All questions in section answered — go to review
+      stopTimer()
+      setPageState('review')
+      setReviewQuestionIndex(0)
+    } else {
+      // Next question
+      const next = selectNextQuestion(session, session.currentSectionIndex, questionPool)
+      setCurrentQuestion(next)
+      setPendingAnswer(null)
+      questionStartTime.current = Date.now()
+    }
+  }, [session, currentSection, currentQuestion, questionPool, stopTimer])
+
+  // ── Review & Edit ─────────────────────────────────────────
+
+  const handleChangeAnswer = useCallback((questionId: string, newAnswer: string) => {
+    if (!session) return
+    const result = changeAnswer(session, questionId, newAnswer)
+    if (result.success) setSession({ ...session })
+  }, [session])
+
+  const handleToggleBookmark = useCallback((questionId: string) => {
+    if (!session) return
+    bookmarkQuestion(session, questionId)
+    setSession({ ...session })
+  }, [session])
+
+  // ── Finish section (from review or timer expiry) ──────────
+
+  const handleFinishSection = useCallback(() => {
+    if (!session) return
+    stopTimer()
+
+    // Mark current section done
+    session.sections[session.currentSectionIndex].status = 'completed'
+
+    const isLastSection = session.currentSectionIndex >= session.sections.length - 1
+
+    if (isLastSection) {
+      // Generate score report and save to DB
+      const rep = generateScoreReport(session)
+      setReport(rep)
+      saveMockTestResult(rep, session)
+      setPageState('report')
+    } else {
+      // Offer break before next section
+      setPageState(session.mode === 'full' ? 'break' : 'section-done')
     }
 
-    // Check if we're crossing a section boundary (full mock test)
-    if (selectedMode === 'full' && sectionBreaks.includes(nextIdx)) {
-      // Reset section timer for the new section
-      setSectionTimerEnd(Date.now() + 45 * 60 * 1000)
-      setCurrentSectionIndex(prev => prev + 1)
-    }
+    setSession({ ...session })
+  }, [session, stopTimer])
 
-    setCurrentIndex(nextIdx)
-    setCurrentUserAnswer(null)
-    setTestState('testing')
+  // ── Break end → next section ──────────────────────────────
+
+  const handleBreakEnd = useCallback(() => {
+    if (!session) return
+    // Advance to next section
+    const nextIdx = session.currentSectionIndex + 1
+    session.currentSectionIndex = nextIdx
+    session.sections[nextIdx].status = 'in-progress'
+    setSession({ ...session })
+    setPageState('section-intro')
+  }, [session])
+
+  // ── Save result to DB ─────────────────────────────────────
+
+  const saveMockTestResult = async (rep: ScoreReport, sess: MockTestSession) => {
+    try {
+      await fetch('/api/mock-test/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          totalScore: rep.totalScore,
+          quantScore: rep.sections.find(s => s.section === 'quant')?.score ?? null,
+          verbalScore: rep.sections.find(s => s.section === 'verbal')?.score ?? null,
+          dataInsightsScore: rep.sections.find(s => s.section === 'data-insights')?.score ?? null,
+          quantAccuracy: rep.sections.find(s => s.section === 'quant')?.accuracy ?? null,
+          verbalAccuracy: rep.sections.find(s => s.section === 'verbal')?.accuracy ?? null,
+          diAccuracy: rep.sections.find(s => s.section === 'data-insights')?.accuracy ?? null,
+          durationMins: Math.floor(rep.timeAnalysis.totalTime / 60),
+          notes: rep.recommendations.join(' | '),
+        }),
+      })
+    } catch { /* non-critical */ }
   }
 
-  const currentQuestion = questions[currentIndex]
-  const totalTime = Math.floor((Date.now() - startTime) / 1000)
-  const progressPct = questions.length > 0
-    ? Math.round(((testState === 'explanation' ? currentIndex + 1 : currentIndex) / questions.length) * 100)
-    : 0
+  // ── Render: Setup ─────────────────────────────────────────
 
-  // ── Summary ────────────────────────────────────────────
-
-  if (testState === 'summary') {
+  if (pageState === 'setup') {
     return (
       <div className="min-h-full max-w-4xl mx-auto p-6 lg:p-8">
-        <PracticeSummary
-          answers={answers}
-          totalTime={totalTime}
-          onReviewMistakes={() => {}}
-          onNewPractice={() => {
-            setTestState('setup')
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white">Mock Test</h1>
+          <p className="text-slate-400 mt-1">
+            Computer-adaptive test — questions adjust to your level in real time
+          </p>
+        </div>
+
+        {/* Mode cards */}
+        <div className="grid md:grid-cols-2 gap-5 mb-8">
+          <ModeCard
+            selected={selectedMode === 'full'}
+            onClick={() => { setSelectedMode('full'); setSelectedSection(null) }}
+            icon={<Target className="w-5 h-5 text-cyan-400" />}
+            iconBg="bg-cyan-500/20"
+            title="Full Mock Test"
+            subtitle="2 hr 15 min · All 3 sections"
+            description="Simulate the real GMAT Focus Edition experience. Adaptive difficulty, section timer, optional break between sections."
+            stats={[
+              { icon: <Clock className="w-3 h-3" />, label: '135 min' },
+              { icon: <BarChart3 className="w-3 h-3" />, label: '64 questions' },
+            ]}
+            badge="Recommended"
+          />
+          <ModeCard
+            selected={selectedMode === 'section'}
+            onClick={() => setSelectedMode('section')}
+            icon={<BarChart3 className="w-5 h-5 text-violet-400" />}
+            iconBg="bg-violet-500/20"
+            title="Section Practice"
+            subtitle="45 min · One section"
+            description="Focus on a single section with full adaptive difficulty and a timed environment."
+            stats={[
+              { icon: <Clock className="w-3 h-3" />, label: '45 min' },
+              { icon: <BarChart3 className="w-3 h-3" />, label: '20–23 questions' },
+            ]}
+          />
+        </div>
+
+        {/* Section picker */}
+        {selectedMode === 'section' && (
+          <div className="bg-[#0D1220] rounded-xl border border-white/[0.06] p-6 mb-8">
+            <h2 className="text-base font-semibold text-white mb-4">Choose Section</h2>
+            <div className="grid md:grid-cols-3 gap-3">
+              {GMAT_SECTIONS.map(s => (
+                <button
+                  key={s.id}
+                  onClick={() => setSelectedSection(s.id as Section)}
+                  className={`p-4 rounded-xl border text-left transition-all ${
+                    selectedSection === s.id
+                      ? 'border-cyan-500 bg-cyan-500/10'
+                      : 'border-white/[0.06] bg-[#151C2C] hover:border-white/[0.12]'
+                  }`}
+                >
+                  <p className="text-sm font-medium text-white">{SECTION_NAMES[s.id as Section]}</p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    45 min · {SECTION_QUESTION_COUNTS[s.id as Section]} questions
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* GMAT rules callout */}
+        <div className="bg-amber-500/5 border border-amber-500/15 rounded-xl p-4 mb-8">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+            <div className="text-sm text-slate-400 space-y-1">
+              <p><span className="text-amber-300 font-medium">Real GMAT conditions:</span> Explanations shown only after the test. You can review and change answers within each section (max 3 changes per section). Timer is enforced.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Start button */}
+        {selectedMode && (selectedMode === 'full' || selectedSection) && (
+          <div className="text-center">
+            <button
+              onClick={handleStart}
+              disabled={isLoading}
+              className="inline-flex items-center gap-2.5 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white px-8 py-3.5 text-base font-semibold rounded-xl transition-all shadow-lg shadow-cyan-500/20"
+            >
+              {isLoading
+                ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Loading…</>
+                : <><Play className="w-5 h-5" /> Start {selectedMode === 'full' ? 'Full Mock Test' : 'Section Practice'}</>
+              }
+            </button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // ── Render: Section Intro ─────────────────────────────────
+
+  if (pageState === 'section-intro' && session) {
+    const sec = session.sections[session.currentSectionIndex]
+    const sectionName = SECTION_NAMES[sec.section]
+    const questionCount = SECTION_QUESTION_COUNTS[sec.section]
+    const meta = SECTION_META[sec.section]
+
+    return (
+      <div className="min-h-full flex items-center justify-center p-6">
+        <div className="max-w-lg w-full text-center">
+          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6 ${meta?.bg} ${meta?.color}`}>
+            Section {session.currentSectionIndex + 1} of {session.sections.length}
+          </div>
+          <h1 className="text-3xl font-bold text-white mb-3">{sectionName}</h1>
+          <div className="flex items-center justify-center gap-6 text-sm text-slate-400 mb-8">
+            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> 45 minutes</span>
+            <span className="flex items-center gap-1.5"><BarChart3 className="w-4 h-4" /> {questionCount} questions</span>
+            <span className="flex items-center gap-1.5"><BookmarkIcon className="w-4 h-4" /> Review & Edit allowed</span>
+          </div>
+          <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-5 mb-8 text-left space-y-2">
+            <p className="text-xs text-slate-500 font-semibold uppercase tracking-widest mb-3">Rules</p>
+            {[
+              'Questions adapt to your performance — difficulty adjusts after each answer',
+              'You can review and change any answer (max 3 changes) before submitting the section',
+              'The timer runs continuously — plan your pace',
+              'Explanations are shown after the full test, not during',
+            ].map((rule, i) => (
+              <div key={i} className="flex items-start gap-2.5 text-sm text-slate-400">
+                <CheckCircle2 className="w-4 h-4 text-cyan-500/60 mt-0.5 shrink-0" />
+                {rule}
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={handleSectionIntroStart}
+            className="bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-3.5 font-semibold rounded-xl transition-all"
+          >
+            Begin Section →
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Render: Testing ───────────────────────────────────────
+
+  if (pageState === 'testing' && session && currentSection && currentQuestion) {
+    const qIndex = currentSection.questions.length
+    const qTotal = SECTION_QUESTION_COUNTS[currentSection.section]
+    const progressPct = Math.round((qIndex / qTotal) * 100)
+    const isLowTime = timeLeft < 5 * 60
+
+    return (
+      <div className="max-w-3xl mx-auto p-4 lg:p-6">
+        {/* Top bar */}
+        <div className="flex items-center justify-between mb-4 px-1">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-medium text-slate-400">
+              {SECTION_NAMES[currentSection.section]}
+            </span>
+            <span className="text-xs text-slate-600">
+              Q {qIndex}/{qTotal}
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => handleToggleBookmark(currentQuestion.question.id)}
+              className={`p-1.5 rounded-lg transition-colors ${
+                currentQuestion.bookmarked
+                  ? 'text-amber-400 bg-amber-500/10'
+                  : 'text-slate-600 hover:text-slate-400'
+              }`}
+              title="Bookmark this question"
+            >
+              <BookmarkIcon className="w-4 h-4" />
+            </button>
+            <span className={`flex items-center gap-1.5 font-mono text-sm font-semibold ${
+              isLowTime ? 'text-red-400' : 'text-slate-300'
+            }`}>
+              <Clock className={`w-3.5 h-3.5 ${isLowTime ? 'animate-pulse' : ''}`} />
+              {formatTime(timeLeft)}
+            </span>
+          </div>
+        </div>
+
+        {/* Progress */}
+        <div className="w-full h-1 bg-[#151C2C] rounded-full overflow-hidden mb-6">
+          <div
+            className="h-full bg-cyan-500/60 rounded-full transition-all"
+            style={{ width: `${progressPct}%` }}
+          />
+        </div>
+
+        {/* Question — no explanation shown */}
+        <div className="glass-card p-6 lg:p-8">
+          <QuestionCard
+            question={currentQuestion.question}
+            questionNumber={qIndex}
+            totalQuestions={qTotal}
+            onSubmit={handleSubmitAnswer}
+            timedMode={true}
+            disabled={false}
+          />
+        </div>
+
+        {/* Bottom nav */}
+        <div className="flex items-center justify-between mt-4 px-1">
+          <button
+            onClick={() => { stopTimer(); setPageState('review'); setReviewQuestionIndex(0) }}
+            className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            Review Section →
+          </button>
+          <span className="text-xs text-slate-600">
+            {currentSection.bookmarks.size > 0 && `${currentSection.bookmarks.size} bookmarked`}
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Render: Review & Edit ─────────────────────────────────
+
+  if (pageState === 'review' && session && currentSection) {
+    const questions = currentSection.questions
+    const reviewQ = questions[reviewQuestionIndex]
+    const changesLeft = currentSection.maxChanges - currentSection.changesUsed
+
+    return (
+      <div className="max-w-3xl mx-auto p-4 lg:p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-bold text-white">Review & Edit</h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {currentSection.bookmarks.size > 0
+                ? `${currentSection.bookmarks.size} bookmarked · `
+                : ''
+              }
+              {changesLeft} answer change{changesLeft !== 1 ? 's' : ''} remaining
+            </p>
+          </div>
+          <button
+            onClick={handleFinishSection}
+            className="bg-cyan-600 hover:bg-cyan-500 text-white px-5 py-2.5 text-sm font-semibold rounded-xl transition-all"
+          >
+            Submit Section →
+          </button>
+        </div>
+
+        {/* Question navigator */}
+        <div className="flex flex-wrap gap-2 mb-5">
+          {questions.map((q, i) => (
+            <button
+              key={q.question.id}
+              onClick={() => setReviewQuestionIndex(i)}
+              className={`w-9 h-9 rounded-lg text-sm font-medium transition-all relative ${
+                i === reviewQuestionIndex
+                  ? 'bg-cyan-500 text-white'
+                  : q.bookmarked
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    : q.originalAnswer
+                      ? 'bg-violet-500/20 text-violet-300 border border-violet-500/30'
+                      : q.userAnswer
+                        ? 'bg-white/[0.06] text-slate-300'
+                        : 'bg-white/[0.03] text-slate-600'
+              }`}
+            >
+              {i + 1}
+              {q.bookmarked && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-400 rounded-full" />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Selected question */}
+        {reviewQ && (
+          <div className="glass-card p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-xs text-slate-500">Question {reviewQuestionIndex + 1}</span>
+              {reviewQ.bookmarked && (
+                <span className="text-xs text-amber-400 flex items-center gap-1">
+                  <BookmarkIcon className="w-3 h-3" /> Bookmarked
+                </span>
+              )}
+              {reviewQ.originalAnswer && reviewQ.originalAnswer !== reviewQ.userAnswer && (
+                <span className="text-xs text-violet-400">Answer changed</span>
+              )}
+            </div>
+
+            <QuestionCard
+              question={reviewQ.question}
+              questionNumber={reviewQuestionIndex + 1}
+              totalQuestions={questions.length}
+              onSubmit={(newAnswer) => {
+                if (newAnswer !== reviewQ.userAnswer) {
+                  handleChangeAnswer(reviewQ.question.id, newAnswer)
+                }
+              }}
+              timedMode={false}
+              disabled={changesLeft === 0 && reviewQ.userAnswer !== null}
+              initialAnswer={reviewQ.userAnswer ?? undefined}
+            />
+
+            {changesLeft === 0 && (
+              <p className="text-xs text-amber-400 mt-3 text-center">
+                No answer changes remaining
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Nav arrows */}
+        <div className="flex items-center justify-between mt-4">
+          <button
+            onClick={() => setReviewQuestionIndex(i => Math.max(0, i - 1))}
+            disabled={reviewQuestionIndex === 0}
+            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 disabled:opacity-30 transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" /> Previous
+          </button>
+          <button
+            onClick={() => handleToggleBookmark(reviewQ?.question.id ?? '')}
+            className={`text-sm transition-colors ${
+              reviewQ?.bookmarked ? 'text-amber-400' : 'text-slate-600 hover:text-slate-400'
+            }`}
+          >
+            {reviewQ?.bookmarked ? '★ Bookmarked' : '☆ Bookmark'}
+          </button>
+          <button
+            onClick={() => setReviewQuestionIndex(i => Math.min(questions.length - 1, i + 1))}
+            disabled={reviewQuestionIndex === questions.length - 1}
+            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 disabled:opacity-30 transition-colors"
+          >
+            Next <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Render: Break ─────────────────────────────────────────
+
+  if (pageState === 'break' && session) {
+    const nextSec = session.sections[session.currentSectionIndex + 1]
+    return (
+      <div className="min-h-full flex items-center justify-center p-6">
+        <div className="max-w-md w-full text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-amber-500/15 flex items-center justify-center">
+            <Coffee className="w-8 h-8 text-amber-400" />
+          </div>
+          <h1 className="text-2xl font-bold text-white mb-2">Optional Break</h1>
+          <p className="text-slate-400 mb-6">
+            Take up to 10 minutes before <span className="text-white font-medium">{SECTION_NAMES[nextSec?.section]}</span>.
+            Your timer starts automatically when you continue.
+          </p>
+          <div className="text-4xl font-bold font-mono text-amber-400 mb-8">
+            {formatTime(breakTimeLeft)}
+          </div>
+          <button
+            onClick={handleBreakEnd}
+            className="bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-3.5 font-semibold rounded-xl transition-all"
+          >
+            Continue to Next Section →
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Render: Score Report ──────────────────────────────────
+
+  if (pageState === 'report' && report) {
+    return (
+      <div className="min-h-full p-6 lg:p-8">
+        <ScoreReportComponent
+          report={report}
+          onRetake={() => {
+            setPageState('setup')
+            setSession(null)
+            setReport(null)
             setSelectedMode(null)
             setSelectedSection(null)
           }}
+          onBackToDashboard={() => router.push('/dashboard/session')}
           onAskSam={() => {
-            const summary = `Mock test: ${answers.length} questions, ${answers.filter(a => a.correct).length} correct.`
-            router.push(`/dashboard/session?context=${encodeURIComponent(summary)}`)
+            const summary = encodeURIComponent(
+              `I just finished a mock test and scored ${report.totalScore}. ` +
+              `Quant: ${report.sections.find(s => s.section === 'quant')?.score ?? 'N/A'}, ` +
+              `Verbal: ${report.sections.find(s => s.section === 'verbal')?.score ?? 'N/A'}, ` +
+              `DI: ${report.sections.find(s => s.section === 'data-insights')?.score ?? 'N/A'}. ` +
+              `Can you review my results and tell me what to focus on next?`
+            )
+            router.push(`/dashboard/session?context=${summary}`)
           }}
         />
       </div>
     )
   }
 
-  // ── Testing ────────────────────────────────────────────
+  return null
+}
 
-  if (testState === 'testing' || testState === 'explanation') {
-    if (!currentQuestion) return null
+// ── ModeCard ───────────────────────────────────────────────
 
-    return (
-      <div className="max-w-3xl mx-auto p-6 lg:p-8">
-        {/* Section timer + Progress bar */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <button
-              onClick={() => { setTestState('setup'); setSelectedMode(null) }}
-              className="text-sm text-slate-500 hover:text-slate-300"
-            >
-              ← End test
-            </button>
-            <div className="flex items-center gap-4">
-              {sectionTimerEnd > 0 && (
-                <span className="flex items-center gap-1 text-xs font-mono text-amber-400">
-                  <Clock className="w-3 h-3" />
-                  {sectionTimeLeft}
-                </span>
-              )}
-              {selectedMode === 'full' && (
-                <span className="text-xs text-cyan-400 font-medium">
-                  {getCurrentSectionName()}
-                </span>
-              )}
-              <span className="text-xs text-slate-500">
-                {answers.filter(a => a.correct).length}/{answers.length} correct
-                {selectedMode === 'full' ? ' · Full Mock Test' : ` · ${GMAT_SECTIONS.find(s => s.id === selectedSection)?.name || 'Section'}`}
-              </span>
-            </div>
-          </div>
-          <div className="w-full h-1.5 bg-[#151C2C] rounded-full overflow-hidden">
-            <div className="h-full bg-cyan-500 rounded-full transition-all duration-300" style={{ width: `${progressPct}%` }} />
-          </div>
-        </div>
-
-        {/* Question */}
-        <div className="glass-card p-6 lg:p-8">
-          <QuestionCard
-            question={currentQuestion}
-            questionNumber={currentIndex + 1}
-            totalQuestions={questions.length}
-            onSubmit={handleSubmitAnswer}
-            timedMode={true}
-            disabled={testState === 'explanation'}
-          />
-
-          {testState === 'explanation' && currentUserAnswer && (
-            <ExplanationPanel
-              question={currentQuestion}
-              userAnswer={currentUserAnswer}
-              timeTaken={currentTimeTaken}
-              onNext={handleNext}
-              onAskSam={() => {
-                const q = currentQuestion
-                const context = encodeURIComponent(`Mock test question about ${q.topic}. Can you explain?`)
-                router.push(`/dashboard/session?context=${context}`)
-              }}
-            />
-          )}
-        </div>
-      </div>
-    )
-  }
-
-  // ── Setup ──────────────────────────────────────────────
-
+function ModeCard({
+  selected, onClick, icon, iconBg, title, subtitle, description, stats, badge,
+}: {
+  selected: boolean
+  onClick: () => void
+  icon: React.ReactNode
+  iconBg: string
+  title: string
+  subtitle: string
+  description: string
+  stats: { icon: React.ReactNode; label: string }[]
+  badge?: string
+}) {
   return (
-    <div className="min-h-full max-w-4xl mx-auto p-6 lg:p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Mock Test</h1>
-        <p className="text-slate-400 mt-1">
-          Take a full-length GMAT practice test or practice individual sections
-        </p>
-      </div>
-
-      {/* Test mode selection */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {/* Full Test */}
-        <div
-          onClick={() => { setSelectedMode('full'); setSelectedSection(null) }}
-          className={`p-6 rounded-xl border cursor-pointer transition-all ${
-            selectedMode === 'full'
-              ? 'border-cyan-500 bg-cyan-500/10'
-              : 'border-white/[0.06] bg-[#0D1220] hover:border-[#283244]'
-          }`}
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
-              <Target className="w-5 h-5 text-cyan-400" />
-            </div>
-            <div>
-              <h3 className="text-white font-semibold">Full Mock Test</h3>
-              <p className="text-xs text-slate-500">2 hours 15 minutes · All 3 sections</p>
-            </div>
-          </div>
-          <p className="text-sm text-slate-400">
-            Simulate the real GMAT experience. Includes Quant, Verbal, and Data Insights
-            sections with adaptive difficulty.
-          </p>
-          <div className="flex items-center gap-4 mt-4 text-xs text-slate-500">
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 135 min</span>
-            <span className="flex items-center gap-1"><BarChart3 className="w-3 h-3" /> 64 questions</span>
-          </div>
+    <div
+      onClick={onClick}
+      className={`relative p-6 rounded-xl border cursor-pointer transition-all ${
+        selected
+          ? 'border-cyan-500 bg-cyan-500/10 shadow-lg shadow-cyan-500/10'
+          : 'border-white/[0.06] bg-[#0D1220] hover:border-white/[0.12]'
+      }`}
+    >
+      {badge && (
+        <span className="absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/25">
+          {badge}
+        </span>
+      )}
+      <div className="flex items-center gap-3 mb-3">
+        <div className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center`}>
+          {icon}
         </div>
-
-        {/* Section Practice */}
-        <div
-          onClick={() => setSelectedMode('section')}
-          className={`p-6 rounded-xl border cursor-pointer transition-all ${
-            selectedMode === 'section'
-              ? 'border-cyan-500 bg-cyan-500/10'
-              : 'border-white/[0.06] bg-[#0D1220] hover:border-[#283244]'
-          }`}
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-violet-400" />
-            </div>
-            <div>
-              <h3 className="text-white font-semibold">Section Practice</h3>
-              <p className="text-xs text-slate-500">45 minutes · One section at a time</p>
-            </div>
-          </div>
-          <p className="text-sm text-slate-400">
-            Focus on a single section. Great for targeted improvement on your weakest area.
-          </p>
-          <div className="flex items-center gap-4 mt-4 text-xs text-slate-500">
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 45 min</span>
-            <span className="flex items-center gap-1"><BarChart3 className="w-3 h-3" /> 20-23 questions</span>
-          </div>
+        <div>
+          <h3 className="text-white font-semibold">{title}</h3>
+          <p className="text-xs text-slate-500">{subtitle}</p>
         </div>
       </div>
-
-      {/* Section selection */}
-      {selectedMode === 'section' && (
-        <div className="bg-[#0D1220] rounded-xl border border-white/[0.06] p-6 mb-8">
-          <h2 className="text-lg font-semibold text-white mb-4">Choose a Section</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {GMAT_SECTIONS.map(section => (
-              <button
-                key={section.id}
-                onClick={() => setSelectedSection(section.id)}
-                className={`p-4 rounded-lg border transition-all text-left ${
-                  selectedSection === section.id
-                    ? 'border-cyan-500 bg-cyan-500/10'
-                    : 'border-[#283244] bg-[#1E293B]/50 hover:border-cyan-500/50'
-                }`}
-              >
-                <div className="text-white font-medium text-sm">{section.name}</div>
-                <div className="text-xs text-slate-500 mt-1">
-                  {section.timeMinutes} min · {section.questionCount} questions
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Start button */}
-      {selectedMode && (selectedMode === 'full' || selectedSection) && (
-        <div className="text-center">
-          <button
-            onClick={startTest}
-            disabled={isLoading}
-            className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-600/50 disabled:cursor-not-allowed text-white px-8 py-3.5 text-base font-semibold rounded-xl transition-all shadow-lg shadow-cyan-500/20"
-          >
-            {isLoading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Loading questions…
-              </>
-            ) : (
-              <>
-                <Play className="w-5 h-5" />
-                {selectedMode === 'full' ? 'Start Full Mock Test' : 'Start Section Practice'}
-              </>
-            )}
-          </button>
-          <p className="text-xs text-slate-500 mt-3">
-            Timed mode · Questions from the question bank
-          </p>
-        </div>
-      )}
-
-      {/* Info notice */}
-      {!selectedMode && (
-        <div className="bg-cyan-500/5 border border-cyan-500/10 rounded-xl p-4 mt-4">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-            <p className="text-sm text-slate-400">
-              Select a test mode above to begin. Questions are drawn from the practice bank and presented in timed mode to simulate real exam conditions.
-            </p>
-          </div>
-        </div>
-      )}
+      <p className="text-sm text-slate-400 mb-4 leading-relaxed">{description}</p>
+      <div className="flex items-center gap-4 text-xs text-slate-500">
+        {stats.map((s, i) => (
+          <span key={i} className="flex items-center gap-1">{s.icon}{s.label}</span>
+        ))}
+      </div>
     </div>
   )
 }
