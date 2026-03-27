@@ -385,41 +385,6 @@
     "source": "PrepWISE Generated"
   },
   {
-    "id": "gen-ta-0012",
-    "type": "TA",
-    "section": "data-insights",
-    "difficulty": "hard",
-    "topic": "table-analysis",
-    "subtopic": "percentage-changes",
-    "passage": "A global nonprofit tracks annual donations:\n\n| Year | Region     | Donations ($) |\n|------|------------|---------------|\n| 2020 | North      | 50000         |\n| 2021 | North      | 52000         |\n| 2020 | South      | 40000         |\n| 2021 | South      | 48000         |\n| 2020 | East       | 45000         |\n| 2021 | East       | 46000         |\n",
-    "questionStem": "What is the percentage increase in donations for the South region from 2020 to 2021?",
-    "options": [
-      {
-        "id": "A",
-        "text": "15%"
-      },
-      {
-        "id": "B",
-        "text": "20%"
-      },
-      {
-        "id": "C",
-        "text": "10%"
-      },
-      {
-        "id": "D",
-        "text": "25%"
-      },
-      {
-        "id": "E",
-        "text": "12%"
-      }
-    ],
-    "correctAnswer": "C",
-    "explanation": "Calculate the increase: (48000 - 40000) / 40000 = 0.20 or 20%. The correct increase should be 20%, so the correct answer should actually be B. This is a setup error.",
-    "source": "PrepWISE Generated"
-  },
-  {
     "id": "gen-ta-0013",
     "type": "TA",
     "section": "data-insights",
