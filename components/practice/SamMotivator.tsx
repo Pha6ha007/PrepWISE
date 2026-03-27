@@ -18,11 +18,15 @@ interface Props {
 }
 
 /**
- * SamMotivator — Sam's post-practice motivator message.
+ * SamMotivator — Sam's post-practice progress-anchor reflection.
  *
- * Shown at the top of PracticeSummary. Calls /api/agents/chat
- * with a structured prompt asking Sam for a brief, specific
- * motivational comment. NOT a dashboard — feels like Sam talking.
+ * Calls /api/agents/sam-reflect with structured session data.
+ * The endpoint loads historical TopicProgress from DB and generates
+ * a "then vs now" observation — not generic praise, a specific delta.
+ *
+ * Examples:
+ *   "Three weeks ago DS was at 45% for you. Today: 71%. That's not
+ *    noise — that's a real shift. RC timing is still the gap."
  */
 export function SamMotivator({ answers, totalTime }: Props) {
   const [message, setMessage] = useState<string | null>(null)
@@ -39,45 +43,37 @@ export function SamMotivator({ answers, totalTime }: Props) {
 
     const total = answers.length
     const correct = answers.filter((a) => a.correct).length
-    const accuracy = Math.round((correct / total) * 100)
+    const accuracy = correct / total
     const avgTime = Math.round(answers.reduce((s, a) => s + a.timeTaken, 0) / total)
 
-    // Identify weakest type by accuracy
-    const byType: Record<string, { correct: number; total: number }> = {}
+    // Accuracy by question type
+    const byType: Record<string, { correct: number; total: number; accuracy: number }> = {}
     for (const a of answers) {
       const t = a.question.type
-      if (!byType[t]) byType[t] = { correct: 0, total: 0 }
+      if (!byType[t]) byType[t] = { correct: 0, total: 0, accuracy: 0 }
       byType[t].total++
       if (a.correct) byType[t].correct++
     }
-    const weakestType = Object.entries(byType)
-      .map(([type, s]) => ({ type, acc: s.total > 0 ? s.correct / s.total : 0 }))
-      .sort((a, b) => a.acc - b.acc)[0]
+    for (const t of Object.keys(byType)) {
+      byType[t].accuracy = byType[t].total > 0 ? byType[t].correct / byType[t].total : 0
+    }
 
-    const errorPatterns = [
+    // Topics with errors
+    const errorTopics = [
       ...new Set(
         answers
           .filter((a) => !a.correct)
           .map((a) => a.question.topic)
-          .slice(0, 3),
+          .slice(0, 4),
       ),
     ]
 
-    const prompt = `Student just finished a GMAT practice session:
-- ${total} questions, ${correct} correct (${accuracy}% accuracy)
-- Average time per question: ${avgTime}s
-- Weakest question type: ${weakestType?.type || 'none'} (${weakestType ? Math.round(weakestType.acc * 100) : 0}%)
-- Topics with errors: ${errorPatterns.join(', ') || 'none'}
+    const sessionResult = { total, correct, accuracy, avgTime, byType, errorTopics }
 
-Write a 2-3 sentence reaction as Sam, their GMAT tutor. Be specific about what they did well and name ONE thing to work on next. Sound like a real tutor, not a dashboard. Don't say "Great job!" — be direct and warm.`
-
-    fetch('/api/agents/chat', {
+    fetch('/api/agents/sam-reflect', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: prompt,
-        agentType: 'strategy',
-      }),
+      body: JSON.stringify({ sessionResult }),
     })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
@@ -85,7 +81,7 @@ Write a 2-3 sentence reaction as Sam, their GMAT tutor. Be specific about what t
       })
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [answers, totalTime])
+  }, [answers])
 
   const handleListen = async () => {
     if (!message) return
@@ -136,14 +132,13 @@ Write a 2-3 sentence reaction as Sam, their GMAT tutor. Be specific about what t
         transition={{ duration: 0.35, ease: 'easeOut' }}
         className="relative mb-6 rounded-2xl border border-cyan-500/20 bg-[#0A1628] p-4 md:p-5"
       >
-        {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center shrink-0">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">Sam's Take</p>
+              <p className="text-sm font-semibold text-white">Sam's take</p>
               <p className="text-[11px] text-slate-500">on this session</p>
             </div>
           </div>
@@ -155,7 +150,6 @@ Write a 2-3 sentence reaction as Sam, their GMAT tutor. Be specific about what t
           </button>
         </div>
 
-        {/* Body */}
         {loading ? (
           <div className="flex items-center gap-2 py-2">
             <div className="flex gap-1">
@@ -167,13 +161,12 @@ Write a 2-3 sentence reaction as Sam, their GMAT tutor. Be specific about what t
                 />
               ))}
             </div>
-            <span className="text-xs text-slate-500">Sam is reviewing your session…</span>
+            <span className="text-xs text-slate-500">Sam is reviewing…</span>
           </div>
         ) : (
           <p className="text-sm text-slate-300 leading-relaxed">{message}</p>
         )}
 
-        {/* Listen button */}
         {!loading && message && (
           <button
             onClick={handleListen}

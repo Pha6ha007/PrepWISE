@@ -5,20 +5,21 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { agentClient } from '@/lib/openai/client'
+import { agentClient, getAgentModel } from '@/lib/openai/client'
 
 export const runtime = 'nodejs'
 
-const SAM_WEEKLY_REVIEW_PROMPT = `You are Sam, a GMAT tutor reviewing your student's week. Be warm, specific, and actionable.
+const SAM_WEEKLY_REVIEW_PROMPT = `You are Sam, a direct and warm GMAT tutor doing a weekly review. Your job is to make the student feel SEEN — not praised generically, but specifically understood.
 
-Format:
-1. Open with genuine acknowledgment of effort (reference specific numbers)
-2. Highlight biggest improvement this week
-3. Name the #1 thing to focus on next week (with WHY)
-4. Give honest score readiness assessment: "At your current level (~X), you'd likely score around Y. For 700+, focus on Z."
-5. Close with encouragement tied to their specific progress
-
-Keep it 150-200 words. Sound like a real tutor, not a dashboard.`
+Rules:
+- Name the actual delta if you have historical data: "Two weeks ago you were at X% on DS. Now you're at Y%. That moved."
+- If accuracy went down, say so honestly: "This week was rougher than last — that happens. Here's what to reset."
+- Name exactly ONE thing to fix next week and explain WHY that specific thing will move the score
+- Give a realistic score range based on their current accuracy: "At this level you'd likely score 630-650. The gap to 700 is mostly RC timing."
+- Never say "Great job!", "Keep it up!", "Amazing progress!" — these are hollow
+- Never start with "I"
+- Reference specific numbers from the data
+- 150-200 words. Sound like a human tutor, not a dashboard report.`
 
 const NO_DATA_NUDGE =
   "Hey, I haven't seen you this week. Even 20 minutes today would keep your momentum going. Pick one topic you've been putting off — just 10 practice questions. That's it. Your future self will thank you."
@@ -85,15 +86,25 @@ export async function GET() {
       })
     }
 
+    // Load prior-week sessions for historical comparison
+    const twoWeeksAgo = new Date()
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
+    const priorWeekSessions = await prisma.gmatSession.findMany({
+      where: {
+        userId: user.id,
+        startedAt: { gte: twoWeeksAgo, lt: sevenDaysAgo },
+      },
+    })
+
     // Calculate stats
     const stats = calculateWeeklyStats(sessions, topicProgress, errorLogs, mockTests)
 
     // Build the data summary for the LLM
-    const dataSummary = buildDataSummary(stats)
+    const dataSummary = buildDataSummary(stats, priorWeekSessions)
 
     // Call LLM for Sam's review
     const completion = await agentClient.chat.completions.create({
-      model: 'openai/gpt-4o-mini',
+      model: getAgentModel(),
       messages: [
         { role: 'system', content: SAM_WEEKLY_REVIEW_PROMPT },
         { role: 'user', content: dataSummary },
@@ -206,7 +217,7 @@ function calculateWeeklyStats(
   }
 }
 
-function buildDataSummary(stats: WeeklyStats): string {
+function buildDataSummary(stats: WeeklyStats, priorWeekSessions: any[] = []): string {
   const lines: string[] = [
     `## Student's Week in Numbers`,
     ``,
@@ -216,6 +227,17 @@ function buildDataSummary(stats: WeeklyStats): string {
     `- Time spent: ${stats.totalMinutes} minutes`,
     `- Study days this week: ${stats.streakDays}/7`,
   ]
+
+  // Historical delta: prior week vs this week overall accuracy
+  if (priorWeekSessions.length > 0) {
+    const priorQ = priorWeekSessions.reduce((s, x) => s + x.questionsAsked, 0)
+    const priorCorrect = priorWeekSessions.reduce((s, x) => s + x.correctAnswers, 0)
+    const priorAcc = priorQ > 0 ? priorCorrect / priorQ : null
+    if (priorAcc !== null) {
+      const delta = Math.round((stats.overallAccuracy - priorAcc) * 100)
+      lines.push(`- vs prior week: ${Math.round(priorAcc * 100)}% → ${Math.round(stats.overallAccuracy * 100)}% (${delta >= 0 ? '+' : ''}${delta}pp)`)
+    }
+  }
 
   // Section breakdown
   const sections = Object.entries(stats.sectionAccuracy)
