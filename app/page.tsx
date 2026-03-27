@@ -130,6 +130,53 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Sam in action — живые сценарии */}
+      <section className="border-t border-white/[0.06] bg-[#0D1220]">
+        <div className="max-w-6xl mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/5 text-amber-400 text-sm font-medium mb-6">
+              <Brain className="w-3.5 h-3.5" />
+              Sam thinks like a real tutor
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Not a chatbot.{' '}
+              <span className="gradient-text-amber">A tutor who remembers you.</span>
+            </h2>
+            <p className="text-slate-400 text-lg max-w-xl mx-auto">
+              Every other GMAT tool treats you like a stranger on every visit.
+              Sam carries your entire learning history into every session.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+            <SamScenario
+              tag="Before each question"
+              tagColor="cyan"
+              samLine="You've missed the last 4 DS questions by combining statements too early. This one — test Statement 1 alone first."
+              caption="Sam spots your pattern before you repeat the mistake."
+            />
+            <SamScenario
+              tag="After a wrong answer"
+              tagColor="violet"
+              samLine="You picked C. Walk me through your thinking — where did the logic go?"
+              caption="Sam finds the exact moment your reasoning broke down, not just the wrong answer."
+            />
+            <SamScenario
+              tag="Weekly check-in"
+              tagColor="cyan"
+              samLine="Your DS accuracy went from 47% to 68% this week — that's real. RC timing is still your biggest drag: 2:40/question vs 1:57 target. That's where we focus next."
+              caption="Honest, specific, actionable — not a dashboard screenshot."
+            />
+            <SamScenario
+              tag="5 days before your exam"
+              tagColor="amber"
+              samLine="Stop. You don't need to relearn everything. Your DS process works when you follow it — 85% when you do. Today: 30 min on RC pacing, then rest."
+              caption="Pre-exam mode kicks in automatically when your test date is near."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* How it works */}
       <section className="border-y border-white/[0.06] bg-[#0D1220]">
         <div className="max-w-6xl mx-auto px-6 py-24">
@@ -278,6 +325,45 @@ function StepCard({ number, title, description }: {
   )
 }
 
+function SamScenario({ tag, tagColor, samLine, caption }: {
+  tag: string
+  tagColor: 'cyan' | 'violet' | 'amber'
+  samLine: string
+  caption: string
+}) {
+  const tagStyles: Record<string, string> = {
+    cyan: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+    violet: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
+    amber: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  }
+  const dotStyles: Record<string, string> = {
+    cyan: 'bg-cyan-400',
+    violet: 'bg-violet-400',
+    amber: 'bg-amber-400',
+  }
+  return (
+    <div className="glass-card p-6 flex flex-col gap-4">
+      {/* Tag */}
+      <span className={`self-start text-[11px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full border ${tagStyles[tagColor]}`}>
+        {tag}
+      </span>
+
+      {/* Sam's message bubble */}
+      <div className="flex items-start gap-3">
+        <div className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5 ${dotStyles[tagColor]} bg-opacity-20 border border-current`}>
+          <Brain className="w-3.5 h-3.5" />
+        </div>
+        <div className="bg-[#0F1A2E] border border-white/[0.06] rounded-2xl rounded-tl-sm px-4 py-3 flex-1">
+          <p className="text-xs text-slate-500 font-medium mb-1">Sam</p>
+          <p className="text-sm text-slate-200 leading-relaxed italic">&ldquo;{samLine}&rdquo;</p>
+        </div>
+      </div>
+
+      {/* Caption */}
+      <p className="text-xs text-slate-500 leading-relaxed pl-10">{caption}</p>
+    </div>
+  )
+}
 function PricingCard({ name, price, trial, features, popular, productId }: {
   name: string; price: number; trial: string; features: string[]
   popular?: boolean; productId: string
