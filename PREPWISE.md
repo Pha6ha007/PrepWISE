@@ -1,1026 +1,802 @@
 # PREPWISE — AI-Powered GMAT Voice Tutor
-> Version: 1.0.0 | March 2026  
-> Base repo: `Pha6ha007/Confide---Saas`  
-> Stack: Next.js 14 + TypeScript | Vercel + Railway | Paddle | Pinecone + Supabase
+> **Version: 2.0** | March 2026  
+> **Status: In active development — deployed on Vercel**  
+> **Stack:** Next.js 14 + TypeScript | Vercel + Railway | Paddle | Pinecone + Supabase + Prisma
 
 ---
 
 ## Table of Contents
 1. [Product Overview](#1-product-overview)
-2. [Architecture](#2-architecture)
-3. [Agent System](#3-agent-system)
-4. [Memory Agent](#4-memory-agent)
-5. [RAG Knowledge Base](#5-rag-knowledge-base)
-6. [Deployment](#6-deployment)
-7. [Payments — Paddle](#7-payments--paddle)
-8. [Repositories Reference](#8-repositories-reference)
-9. [Database Schema Changes](#9-database-schema-changes)
-10. [Environment Variables](#10-environment-variables)
-11. [File Structure](#11-file-structure)
-12. [MVP Roadmap — 6 Weeks](#12-mvp-roadmap--6-weeks)
-13. [YouTube + AI Avatar Strategy](#13-youtube--ai-avatar-strategy)
-14. [Quick Start for GSD-2 / Claude Code](#14-quick-start-for-gsd-2--claude-code)
-15. [Metrics](#15-metrics)
+2. [Competitive Analysis](#2-competitive-analysis)
+3. [Question Bank](#3-question-bank)
+4. [Architecture](#4-architecture)
+5. [Agent System & Sam](#5-agent-system--sam)
+6. [Sam Coaching Features](#6-sam-coaching-features)
+7. [Memory System](#7-memory-system)
+8. [RAG Knowledge Base](#8-rag-knowledge-base)
+9. [Practice & Learning Flow](#9-practice--learning-flow)
+10. [Pre-Exam Mode](#10-pre-exam-mode)
+11. [Database Schema](#11-database-schema)
+12. [Environment Variables](#12-environment-variables)
+13. [Deployment](#13-deployment)
+14. [Payments](#14-payments)
+15. [Security](#15-security)
+16. [File Structure](#16-file-structure)
+17. [Generation Scripts](#17-generation-scripts)
+18. [Metrics & Targets](#18-metrics--targets)
 
 ---
 
 ## 1. Product Overview
 
 ### Concept
-Prepwise is a voice AI tutor for GMAT preparation. The user speaks with a personalized AI teacher through a browser — like a live Zoom lesson, but the teacher is AI. The tutor remembers every previous session, adapts the program to weak spots, and explains material in real time using RAG over official GMAT guides.
+PrepWISE is a voice AI tutor for GMAT preparation. Students speak with a personalized AI teacher (Sam) through a browser — like a live tutoring session, but the teacher is AI. Sam remembers every session, adapts to weak spots, coaches contextually, and explains material in real time using RAG over official GMAT guides.
 
-### Key Differentiator
-No competitor combines: **voice interaction + long-term memory + RAG over official GMAT materials**. Existing tools are either static content (Magoosh, Manhattan Prep) or generic AI without domain-specific knowledge base.
+### Key Differentiators
+No competitor combines all five:
+1. **Voice interaction** — talk to Sam like a real tutor
+2. **Long-term memory** — Sam remembers your history across all sessions
+3. **RAG over official GMAT content** — answers grounded in real test material
+4. **Contextual micro-coaching** — Sam intervenes at the right moments, not just on demand
+5. **Progress anchor** — "you went from 45% to 71% on DS" — not generic praise
 
 ### Target Audience
 
-| Segment | Description | Pain |
-|---------|-------------|------|
-| Primary | US professionals 25–35, preparing for MBA | $150–200/hr for human tutor — too expensive |
-| Secondary | International students (India, China, Europe) | No access to quality English-speaking tutors |
+| Segment | Profile | Pain |
+|---------|---------|------|
+| **Primary** | US professionals 27–33, preparing for MBA | $150–200/hr human tutor — too expensive |
+| **Secondary** | International students (India, China, Europe) | No quality English-speaking tutors available |
+
+**Typical user:** Studies evenings and weekends (1–2 hrs/day), 2–4 months of prep, target score 700+.
 
 ### Market
-- GMAT prep market: projected $798M by 2027 (CAGR 9%)
+- GMAT prep market: **$798M projected by 2027** (CAGR 9%)
 - ~85,000 GMAT test-takers annually in the US
-- Average human tutor rate: $150–200/hr
-- Target Prepwise price: $79–99/month (5–10× cheaper)
-- AI competitors with voice + RAG + memory: **practically none**
+- Average human tutor: $150–200/hr
+- PrepWISE price: $39–149/month (5–10× cheaper)
 
 ---
 
-## 2. Architecture
+## 2. Competitive Analysis
 
-### Overview
-80% of infrastructure is reused directly from `Confide---Saas`. Only the RAG knowledge base, agent system prompts, and UI/branding change.
+### Feature Comparison
+
+| Feature | PrepWISE | Magoosh | Manhattan Prep | GMAT Club | Target Test Prep | E-GMAT |
+|---------|----------|---------|---------------|-----------|-----------------|--------|
+| **Voice AI tutor** | ✅ Sam — real-time voice | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Long-term memory** | ✅ Full session history | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Contextual micro-coaching** | ✅ Before each question | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Socratic debrief** | ✅ After wrong answers | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Weekly progress review** | ✅ Sam narrates it | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Pre-exam mode** | ✅ 7-day countdown | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **RAG over official guides** | ✅ 7 Pinecone namespaces | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **All GMAT Focus sections** | ✅ Q + V + DI | ✅ | ✅ | ✅ | ✅ | ✅ V+Q |
+| **Question explanations** | ✅ 100% coverage | ✅ | ✅ | Partial | ✅ | ✅ |
+| **Spaced repetition** | ✅ FSRS algorithm | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Mock tests** | ✅ | ✅ (6) | ✅ (6) | ✅ | ✅ | ✅ |
+| **Score prediction** | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ |
+| **Price/month** | **$39–149** | $179 (6mo) | $249 (3mo) | Free/forums | $199 | $99+ |
+| **Personalization** | ✅ Deep (memory-based) | Basic | Basic | None | Adaptive | Moderate |
+
+### Question Bank Comparison
+
+| Platform | PS/Quant | DS | CR | RC | GI | MSR | TA | TPA | **Total** | All w/ explanations |
+|----------|---------|----|----|----|----|-----|----|-----|-----------|---------------------|
+| **PrepWISE** | **1,500** | **400** | **5,138** | **672** | **140** | **105** | **98** | **126** | **🏆 8,179** | **✅ 8,172 (99.9%)** |
+| Magoosh | ~600 | ~200 | ~600 | ~200 | ~50 | ~50 | ~50 | ~50 | ~1,800 | ✅ |
+| Manhattan Prep | ~1,200 | ~400 | ~800 | ~400 | ~100 | ~100 | ~100 | ~100 | ~3,200 | ✅ |
+| Target Test Prep | ~1,000 | ~300 | ~700 | ~300 | ~100 | ~80 | ~80 | ~80 | ~2,640 | ✅ |
+| GMAT Official Guide | ~700 | ~230 | ~700 | ~140 | ~75 | ~45 | ~45 | ~45 | ~1,980 | ✅ |
+| GMAT Club (free) | ~500 | ~200 | ~2,000 | ~500 | ~100 | ~50 | ~50 | ~50 | ~3,450 | ⚠️ partial |
+
+**PrepWISE has the largest question bank of any GMAT prep platform — and all questions have AI-generated explanations.**
+
+### Pricing Comparison
+
+| Platform | Price | Questions | Voice AI | Memory |
+|----------|-------|-----------|----------|--------|
+| **PrepWISE Starter** | **$39/mo** | 8,179 | ✅ | ✅ |
+| **PrepWISE Pro** | **$79/mo** | 8,179 | ✅ | ✅ |
+| **PrepWISE Intensive** | **$149/mo** | 8,179 | ✅ | ✅ |
+| Magoosh | $179 (6-mo) | ~1,800 | ❌ | ❌ |
+| Manhattan Prep | $249 (3-mo) | ~3,200 | ❌ | ❌ |
+| Target Test Prep | $199/mo | ~2,640 | ❌ | ❌ |
+| Human tutor | $150–200/hr | — | Human | Human |
+
+**PrepWISE is 5–10× cheaper than competitors and the only platform with voice AI + memory.**
+
+### What No Competitor Does
+- Sam remembers your error patterns and warns you **before** you repeat them
+- Sam generates a personalized weekly review in natural language — not a dashboard
+- Sam adapts its opening greeting every session based on what happened last time
+- Pre-exam mode kicks in automatically 7 days before test date with AI coaching
+- Socratic debrief: "You chose C — walk me through your thinking" after wrong answers
+
+---
+
+## 3. Question Bank
+
+### Current State (March 2026)
+
+| Type | Section | Count | With Explanations | Source |
+|------|---------|-------|-------------------|--------|
+| **PS** (Problem Solving) | Quant | 1,500 | 1,493 (99.5%) | 500 generated + 1,000 AquaRat |
+| **DS** (Data Sufficiency) | Data Insights | 400 | 400 (100%) | Generated |
+| **CR** (Critical Reasoning) | Verbal | 5,138 | 5,138 (100%) | 500 generated + 4,638 ReClor |
+| **RC** (Reading Comprehension) | Verbal | 672 | 672 (100%) | 218 passages generated |
+| **GI** (Graphics Interpretation) | Data Insights | 140 | 140 (100%) | Generated |
+| **MSR** (Multi-Source Reasoning) | Data Insights | 105 | 105 (100%) | Generated |
+| **TA** (Table Analysis) | Data Insights | 98 | 98 (100%) | Generated |
+| **TPA** (Two-Part Analysis) | Data Insights | 126 | 126 (100%) | Generated |
+| **TOTAL** | | **8,179** | **8,172 (99.9%)** | |
+
+### Difficulty Distribution
+All generated question types include:
+- `easy` — basic application (20–25%)
+- `medium` — standard GMAT difficulty (40–45%)
+- `hard` — above average, requires careful reasoning (25–30%)
+- `700+` — top percentile, edge cases and nuanced traps (8–12%)
+
+### RC Passages
+218 passages covering 5 topic domains:
+- Business (strategy, markets, regulation, corporate governance)
+- Science (biology, physics, climate, neuroscience)
+- Social science (economics, psychology, sociology, anthropology)
+- Humanities (history, literature, philosophy, art)
+- Technology (AI, biotech, computing, energy)
+
+Average 3.1 questions per passage. All passages 250–350 words (GMAT Focus standard).
+
+### Data Files
+```
+data/questions/
+├── gen-quant-ps.json    — 500 PS questions
+├── aqua-rat.json        — 1,000 PS questions (AquaRat dataset)
+├── gen-ds.json          — 400 DS questions
+├── gen-cr.json          — 500 CR questions
+├── reclor-verbal.json   — 4,638 CR questions (ReClor dataset, 100% explained)
+├── gen-rc.json          — 218 RC passages / 672 questions
+├── gen-gi.json          — 140 GI questions
+├── gen-msr.json         — 105 MSR questions
+├── gen-ta.json          — 98 TA questions
+└── gen-tpa.json         — 126 TPA questions
+```
+
+### Generation Scripts
+```bash
+# Generate new questions by type
+npx ts-node scripts/gmat/generate_questions.ts --type [gi|msr|tpa|ta|rc|all]
+
+# Generate ReClor explanations in batches
+npx ts-node scripts/gmat/generate_reclor_explanations.ts --offset 0 --limit 1000
+
+# Validate generated questions
+npx ts-node scripts/gmat/validate_generated.ts
+```
+
+---
+
+## 4. Architecture
 
 ### Tech Stack
 
-| Layer | Technology | Status |
-|-------|------------|--------|
-| Frontend | Next.js 14 + TypeScript + Tailwind CSS + Radix UI | Reuse from Confide |
-| Auth & DB | Supabase (Auth + PostgreSQL + pgvector) | Reuse from Confide |
-| ORM | Prisma 6 | Extend schema with GMAT tables |
-| AI Agents | LangChain 1.2 + Claude Sonnet / Groq llama-3.3-70b | Rewrite prompts |
-| RAG | Pinecone 5.1 + @xenova/transformers (embeddings) | New knowledge base |
-| STT | Whisper via Deepgram API | Reuse from Confide |
-| TTS | ElevenLabs JS SDK 2.39 | New voice/persona |
-| Memory | Memory Agent (buildMemoryPrompt + mergeProfile) | Adapt fields |
-| Payments | Paddle (replacing DodoPayments) | Swap provider |
-| Email | Resend 6.9 | Reuse as-is |
-| Analytics | PostHog 1.357 | Reuse as-is |
-| PDF | @react-pdf/renderer 4.3 | Progress reports |
-| i18n | next-intl 4.8 | EN only at launch |
-| PWA | next-pwa 5.6 | Reuse as-is |
-| Tests | Playwright 1.58 | Adapt existing 40 tests |
-| State | Zustand 5.0 | Reuse as-is |
+| Layer | Technology | Notes |
+|-------|------------|-------|
+| Frontend | Next.js 14 + TypeScript + Tailwind CSS + Radix UI | App Router |
+| Auth & DB | Supabase (Auth + PostgreSQL) | Row-Level Security enabled |
+| ORM | Prisma 6 | 20 models (16 base + 4 GMAT) |
+| AI Agents | 5 specialist agents + orchestrator | Via OpenRouter (Claude/GPT-4o) |
+| RAG | Pinecone (7 namespaces) + OpenAI embeddings | text-embedding-3-small |
+| STT | Deepgram API | Whisper-based |
+| TTS | ElevenLabs JS SDK | Voice persona: Sam |
+| Memory | GMAT Memory Agent | Learner profile in Supabase `gmat_profile` JSON |
+| Payments | Paddle (Dodo Payments migrated) | Webhook verified |
+| Email | Resend | Welcome email |
+| Analytics | PostHog | Event tracking |
+| PWA | next-pwa | Offline support |
+| Tests | Playwright | e2e smoke tests |
+| State | Zustand | Client state |
+| Deploy | Vercel (frontend) + Railway (agents) | Auto-deploy from main |
 
-### High-Level Data Flow
+### Data Flow
 ```
-User (voice) 
-  → Deepgram STT 
-  → Orchestrator Agent (Groq llama-3.3-70b)
-  → [routing decision]
-  → Specialist Agent (Claude Sonnet) + RAG context from Pinecone
-  → Response text
-  → ElevenLabs TTS
+User (voice)
+  → Deepgram STT
+  → /api/agents/stream (Next.js)
+  → routeToGmatAgent() — keyword-based routing + profile boost
+  → Specialist Agent prompt (Claude/GPT-4o via OpenRouter)
+    + RAG context from Pinecone (primary + secondary namespace)
+  → SSE stream → frontend
+  → ElevenLabs TTS (sentence-level streaming)
   → User (audio)
-  → [after session] Memory Agent updates UserProfile in Supabase
+  → [after session] Memory Agent → mergeGmatProfile() → Supabase gmat_profile
 ```
+
+### Models in Use
+| Client | Model | Usage |
+|--------|-------|-------|
+| `agentClient` | `anthropic/claude-sonnet-4` (via OpenRouter) | Sam tutoring responses |
+| `routerClient` | `llama-3.3-70b-versatile` (Groq) | Fast orchestrator routing |
+| `embeddingClient` | `text-embedding-3-small` (OpenAI) | RAG indexing & retrieval |
+| Generation scripts | `openai/gpt-4o` (via OpenRouter) | Question generation |
+| Explanation scripts | `openai/gpt-4o-mini` (via OpenRouter) | ReClor explanations (cost-optimized) |
 
 ---
 
-## 3. Agent System
+## 5. Agent System & Sam
 
-### Architecture Pattern
-Invisible orchestrator routes every message to the appropriate specialist agent. The user always sees the same character (Sam). Transitions are seamless — no re-introduction, no tone reset.
+### Character
+Sam is a direct, warm GMAT tutor — 15 years of coaching experience, no generic praise, no filler. Sam speaks like a person, not a dashboard. Sam remembers everything.
 
 ### Agent Registry
 
-| Agent ID | Specialization | Activates When |
-|----------|---------------|----------------|
-| `orchestrator` | Router (invisible) | Every message — analyzes and routes |
-| `quantitative` | Quant (Math) | Arithmetic, algebra, geometry, statistics, data problems |
-| `verbal` | Verbal Reasoning | Critical Reasoning, Reading Comprehension, Sentence Correction |
-| `data_insights` | Data Insights | Multi-Source Reasoning, Table Analysis, Graphics Interpretation |
-| `writing` | Analytical Writing | Argument analysis, essay structure, AWA scoring |
-| `strategy` | Exam Strategy | Time management, guessing strategy, exam psychology |
-| `memory` | Memory Agent | After every session — extracts and updates learner profile |
+| Agent | Activates When | Model |
+|-------|---------------|-------|
+| `quantitative` | PS problems, algebra, arithmetic, statistics | Claude Sonnet |
+| `verbal` | CR, RC, arguments, passages | Claude Sonnet |
+| `data_insights` | DS, TPA, MSR, GI, TA, graphs, tables | Claude Sonnet |
+| `strategy` | Timing, study planning, test anxiety, meta questions | Claude Sonnet |
+| `orchestrator` | Every message — invisible router | Groq llama-3.3-70b |
+| `memory` | After every session — background extraction | GPT-4o-mini |
 
-### Orchestrator Logic (adapt from Confide `agents/prompts/orchestrator.ts`)
+### Routing Logic
+`routeToGmatAgent()` in `agents/gmat/orchestrator.ts`:
+1. Keyword scoring across 4 signal sets (quant/verbal/di/strategy)
+2. Learner profile boost — weak topics get +0.2 to relevant agent
+3. Emotional state detection → overwhelmed boosts strategy
+4. Default to `quantitative` when confidence < 0.4
 
-```typescript
-// agents/gmat/orchestrator.ts
-// Replace Confide's psychological routing with GMAT section routing
-
-export const GMAT_ORCHESTRATOR_PROMPT = `
-# ROLE
-You are the invisible routing layer of Prepwise. You analyze user messages and route 
-to the appropriate GMAT specialist agent. The user never knows you exist.
-
-# PRIORITY ORDER
-1. SECTION DETECTION → what GMAT section is the user working on?
-2. DIFFICULTY ASSESSMENT → beginner / intermediate / advanced?
-3. HISTORY CHECK → what does the learner profile say about this topic?
-4. EMOTIONAL STATE → frustrated? confident? stuck?
-
-# ROUTING LOGIC
-- Math problems, equations, data sufficiency → quantitative
-- Arguments, passages, grammar → verbal  
-- Tables, graphs, multi-source → data_insights
-- Essay writing, AWA → writing
-- "How should I approach...", timing, strategy → strategy
-- No clear topic, general chat → quantitative (most common need, safe default)
-
-# OUTPUT FORMAT
-{
-  "route": "quantitative" | "verbal" | "data_insights" | "writing" | "strategy",
-  "confidence": 0.0 - 1.0,
-  "reasoning": "brief explanation",
-  "detected_topic": "specific GMAT topic",
-  "difficulty": "beginner" | "intermediate" | "advanced",
-  "learner_context_used": ["fields from profile that influenced routing"],
-  "notes": "what specialist agent should watch for"
-}
-`;
+### Streaming
+`/api/agents/stream` returns SSE with three event types:
 ```
-
-### Specialist Agent Pattern
-
-Each specialist agent follows this structure:
-
-```typescript
-// agents/gmat/quantitative.ts
-export const QUANTITATIVE_AGENT_PROMPT = `
-# ROLE
-You are Sam, a world-class GMAT Quantitative tutor with 15 years of experience 
-helping students achieve 700+ scores. You have deep knowledge of every GMAT Quant 
-topic and know exactly how GMAC tests each concept.
-
-# TEACHING PHILOSOPHY  
-- Always start with the concept, then show the method, then apply to the problem
-- Use the learner's previous mistakes (from profile) to anticipate errors
-- Speak naturally as in a live tutoring session — not like a textbook
-- When a student is stuck, guide with questions rather than giving the answer directly
-- Celebrate correct reasoning, not just correct answers
-
-# RAG CONTEXT
-You have access to official GMAT guides via retrieval. Always ground explanations 
-in retrieved content. When citing a specific technique, reference where it comes from.
-
-# LEARNER PROFILE
-Use {learner_profile} to:
-- Know their weak topics → spend more time, more examples
-- Know what worked before → repeat effective explanation styles
-- Know what didn't work → avoid those approaches
-- Know their target score → calibrate difficulty
-
-# CURRENT SESSION CONTEXT
-Topic: {current_topic}
-Difficulty level: {difficulty}
-Session number: {session_count}
-Recent performance: {recent_accuracy}
-
-# TOPICS COVERED
-Problem Solving: Arithmetic, Algebra, Geometry, Word Problems, Statistics
-Data Sufficiency: Sufficiency logic, combining statements, common traps
-`;
+data: {"type": "routing", "agentType": "verbal", "topic": "critical-reasoning"}
+data: {"type": "token", "content": "The premise..."}
+data: {"type": "done", "fullResponse": "..."}
 ```
+TTS queues complete sentences as they arrive — no waiting for full response.
 
 ---
 
-## 4. Memory Agent
+## 6. Sam Coaching Features
 
-### Adaptation from Confide
-The Memory Agent from `agents/prompts/memory.ts` is reused with adapted field names. Replace psychological profile fields with learner progress fields.
+Five live coaching surfaces implemented as of March 2026:
 
-### Field Mapping
+### 1. Micro-Coaching Tip Before Questions
+**File:** `components/practice/MicroCoachTip.tsx`  
+**Logic:** `lib/gmat/micro-coaching.ts` (pure rule-based, no AI)
 
-| Confide Field | Prepwise Field | Description |
-|---------------|---------------|-------------|
-| `updated_triggers` | `weak_topics` | Topics with ≥40% error rate over last 3 sessions |
-| `what_worked` | `effective_techniques` | Explanation type that helped (visual, analogy, step-by-step) |
-| `what_didnt_work` | `ineffective_approaches` | What didn't land — avoid in future sessions |
-| `emotional_anchors` | `insight_moments` | Phrases/analogies that "clicked" for the learner |
-| `topic_connections` | `concept_links` | Links between topics `{"algebra": ["percentages", "profit"]}` |
-| `communication_style_notes` | `learning_style` | Prefers examples / theory / practice / visual |
-| `key_themes` | `session_topics` | Topics covered this session |
-| `follow_up` | `next_session_plan` | What to work on next session |
-| `progress_notes` | `score_trajectory` | Accuracy trend by section over time |
-| `new_people` | *(remove)* | Not needed |
-| `response_preference_note` | `explanation_preference` | Questions vs direct explanation vs Socratic |
+Before each question in practice mode, Sam shows a contextual tip based on the student's error history from localStorage:
+- DS: "Test Statement 1 alone first — you've combined statements early 4 times"
+- CR: "Identify conclusion before reading answer choices"
+- RC: "You've averaged 2:40/question. Target is 1:57"
 
-### Updated Interface
+Shows only when ≥2 errors on this type/topic. Max 3 shows per tip. Dismissible.
 
-```typescript
-// agents/gmat/memory.ts
-interface GmatMemoryExtractionResult {
-  weak_topics: string[]              // Topics with high error rate this session
-  strong_topics: string[]            // Topics where learner excelled
-  effective_techniques: string[]     // What explanation styles worked
-  ineffective_approaches: string[]   // What didn't work
-  insight_moments: string[]          // "Aha" moments — phrases that clicked
-  concept_links: Record<string, string[]>  // Discovered connections between topics
-  learning_style: string             // Updated observation on learning preferences
-  explanation_preference: string | null    // Questions vs direct vs Socratic
-  session_topics: string[]           // Main topics covered
-  next_session_plan: string | null   // Recommended focus for next session
-  score_trajectory: string | null    // Accuracy trend observation
-  time_pressure_notes: string | null // How learner handles timed conditions
-  common_error_patterns: string[]    // Recurring mistake types (e.g. "misreads DS question stem")
-}
-```
+### 2. Socratic Debrief After Wrong Answers
+**File:** `components/practice/SocraticDebrief.tsx`
+
+After an incorrect answer, Sam asks: *"You chose C — what was your reasoning?"*  
+Student selects error type (misidentified / missed detail / time pressure / careless / concept gap).  
+Sam returns a targeted micro-lesson for that specific error type, with reference to what broke down.
+
+### 3. Post-Practice Progress Anchor
+**File:** `components/practice/SamMotivator.tsx`  
+**API:** `/api/agents/sam-reflect` (POST)
+
+After each practice session, Sam calls the DB to compare current accuracy against historical `TopicProgress` and generates a specific delta statement:
+> *"DS went from 45% to 71% over the past two weeks — that's real movement, not noise. RC timing is still the gap: 2:40 vs 1:57 target."*
+
+Uses Claude directly (not Railway fallback). Includes TTS listen button.
+
+### 4. Weekly Progress Review
+**File:** `components/dashboard/WeeklyReview.tsx`  
+**API:** `/api/weekly-review` (GET)
+
+Shown Sunday/Monday on both session and practice pages. Sam generates a 150–200 word review with:
+- Specific accuracy delta vs prior week (+12pp, -5pp — honest either way)
+- #1 focus area for next week with reasoning
+- Realistic score range estimate ("At this level, ~630–650. Gap to 700 is RC timing")
+- No "Great job!" — direct and warm
+
+Has TTS listen button. Dismissible weekly.
+
+### 5. Personalized Session Opening
+**API:** `/api/agents/session-start` (GET)
+
+When student starts a voice session, Sam generates a specific greeting using their learner profile:
+> *"Back after 3 days — last time we pushed DS hard. Your test is in 18 days, so let's keep that pressure. RC is still the weakest section — want to start there?"*
+
+Falls back to generic greeting if no profile exists yet.
+
+### 6. Pre-Exam AI Coaching (see Section 10)
 
 ---
 
-## 5. RAG Knowledge Base
+## 7. Memory System
 
-### Source Materials
+### GmatLearnerProfile
+Stored as JSON in `users.gmat_profile` column.
 
-| Source | Priority | Namespace | What it provides |
-|--------|----------|-----------|-----------------|
-| GMAC Official GMAT Guide 2024/2025 | ★★★★★ | `gmat-quant`, `gmat-verbal` | Official problems with explanations — core of the knowledge base |
-| GMAC Official GMAT Focus Edition Guide | ★★★★★ | `gmat-focus` | New 2024 format — critical for current test-takers |
-| GMAC Official Verbal Review | ★★★★★ | `gmat-verbal` | 600+ verbal problems with detailed explanations |
-| GMAC Official Quantitative Review | ★★★★★ | `gmat-quant` | 600+ quant problems with detailed explanations |
-| Manhattan Prep GMAT Strategy Guides | ★★★★☆ | `gmat-strategy` | Section-by-section solving methodologies |
-| Kaplan GMAT Prep Plus 2024 | ★★★★☆ | `gmat-strategy` | Test strategies and practice tests |
-| GMAT Error Log Templates | ★★★☆☆ | `gmat-errors` | Error patterns for Memory Agent training |
+```typescript
+interface GmatLearnerProfile {
+  weakTopics: string[]            // ≥40% error rate over last 3 sessions
+  strongTopics: string[]
+  effectiveTechniques: string[]   // what explanation styles worked
+  ineffectiveApproaches: string[]
+  insightMoments: string[]        // phrases that "clicked" — kept last 20
+  conceptLinks: Record<string, string[]>
+  learningStyle: string
+  explanationPreference: string | null
+  sessionTopics: string[]         // last 50 topics
+  nextSessionPlan: string | null
+  scoreTrajectory: string | null
+  timePressureNotes: string | null
+  commonErrorPatterns: string[]
+  targetScore: number | null      // 205–805
+  currentEstimatedScore: number | null
+  studyHoursPerWeek: number | null
+  testDate: string | null         // ISO date
+  preferredDifficulty: 'easy' | 'medium' | 'hard' | '700+' | null
+}
+```
+
+### Memory Update Flow
+After every session ends:
+1. Full transcript sent to Memory Agent (GPT-4o-mini)
+2. `buildGmatMemoryPrompt()` extracts new learning data
+3. `mergeGmatProfile()` merges — never overwrites, only adds
+4. If topic appears in `strong_topics` this session → removed from `weak_topics`
+5. `insightMoments` capped at 20, `sessionTopics` at 50
+
+### Memory Used In
+- Session opening greeting (session-start API)
+- Orchestrator routing boost (weak topics → relevant agent)
+- Sam-reflect post-practice analysis
+- Weekly review data summary
+- Pre-exam coaching context
+- Specialist agent prompts (`{learnerProfile}` injected)
+
+---
+
+## 8. RAG Knowledge Base
 
 ### Pinecone Namespaces
-```
-gmat-quant       → Quantitative problems and methods
-gmat-verbal      → Verbal problems and methods  
-gmat-di          → Data Insights problems
-gmat-awa         → Analytical Writing examples and rubrics
-gmat-strategy    → General strategies, timing, test psychology
-gmat-focus       → GMAT Focus Edition specific content
-gmat-errors      → Common error patterns and how to avoid them
-```
 
-### Chunk Metadata Schema
-```typescript
-interface GmatChunkMetadata {
-  source: string          // "Official GMAT Guide 2025"
-  chapter: string         // "Chapter 4: Data Sufficiency"
-  section: string         // "quant" | "verbal" | "data-insights" | "awa"
-  topic: string           // "algebra" | "critical-reasoning" | etc.
-  subtopic: string        // "quadratic equations" | "assumption questions" | etc.
-  difficulty: "easy" | "medium" | "hard" | "700+"
-  question_type?: string  // "PS" | "DS" | "CR" | "RC" | "SC"
-  page?: number
-}
-```
+| Namespace | Content | Used By |
+|-----------|---------|---------|
+| `gmat-quant` | Quantitative methods, problem solving strategies | quantitative agent |
+| `gmat-verbal` | CR frameworks, RC strategies, argument analysis | verbal agent |
+| `gmat-di` | Data Insights approaches, DS decision tree | data_insights agent |
+| `gmat-strategy` | Timing, test psychology, study planning | strategy agent |
+| `gmat-errors` | Common error patterns and corrections | all agents (secondary) |
+| `gmat-focus` | GMAT Focus Edition specific content | all agents (secondary) |
+| `gmat-awa` | Writing rubrics and examples | strategy agent |
 
-### Indexing Script
+### Retrieval
+`lib/pinecone/retrieval.ts` — `retrieveContext()`:
+- Primary namespace (5 chunks) + secondary namespace (reranked)
+- Reranker: `lib/pinecone/reranker.ts` — Cohere rerank
+- Context formatted into `<gmat_knowledge>` blocks injected into agent prompt
 
-```typescript
-// scripts/gmat/ingest_books.ts
-import { PineconeClient } from '@pinecone-database/pinecone'
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
-import { pipeline } from '@xenova/transformers'
-
-const CHUNK_SIZE = 512
-const CHUNK_OVERLAP = 64
-
-async function ingestGmatBooks() {
-  const pdfFiles = await fs.readdir('./scripts/gmat/data')
-  
-  for (const file of pdfFiles) {
-    const text = await extractPdfText(`./scripts/gmat/data/${file}`)
-    const chunks = await splitter.splitText(text)
-    const namespace = detectNamespace(file) // 'gmat-quant', 'gmat-verbal', etc.
-    
-    for (const chunk of chunks) {
-      const embedding = await embedder(chunk)
-      await pinecone.upsert({
-        namespace,
-        vectors: [{ id: generateId(), values: embedding, metadata: extractMetadata(chunk, file) }]
-      })
-    }
-  }
-}
-```
-
-### Retrieval Test
-After indexing, validate quality:
-```bash
-npx ts-node scripts/gmat/test_retrieval.ts
-# Target: precision@5 ≥ 0.85 on 20 test queries
-```
+### RAG Content Sources
+- Deep Quant + DI study guide: `data/rag/deep-quant-di.json` (50 chunks, 500–800 words each)
+- Deep Verbal + Errors guide: `data/rag/deep-verbal-errors.json` (50 chunks)
+- Official GMAT materials (indexed via `scripts/gmat/ingest_books.ts`)
 
 ---
 
-## 6. Deployment
+## 9. Practice & Learning Flow
 
-### Strategy: Vercel (frontend) + Railway (agents)
+### Practice Page (`/dashboard/practice`)
+1. **Setup** — choose section, type, difficulty, question count, timed mode
+2. **SmartReviewPanel** — FSRS spaced repetition: shows topics due for review
+3. **WeeklyReview** — Sam's weekly nudge (if Sunday/Monday or no recent activity)
+4. **Question** — `QuestionCard` with optional timer
+   - `MicroCoachTip` shown above question (if error history exists)
+5. **Explanation** — `ExplanationPanel` after submission
+   - `SocraticDebrief` for wrong answers (error type selection → micro-lesson)
+   - `AudioExplanation` — TTS of the explanation
+6. **Summary** — `PracticeSummary`
+   - `SamMotivator` — AI progress anchor at top
+   - Accuracy by section, by type, weakest topics
+   - "Ask Sam to review" → session page with context
 
-Vercel has an 800-second serverless function limit — incompatible with long voice sessions. Split the stack:
+### Session Page (`/dashboard/session`)
+Full voice conversation with Sam. Streaming TTS per sentence. Supports text fallback.
+- `WeeklyReview` shown at top of message area
+- Personalized opening greeting from `/api/agents/session-start`
+- Agent routing visible in header (Quant / Verbal / Data Insights / Strategy)
 
-#### Vercel — Frontend
-- Next.js App Router (all pages, UI)
-- API routes: auth, billing webhooks, short requests
-- Edge functions for fast operations
-- Static assets, PWA, i18n
+### FSRS Spaced Repetition
+`lib/gmat/spaced-repetition.ts` — Free Spaced Repetition Scheduler algorithm.  
+`/api/review` — GET (fetch schedule) + POST (update after answer).  
+`SmartReviewPanel` shows topics due now, due today, and mastered.
 
-**Why Vercel:** Already deploying Confide here (45 deployments). Zero-config for Next.js. Global CDN. Git push = deploy.
-
-#### Railway — AI Backend
-- AI agents (long-running, WebSocket, persistent)
-- Memory Agent (background jobs after sessions)
-- RAG indexing scripts
-- Redis (session cache)
-
-**Why Railway:** Persistent containers without time limits. No cold starts for agents. ~$15–40/month for MVP. Full infrastructure control.
-
-### Railway Service Config
-
-```yaml
-# railway.yaml
-services:
-  - name: gmat-agents
-    type: web
-    startCommand: npx ts-node agents/server.ts
-    
-  - name: memory-worker  
-    type: worker
-    startCommand: npx ts-node agents/memory-worker.ts
-    
-  - name: redis
-    type: redis
-```
-
-### Deploy Commands
-
-```bash
-# Frontend → Vercel
-vercel --prod
-
-# Agents backend → Railway  
-railway login
-railway init
-railway up
-
-# Add to Vercel env vars:
-# RAILWAY_AGENT_URL=https://gmat-agents.railway.app
-```
+### Progress Dashboard (`/dashboard/progress`)
+- `TopicHeatmap` — accuracy by topic, color-coded
+- `ScorePredictor` — estimated current GMAT score
+- `ErrorAnalysis` — error type breakdown
+- `TimingAnalytics` — avg time per question type vs targets
 
 ---
 
-## 7. Payments — Paddle
+## 10. Pre-Exam Mode
 
-### Why Paddle Instead of DodoPayments
+Activates automatically when `testDate` is within 7 days.
 
-Confide uses `@dodopayments/nextjs`. For Prepwise (US-focused product), switch to Paddle:
+### Components
+- `components/dashboard/PreExamBanner.tsx` — amber countdown banner in dashboard layout
+- `lib/gmat/pre-exam.ts` — 7-day plan generator (pure, no AI)
+- `/api/pre-exam-coaching` (GET) — AI-generated Sam message for today
 
-| Criterion | DodoPayments | Paddle |
-|-----------|-------------|--------|
-| Merchant of Record | Yes | Yes — Paddle legally sells on your behalf |
-| US Sales Tax (all states) | Partial | Fully automatic |
-| Transaction fee | ~4% | 5% + $0.50 (includes tax, VAT, disputes) |
-| US market maturity | Developing | Mature — primary audience is US |
-| Documentation | Limited | Extensive, active community |
-| Vercel integration | Basic | Official partner |
+### Daily Plan Structure
+| Day | Focus | Activities | Duration |
+|-----|-------|------------|----------|
+| 7 | Weakest topic targeted drill | Error log review, formula refresh | 60 min |
+| 6 | Full Mock Test #N | Timed, full simulation | 150 min |
+| 5 | Mock review + 2nd weak area | Error categorization, targeted drill | 60 min |
+| 4 | 3rd weak area + mixed practice | 15 mixed questions timed | 45 min |
+| 3 | Full Mock Test #N+1 | Last dress rehearsal | 150 min |
+| 2 | Light review only | Formula sheet, no new problems | 30 min |
+| 1 | Rest | No studying. Logistics only. | 0 min |
 
-### Migration Steps
+### AI Coaching Message
+`/api/pre-exam-coaching` loads:
+- Mock test scores, week accuracy, weak topics, error patterns, target score, days to exam
+- Generates a Sam message specific to today's countdown day
+- "Stop. DS works when you follow the process — 85% when you do. Today: 30 min RC pacing, then rest."
 
-```bash
-# 1. Remove DodoPayments
-npm uninstall @dodopayments/nextjs dodopayments
+Has TTS "Listen to Sam" button. Falls back to static mindset tip on API error.
 
-# 2. Install Paddle
-npm install @paddle/paddle-js
+---
 
-# 3. Replace all imports in:
-#    lib/billing/
-#    app/api/webhooks/payments/
-#    app/api/subscriptions/
-#    components/billing/
+## 11. Database Schema
+
+### GMAT-Specific Tables (added to base Confide schema)
+
+#### GmatSession
+Records every voice/chat session. Memory Agent reads `transcript` after session end.
+```
+id, userId, startedAt, endedAt, durationMins
+agentUsed, topicsCovered[], questionsAsked, correctAnswers
+transcript (Text), memoryUpdated (Bool)
 ```
 
-### Pricing Plans
-
-| Plan | Price | Trial | Included |
-|------|-------|-------|----------|
-| Starter | $49/month | 7 days | 20 sessions/month, Quant + Verbal basics |
-| Pro | $99/month | 14 days | Unlimited sessions, all sections, priority memory, progress reports |
-| Intensive | $199/month | 7 days | Pro + 90-day personalized plan, mock tests, AWA review |
-
-### Paddle Setup
-
-```typescript
-// lib/billing/paddle.ts
-import Paddle from '@paddle/paddle-js'
-
-export const paddle = new Paddle({
-  token: process.env.PADDLE_CLIENT_TOKEN!,
-  environment: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox'
-})
-
-export const PADDLE_PRODUCTS = {
-  starter:   process.env.PADDLE_PRODUCT_STARTER!,
-  pro:       process.env.PADDLE_PRODUCT_PRO!,
-  intensive: process.env.PADDLE_PRODUCT_INTENSIVE!,
-}
+#### TopicProgress
+Per-topic accuracy tracking. Powers FSRS, SmartReviewPanel, progress dashboard.
+```
+id, userId, section, topic, subtopic
+totalAttempts, correctAttempts, accuracy (Float)
+lastPracticed, masteryLevel (not_started|learning|practicing|mastered)
+Unique: [userId, section, topic, subtopic]
 ```
 
-```typescript
-// app/api/webhooks/paddle/route.ts
-import { paddle } from '@/lib/billing/paddle'
-
-export async function POST(req: Request) {
-  const signature = req.headers.get('paddle-signature')
-  const body = await req.text()
-  
-  const event = paddle.webhooks.unmarshal(body, process.env.PADDLE_WEBHOOK_SECRET!, signature!)
-  
-  switch (event.eventType) {
-    case 'subscription.created':
-      await activateSubscription(event.data)
-      break
-    case 'subscription.canceled':
-      await deactivateSubscription(event.data)
-      break
-    case 'transaction.completed':
-      await handlePayment(event.data)
-      break
-  }
-  
-  return Response.json({ received: true })
-}
+#### ErrorLog
+Detailed error records with type and approach. Feeds micro-coaching tip logic.
+```
+id, userId, sessionId, section, topic, questionType, difficulty
+errorType (concept|careless|time_pressure|misread)
+errorDetail, correctApproach
 ```
 
----
-
-## 8. Repositories Reference
-
-### Base Repository
+#### MockTest
+Full mock test results for score tracking and progress dashboard.
 ```
-Pha6ha007/Confide---Saas
-https://github.com/Pha6ha007/Confide---Saas
-Language: TypeScript (Next.js 14)
-Status: Production (45 deployments on Vercel)
+id, userId, takenAt, durationMins
+quantScore, verbalScore, dataInsightsScore, totalScore
+quantAccuracy, verbalAccuracy, diAccuracy, notes
 ```
 
-**What to reuse directly:**
-- `agents/` — orchestrator pattern, memory agent
-- `lib/` — ElevenLabs streaming, Supabase client, auth utilities
-- `components/` — UI component library
-- `app/(auth)/` — registration, login, onboarding
-- `prisma/` — base schema (extend, don't rewrite)
-- `e2e/` — 40 Playwright tests (adapt)
-- `locales/` — i18n setup (EN only at launch)
-- `scripts/` — PDF parsing utilities, indexing pipeline base
-
-**What to replace:**
-- `agents/prompts/` — rewrite all for GMAT domain
-- `scripts/data/` — replace psychology books with GMAT books
-- `app/(dashboard)/` — redesign for GMAT learning UI
-- Branding, colors, copy
-
----
-
-### Voice & Real-time
-
-| Repo | Stars | Purpose | Use in Prepwise |
-|------|-------|---------|----------------|
-| [livekit/agents](https://github.com/livekit/agents) | 6.9k | Realtime voice AI framework, WebRTC, RAG plugins | Main voice agent framework. Has voice+RAG example in `/examples/voice_agents/llamaindex-rag` |
-| [openai/whisper](https://github.com/openai/whisper) | 77k | Speech-to-text, best accuracy for accents | STT for learner voice input via Deepgram API |
-| [elevenlabs/elevenlabs-python](https://github.com/elevenlabs/elevenlabs-python) | 2.1k | TTS SDK — already in Confide | Tutor voice. Character: Sam — experienced MBA coach sound |
-| [livekit-rag-voice-agent](https://github.com/Arjunheregeek/livekit-rag-voice-agent) | — | Toolkit: LiveKit + RAG + multiple vector DBs | Reference architecture for voice agent with RAG |
-| [RealTime Voice+RAG+Redis](https://github.com/RamziRebai/a-Realtime-Voice-to-Voice-Agentic-RAG-Application-using-LiveKit-and-Redis) | — | Full stack: voice + RAG + Redis memory + Next.js UI | Closest reference to target architecture. Study carefully |
-
----
-
-### RAG Frameworks
-
-| Repo | Stars | Purpose | Use in Prepwise |
-|------|-------|---------|----------------|
-| [langchain-ai/langchain](https://github.com/langchain-ai/langchain) | 125k | LLM orchestration — already in Confide | Core RAG pipeline. Already installed: `@langchain/openai`, `@langchain/pinecone` |
-| [run-llama/llama_index](https://github.com/run-llama/llama_index) | 46.5k | Data framework for LLMs, best for complex sources | Alternative to LangChain for indexing GMAT PDFs. Better at parsing book structure |
-| [infiniflow/ragflow](https://github.com/infiniflow/ragflow) | 70k | RAG engine with deep document understanding | Use for initial PDF parsing before loading into Pinecone |
-| [Open-TutorAI](https://github.com/Open-TutorAi/open-tutor-ai-CE) | — | Open-source educational platform: RAG + avatar + analytics | Study for pedagogical logic and lesson structure ideas |
-
----
-
-### Vector Databases
-
-| Repo | Stars | Purpose | Use in Prepwise |
-|------|-------|---------|----------------|
-| [pinecone-database](https://github.com/pinecone-io/pinecone-ts-client) | — | Already in Confide (`@pinecone-database/pinecone 5.1.2`) | Production vector DB. Namespaces: gmat-quant, gmat-verbal, gmat-di, gmat-awa |
-| [supabase/supabase](https://github.com/supabase/supabase) | 80k | PostgreSQL + pgvector + Auth — already in Confide | Main DB (users, sessions, progress). pgvector for additional embeddings |
-| [qdrant/qdrant](https://github.com/qdrant/qdrant) | 22k | Production-ready vector DB, better for self-hosting | Alternative to Pinecone if cost reduction needed at scale |
-| [chroma-core/chroma](https://github.com/chroma-core/chroma) | 18k | Simple local vector DB for development | Local dev and RAG testing before deploying to Pinecone |
-
----
-
-### UI & Tools
-
-| Repo | Stars | Purpose | Use in Prepwise |
-|------|-------|---------|----------------|
-| [livekit/components-js](https://github.com/livekit/components-js) | — | React components for voice UI | Mic button, voice visualization, agent status indicators |
-| [shadcn/ui](https://github.com/shadcn-ui/ui) | 85k | React UI — already used via radix-ui in Confide | Progress dashboard, topic cards, modal dialogs |
-| [anthropics/anthropic-sdk-python](https://github.com/anthropics/anthropic-sdk-python) | 4k | Claude API SDK | Main LLM for specialist agents (Claude Sonnet 4.6) |
-
----
-
-## 9. Database Schema Changes
-
-Add these tables to the existing Prisma schema from Confide. Do not modify existing tables.
-
-```prisma
-// prisma/schema.prisma — ADD to existing schema
-
-model GmatSession {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  
-  startedAt     DateTime @default(now())
-  endedAt       DateTime?
-  durationMins  Int?
-  
-  agentUsed     String   // "quantitative" | "verbal" | "data_insights" | "writing" | "strategy"
-  topicsCovered String[] // array of topics discussed
-  questionsAsked Int     @default(0)
-  correctAnswers Int     @default(0)
-  
-  transcript    String?  // full session transcript for Memory Agent
-  memoryUpdated Boolean  @default(false)
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  @@index([userId])
-}
-
-model TopicProgress {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  
-  section       String   // "quant" | "verbal" | "data-insights" | "awa"
-  topic         String   // "algebra" | "critical-reasoning" | etc.
-  subtopic      String?
-  
-  totalAttempts Int      @default(0)
-  correctAttempts Int    @default(0)
-  accuracy      Float    @default(0.0)  // 0.0 - 1.0
-  
-  lastPracticed DateTime?
-  masteryLevel  String   @default("not_started") // "not_started" | "learning" | "practicing" | "mastered"
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  @@unique([userId, section, topic, subtopic])
-  @@index([userId])
-}
-
-model ErrorLog {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  sessionId     String?
-  
-  section       String
-  topic         String
-  questionType  String   // "PS" | "DS" | "CR" | "RC" | "SC" | "TPA" etc.
-  difficulty    String   // "easy" | "medium" | "hard" | "700+"
-  
-  errorType     String   // "concept" | "careless" | "time_pressure" | "misread"
-  errorDetail   String   // specific description of what went wrong
-  correctApproach String? // how it should have been solved
-  
-  createdAt     DateTime @default(now())
-  
-  @@index([userId])
-  @@index([userId, section])
-}
-
-model MockTest {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  
-  takenAt       DateTime @default(now())
-  durationMins  Int
-  
-  quantScore    Int?     // 60–90 scale
-  verbalScore   Int?
-  dataInsightsScore Int?
-  totalScore    Int?     // 205–805 scale
-  
-  quantAccuracy Float?
-  verbalAccuracy Float?
-  diAccuracy    Float?
-  
-  notes         String?
-  
-  @@index([userId])
-}
-
-// Add to User model (extend existing):
-// sessions    GmatSession[]
-// topicProgress TopicProgress[]
-// errorLogs   ErrorLog[]
-// mockTests   MockTest[]
-// gmatProfile Json?  // stores the GmatLearnerProfile from Memory Agent
+#### StudyJournalEntry
+Daily aggregated stats. `samInsight` auto-generated after last session of each day.
+```
+id, userId, date (Date — unique per user per day)
+totalMinutes, sessionsCount, questionsTotal, questionsCorrect, accuracy
+topicsCovered[], sectionsWorked[], errorsCount, errorTypes (JSON)
+samInsight (Text), milestones[], userNote, confidenceLevel
 ```
 
+### User Extensions
+On existing `User` model:
+- `gmatProfile Json` — stores full `GmatLearnerProfile` object
+- Relations to all 4 GMAT tables above
+
 ---
 
-## 10. Environment Variables
-
-Complete `.env.local` for Prepwise (extends Confide):
+## 12. Environment Variables
 
 ```bash
-# ── AI Models ──────────────────────────────────────────────────────────────
-ANTHROPIC_API_KEY=                    # Claude Sonnet for specialist agents
-GROQ_API_KEY=                         # llama-3.3-70b for orchestrator (fast, cheap)
-OPENAI_API_KEY=                       # Fallback, embeddings if needed
+# ── AI ─────────────────────────────────────────────────────────────────────
+OPENROUTER_API_KEY=         # Primary AI provider (Claude, GPT-4o)
+OPENROUTER_MODEL=           # e.g. anthropic/claude-sonnet-4
+GROQ_API_KEY=               # Fast orchestrator routing
+GROQ_MODEL=                 # llama-3.3-70b-versatile
+OPENAI_API_KEY=             # Embeddings (text-embedding-3-small)
 
 # ── Voice ──────────────────────────────────────────────────────────────────
-ELEVENLABS_API_KEY=                   # TTS for tutor voice
-ELEVENLABS_VOICE_ID=                  # Sam persona voice ID
-DEEPGRAM_API_KEY=                     # STT (Whisper under the hood)
+ELEVENLABS_API_KEY=
+ELEVENLABS_VOICE_ID=        # Sam's voice
+DEEPGRAM_API_KEY=           # STT
 
 # ── Vector DB ──────────────────────────────────────────────────────────────
 PINECONE_API_KEY=
-PINECONE_INDEX=gmat-tutor-prod
-PINECONE_ENVIRONMENT=us-east-1-aws
+PINECONE_INDEX_NAME=        # e.g. gmat-tutor-prod
+PINECONE_ENVIRONMENT=
 
 # ── Database ───────────────────────────────────────────────────────────────
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-DATABASE_URL=                         # Supabase PostgreSQL connection string
+DATABASE_URL=               # Supabase PostgreSQL direct URL
 
 # ── Payments ───────────────────────────────────────────────────────────────
-PADDLE_CLIENT_TOKEN=                  # Frontend (public)
-PADDLE_API_KEY=                       # Backend (secret)
+NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=
+PADDLE_API_KEY=
 PADDLE_WEBHOOK_SECRET=
-PADDLE_PRODUCT_STARTER=
-PADDLE_PRODUCT_PRO=
-PADDLE_PRODUCT_INTENSIVE=
-PADDLE_ENVIRONMENT=sandbox            # → production when live
+NEXT_PUBLIC_PADDLE_PRODUCT_STARTER=
+NEXT_PUBLIC_PADDLE_PRODUCT_PRO=
+NEXT_PUBLIC_PADDLE_PRODUCT_INTENSIVE=
 
 # ── Email ──────────────────────────────────────────────────────────────────
 RESEND_API_KEY=
-RESEND_FROM_EMAIL=sam@prepwise.app
+RESEND_FROM_EMAIL=
 
 # ── Analytics ──────────────────────────────────────────────────────────────
 NEXT_PUBLIC_POSTHOG_KEY=
-NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+NEXT_PUBLIC_POSTHOG_HOST=
 
 # ── App ────────────────────────────────────────────────────────────────────
 NEXT_PUBLIC_APP_URL=https://prepwise.app
-NEXT_PUBLIC_APP_NAME=Prepwise
 
 # ── Infrastructure ─────────────────────────────────────────────────────────
-RAILWAY_AGENT_URL=                    # Railway URL for AI agents backend
-REDIS_URL=                            # Railway Redis for session cache
-
-# ── Remove from Confide ────────────────────────────────────────────────────
-# DODO_PAYMENTS_* → replaced by PADDLE_*
+RAILWAY_AGENT_URL=          # Railway agents backend URL
+RAILWAY_AGENT_SECRET=       # Auth token for Railway
 ```
 
 ---
 
-## 11. File Structure
+## 13. Deployment
 
-Changes relative to `Confide---Saas`:
+### Frontend — Vercel
+- Auto-deploys on push to `main`
+- All Next.js pages and API routes
+- Short-lived operations only (auth, billing, practice API)
+
+### Agents Backend — Railway
+- Long-running agent processes without timeout limits
+- `railway.yaml` defines services:
+  - `gmat-agents` — HTTP server (`agents/server.ts`)
+  - `memory-worker` — background session analysis (`agents/memory-worker.ts`)
+
+### Deploy Commands
+```bash
+# Frontend
+git push origin main  # Vercel auto-deploys
+
+# Agents backend
+railway login
+railway up
+
+# Database migrations
+npx prisma migrate deploy
+```
+
+---
+
+## 14. Payments
+
+### Plans
+
+| Plan | Price | Trial | Key Features |
+|------|-------|-------|-------------|
+| Starter | $39/mo | 7 days | 20 sessions/month, Quant + Verbal |
+| Pro | $79/mo | 7 days | Unlimited sessions, all sections, mock tests, smart review |
+| Intensive | $149/mo | 7 days | Pro + personalized plan, score prediction, audio explanations |
+
+### Webhook Events Handled
+- `subscription.created` → activate plan
+- `subscription.canceled` → deactivate
+- `subscription.updated` → plan change
+- `transaction.completed` → one-time payments
+
+### Trial Logic (`lib/billing/trial.ts`)
+- 7-day free trial, no credit card required
+- `trialStartDate`, `trialEndDate` on User model
+- `getTrialStatus()` → `active | expired | none`
+- `TrialBanner` component shown in sidebar with days remaining
+
+---
+
+## 15. Security
+
+### Implemented (March 2026)
+- **Row-Level Security** — Supabase RLS on all user data tables
+- **Rate limiting** — per-user per-endpoint (DB-backed, not Redis)
+- **Content Security Policy** — strict CSP headers via Next.js
+- **HSTS** — strict transport security with 1-year max-age
+- **Permissions Policy** — camera/microphone scoped to self
+- **Paddle webhook verification** — signature checked before processing
+- **Auth guard middleware** — all `/dashboard/*` routes protected
+- **Automated scanning** — Dependabot + npm audit in CI
+
+See `SECURITY.md` for full architecture.
+
+---
+
+## 16. File Structure
 
 ```
 prepwise/
-├── agents/
-│   ├── crisis/              ← REMOVE (not needed for education)
-│   ├── prompts/             ← KEEP base pattern, adapt
-│   └── gmat/                ← NEW
-│       ├── orchestrator.ts  ← Rewrite for GMAT routing
-│       ├── quantitative.ts  ← New specialist agent
-│       ├── verbal.ts        ← New specialist agent
-│       ├── data_insights.ts ← New specialist agent
-│       ├── writing.ts       ← New specialist agent
-│       ├── strategy.ts      ← New specialist agent
-│       └── memory.ts        ← Adapted Memory Agent (GMAT fields)
+├── agents/gmat/
+│   ├── index.ts              — exports all agent prompts
+│   ├── orchestrator.ts       — routing logic + GmatRoutingDecision
+│   ├── quantitative.ts       — PS/DS specialist
+│   ├── verbal.ts             — CR/RC specialist
+│   ├── data_insights.ts      — TPA/MSR/GI/TA specialist
+│   ├── strategy.ts           — timing, planning, mindset
+│   └── memory.ts             — GmatLearnerProfile + mergeGmatProfile
 │
 ├── app/
-│   ├── (auth)/              ← KEEP from Confide
-│   ├── (dashboard)/
-│   │   ├── session/         ← NEW: voice lesson UI
-│   │   │   └── page.tsx
-│   │   ├── progress/        ← NEW: topic progress dashboard
-│   │   │   └── page.tsx
-│   │   ├── practice/        ← NEW: text-based practice (no voice)
-│   │   │   └── page.tsx
-│   │   ├── mock-test/       ← NEW: full mock GMAT test
-│   │   │   └── page.tsx
-│   │   └── settings/        ← KEEP from Confide
-│   └── api/
-│       ├── agents/          ← NEW: agent API routes
-│       ├── webhooks/
-│       │   └── paddle/      ← NEW: replace dodo webhook
-│       └── progress/        ← NEW: progress tracking API
+│   ├── api/
+│   │   ├── agents/
+│   │   │   ├── chat/route.ts          — non-streaming fallback
+│   │   │   ├── stream/route.ts        — SSE streaming (main)
+│   │   │   ├── session-start/route.ts — personalized greeting
+│   │   │   └── sam-reflect/route.ts   — post-practice progress anchor
+│   │   ├── pre-exam-coaching/route.ts — AI coaching for countdown days
+│   │   ├── weekly-review/route.ts     — Sam's weekly review
+│   │   ├── practice/questions/route.ts — question serving API
+│   │   ├── review/route.ts            — FSRS spaced repetition
+│   │   └── tts/route.ts + stream/    — ElevenLabs TTS
+│   └── dashboard/
+│       ├── session/page.tsx   — voice chat with Sam
+│       ├── practice/page.tsx  — text-based practice
+│       ├── progress/page.tsx  — progress dashboard
+│       ├── mock-test/page.tsx — full mock test
+│       ├── study-plan/page.tsx
+│       ├── journal/page.tsx
+│       ├── flashcards/page.tsx
+│       └── formulas/page.tsx
 │
 ├── components/
-│   ├── session/             ← NEW: voice session UI components
-│   │   ├── VoiceButton.tsx
-│   │   ├── AgentStatus.tsx
-│   │   ├── TranscriptView.tsx
-│   │   └── SessionControls.tsx
-│   ├── progress/            ← NEW: progress charts
-│   │   ├── TopicHeatmap.tsx
-│   │   ├── ScoreChart.tsx
-│   │   └── SessionHistory.tsx
-│   └── billing/             ← UPDATE: Paddle instead of Dodo
+│   ├── dashboard/
+│   │   ├── DashboardClient.tsx  — sidebar + layout
+│   │   ├── PreExamBanner.tsx    — 7-day countdown with AI coaching
+│   │   ├── WeeklyReview.tsx     — Sam's weekly review widget
+│   │   └── QuestionOfTheDay.tsx
+│   ├── practice/
+│   │   ├── MicroCoachTip.tsx    — before-question contextual tip
+│   │   ├── SamMotivator.tsx     — post-session progress anchor
+│   │   ├── SocraticDebrief.tsx  — after wrong answer error analysis
+│   │   ├── ExplanationPanel.tsx
+│   │   ├── QuestionCard.tsx
+│   │   ├── PracticeSummary.tsx
+│   │   └── SmartReviewPanel.tsx — FSRS due topics
+│   └── progress/
+│       ├── GmatProgressClient.tsx
+│       ├── TopicHeatmap.tsx
+│       ├── ScorePredictor.tsx
+│       ├── ErrorAnalysis.tsx
+│       └── TimingAnalytics.tsx
 │
 ├── lib/
-│   ├── gmat/                ← NEW
-│   │   ├── scoring.ts       ← GMAT score calculation utilities
-│   │   ├── difficulty.ts    ← Adaptive difficulty logic
-│   │   ├── topics.ts        ← Topic taxonomy
-│   │   └── analyzer.ts      ← Session analysis utilities
-│   └── billing/             ← UPDATE: Paddle client
-│       └── paddle.ts
+│   ├── gmat/
+│   │   ├── micro-coaching.ts      — rule-based tip engine
+│   │   ├── pre-exam.ts            — 7-day plan generator
+│   │   ├── spaced-repetition.ts   — FSRS algorithm
+│   │   ├── scoring.ts             — GMAT score calculation
+│   │   ├── analyzer.ts            — session analysis
+│   │   ├── difficulty.ts          — adaptive difficulty
+│   │   ├── gamification.ts        — streak calculation
+│   │   └── question-bank.ts       — question serving logic
+│   ├── openai/client.ts           — agentClient / routerClient / embeddingClient
+│   └── pinecone/
+│       ├── retrieval.ts           — RAG context fetching
+│       ├── reranker.ts            — Cohere rerank
+│       └── namespace-mapping.ts   — agent → namespace mapping
 │
-├── prisma/
-│   └── schema.prisma        ← EXTEND with GMAT tables
+├── data/
+│   ├── questions/                 — 8,179 questions (JSON)
+│   └── rag/                       — RAG content chunks (JSON)
 │
-├── scripts/
-│   └── gmat/                ← NEW
-│       ├── data/            ← PDF books (gitignored)
-│       ├── ingest_books.ts  ← PDF → Pinecone indexing
-│       ├── chunk_pdf.ts     ← PDF chunking utilities
-│       └── test_retrieval.ts ← RAG quality validation
-│
-└── e2e/                     ← ADAPT existing Playwright tests
-    ├── session.spec.ts      ← New: voice session flow
-    └── progress.spec.ts     ← New: progress tracking
+└── scripts/gmat/
+    ├── generate_questions.ts          — AI question generation
+    ├── generate_reclor_explanations.ts — ReClor batch explanation gen
+    ├── ingest_books.ts                — PDF → Pinecone indexing
+    ├── ingest_datasets.ts             — HuggingFace dataset ingestion
+    ├── validate_generated.ts          — Quality validation
+    └── test_retrieval.ts              — RAG quality testing
 ```
 
 ---
 
-## 12. MVP Roadmap — 6 Weeks
+## 17. Generation Scripts
 
-### Week 1–2: RAG + Agents
-**Goal:** Working knowledge base and adapted agent system
+### Question Generation
+`scripts/gmat/generate_questions.ts`
 
-- [ ] Fork `Pha6ha007/Confide---Saas` → rename to `prepwise`
-- [ ] Create `agents/gmat/` with all 6 agents
-- [ ] Rewrite `orchestrator.ts` for GMAT section routing
-- [ ] Adapt `memory.ts` — replace psychological fields with GMAT learner fields
-- [ ] Collect GMAT PDF books → `scripts/gmat/data/`
-- [ ] Run indexing script → Pinecone (target: 6 books, ~4000 chunks)
-- [ ] Test retrieval quality: `npx ts-node scripts/gmat/test_retrieval.ts`
-- [ ] Validate: ask 20 GMAT questions → verify correct retrieval
+Generates questions via OpenRouter API in batches. Saves after each batch (no progress loss on interrupt).
 
-**Definition of done:** Agent answers GMAT Quant question correctly with RAG context in console test
-
----
-
-### Week 3–4: Voice Session UI
-**Goal:** End-to-end voice lesson in browser
-
-- [ ] Integrate LiveKit Agents + Deepgram STT
-- [ ] Connect ElevenLabs TTS (create Sam voice persona)
-- [ ] Build `app/(dashboard)/session/page.tsx` — lesson UI
-- [ ] Voice button component (mic on/off, audio visualization)
-- [ ] Agent status indicator (thinking, speaking, listening)
-- [ ] Session transcript display
-- [ ] Memory Agent runs automatically after session end
-- [ ] Basic progress tracking: session saved to DB
-
-**Definition of done:** Full 15-minute voice lesson from browser — tutor explains Quant topic, answers questions, session saved to DB
-
----
-
-### Week 5: Payments + Onboarding
-**Goal:** Complete monetization flow
-
-- [ ] Remove DodoPayments, install Paddle
-- [ ] Create 3 products in Paddle Dashboard (Starter/Pro/Intensive)
-- [ ] Onboarding flow: diagnostic test to assess current level
-- [ ] Subscription page with plan comparison
-- [ ] Paddle webhook handler
-- [ ] Trial logic: 7/14 days depending on plan
-- [ ] Post-trial gating: redirect to upgrade if no subscription
-- [ ] Test complete flow: register → onboard → trial → subscribe
-
-**Definition of done:** New user can register, take diagnostic, start trial, upgrade to paid — all via Paddle
-
----
-
-### Week 6: Launch Prep + First Users
-**Goal:** First 10 paying users
-
-- [ ] Deploy: `vercel --prod` + `railway up`
-- [ ] Configure all production env vars
-- [ ] Run Playwright e2e tests on production
-- [ ] Set up error monitoring (Sentry or PostHog)
-- [ ] Post in r/GMAT, r/MBA, r/ApplyingToBS (valuable content, not spam)
-- [ ] DM 10 users currently asking for GMAT help on Reddit
-- [ ] Collect feedback from 5+ beta users
-- [ ] Iterate on critical issues
-- [ ] Set price: $79/month for Pro
-
-**Definition of done:** 3+ paying users, NPS ≥ 7/10, no critical bugs
-
----
-
-## 13. YouTube + AI Avatar Strategy
-
-### Channel Concept
-YouTube channel with AI avatar that visually represents the in-app tutor (Sam). The avatar is both a product demo and organic acquisition channel. People share videos because of the novelty of AI teaching GMAT.
-
-### Content Formats
-
-| Format | Example Title | Goal |
-|--------|--------------|-------|
-| Quick concept | "GMAT Quant: Probability in 8 minutes" | SEO traffic from study searches |
-| Experiment | "I used AI to study for GMAT for 30 days. Here's what happened" | Viral potential |
-| Free walkthrough | "GMAT Critical Reasoning: Full tutorial with 5 problems" | Lead generation |
-| News/update | "GMAT Focus Edition 2024: Everything That Changed" | Timely search traffic |
-| Feature demo | "How Prepwise AI Remembers Your Mistakes (and fixes them)" | Product awareness |
-| Shorts | 60-second problem walkthrough | Reach / algorithm boost |
-
-**Posting cadence:** 1 video per week + 2 Shorts
-
-### AI Avatar Tools
-
-| Tool | Price | Best For |
-|------|-------|---------|
-| [HeyGen](https://heygen.com) | $29–89/month | Most realistic video avatar, best for YouTube |
-| [D-ID](https://d-id.com) | $5.99–49/month | Faster and cheaper, good for Shorts |
-| [Synthesia](https://synthesia.io) | $22–67/month | Corporate style, good for educational content |
-| [Tavus](https://tavus.io) | Custom | Most realistic personalized avatar |
-
-**Recommendation for MVP:** Start with HeyGen ($29/month). Create Sam — professional, confident, 30-something avatar that matches the in-app tutor character.
-
-### First 30 Days Plan
-
-**Week 1:**
-- Create channel "Prepwise — GMAT AI Tutor"
-- Record intro video with avatar: "Meet Sam, your AI GMAT tutor"
-- Post in r/GMAT with valuable post (not promo): "Here's how I approach Data Sufficiency problems"
-
-**Week 2:**
-- 2 tutorial videos (Quant walkthrough + Verbal walkthrough)
-- Find 10 beta users from Reddit (DM people asking for GMAT help)
-- Collect feedback from beta users
-
-**Week 3:**
-- Product Hunt launch
-- Hacker News: "Show HN: Prepwise — AI voice tutor for GMAT with long-term memory"
-- Reddit experiment post: "I built an AI GMAT tutor. First 50 users get free month"
-- 1 Shorts video
-
-**Week 4:**
-- Collect testimonials from beta users
-- First paying subscribers
-- Launch referral program: "Refer a friend — both get 1 free month"
-- Reach out to GMAT bloggers for product review
-
----
-
-## 14. Quick Start for GSD-2 / Claude Code
-
-### Step 1: Clone and Setup
 ```bash
-git clone https://github.com/Pha6ha007/Confide---Saas prepwise
-cd prepwise
-npm install
-cp .env.example .env.local
-# Fill in env vars (see Section 10)
-npx prisma db push
-npm run dev
+npx ts-node scripts/gmat/generate_questions.ts --type [gi|msr|tpa|ta|rc|all]
 ```
 
-### Step 2: Index GMAT Materials
+**Batch sizes:**
+- TA/GI/MSR/TPA: 25 questions/batch, 4 batches = ~100/type
+- RC: 10 passages/batch, 10 batches = ~100 passages
+
+**Quality control:**
+- Self-contradicting explanations detected and removed automatically
+- DS answer key vs explanation consistency checked post-run
+- RC passages validated for minimum length (>100 chars)
+
+### Explanation Generation
+`scripts/gmat/generate_reclor_explanations.ts`
+
+Adds explanations to ReClor questions in batches of 20. Idempotent — skips questions that already have explanations.
+
 ```bash
-mkdir -p scripts/gmat/data
-# Place GMAT PDF books in scripts/gmat/data/
-npx ts-node scripts/gmat/ingest_books.ts
-# Validate: npx ts-node scripts/gmat/test_retrieval.ts
+# First 1,000
+npx ts-node scripts/gmat/generate_reclor_explanations.ts --limit 1000
+
+# Next 1,000
+npx ts-node scripts/gmat/generate_reclor_explanations.ts --offset 1000 --limit 1000
+
+# Fill all remaining
+npx ts-node scripts/gmat/generate_reclor_explanations.ts --offset 0 --limit 4638
 ```
 
-### Step 3: Adapt Agents (GSD-2 tasks)
-```
-Read the entire agents/ directory and understand the Confide architecture.
-Then create agents/gmat/ with the following files:
-- orchestrator.ts: route by GMAT section (quant/verbal/data-insights/writing/strategy)
-- quantitative.ts: GMAT Quant specialist (PS + DS)
-- verbal.ts: GMAT Verbal specialist (CR + RC + SC)  
-- data_insights.ts: GMAT DI specialist (TPA + MSR + GI + TA)
-- writing.ts: AWA specialist
-- strategy.ts: exam strategy and timing specialist
-- memory.ts: adapt memory.ts replacing psychological fields with GMAT learner fields
-```
+**Performance:** ~20 questions/batch, ~45s/batch, ~1,000 questions/hour using GPT-4o-mini.
 
-### Step 4: Replace DodoPayments → Paddle
-```
-Replace all DodoPayments references with Paddle:
-- Remove: @dodopayments/nextjs, dodopayments packages
-- Install: @paddle/paddle-js
-- Update: lib/billing/, app/api/webhooks/, components/billing/
-- Create: 3 Paddle products (Starter $49, Pro $99, Intensive $199)
-```
-
-### Step 5: Extend Prisma Schema
-```
-Add to prisma/schema.prisma (do not modify existing tables):
-- GmatSession model
-- TopicProgress model  
-- ErrorLog model
-- MockTest model
-- Add relations to existing User model
-Run: npx prisma db push
-```
-
-### Step 6: Build Session UI
-```
-Create app/(dashboard)/session/page.tsx
-Use existing components from Confide as base.
-Add new components in components/session/:
-- VoiceButton.tsx (mic control)
-- AgentStatus.tsx (listening/thinking/speaking states)
-- TranscriptView.tsx (real-time transcript)
-```
-
-### Step 7: Deploy
+### Validation
 ```bash
-# Frontend
-vercel --prod
-
-# Add env var in Vercel dashboard:
-# RAILWAY_AGENT_URL = <your railway URL>
-
-# Backend agents
-railway login && railway init
-railway up
+npx ts-node scripts/gmat/validate_generated.ts
 ```
+Checks: all required fields present, explanations meet minimum length, correct answer is one of the option IDs, TPA answers in `X,Y` format.
 
 ---
 
-### Priority Task List for GSD-2
+## 18. Metrics & Targets
 
-Copy-paste this list as your task queue:
-
-```
-1. Read agents/ directory — understand Confide orchestrator and memory architecture
-2. Create agents/gmat/orchestrator.ts — GMAT section routing (adapt from Confide)
-3. Create agents/gmat/memory.ts — replace psychological fields with GMAT learner fields
-4. Create agents/gmat/quantitative.ts — PS and DS specialist
-5. Create agents/gmat/verbal.ts — CR, RC, SC specialist
-6. Create agents/gmat/data_insights.ts — TPA, MSR, GI, TA specialist
-7. Create agents/gmat/writing.ts — AWA specialist
-8. Create agents/gmat/strategy.ts — timing and strategy specialist
-9. Extend prisma/schema.prisma — add GmatSession, TopicProgress, ErrorLog, MockTest
-10. Run npx prisma db push — apply schema changes
-11. Replace DodoPayments with Paddle in all files
-12. Create lib/billing/paddle.ts — Paddle client setup
-13. Update app/api/webhooks/ — Paddle webhook handler
-14. Create scripts/gmat/ingest_books.ts — PDF indexing pipeline
-15. Create scripts/gmat/test_retrieval.ts — RAG quality validation
-16. Build app/(dashboard)/session/page.tsx — voice lesson UI
-17. Build app/(dashboard)/progress/page.tsx — progress dashboard
-18. Create components/session/ — VoiceButton, AgentStatus, TranscriptView
-19. Adapt e2e/ Playwright tests for new flows
-20. Deploy: Vercel (frontend) + Railway (agents backend)
-```
-
----
-
-## 15. Metrics
+### Current State (March 2026)
+- Question bank: **8,179 questions** — largest of any GMAT prep platform
+- Explanation coverage: **99.9%** (8,172 / 8,179)
+- 5 Sam coaching surfaces live
+- Full GMAT Focus Edition coverage (Q + V + DI, all 8 question types)
+- Deployed on Vercel, auto-deploy from main
 
 ### Launch Targets
 
-| Metric | Week 6 | Month 2 | Month 3 |
-|--------|--------|---------|---------|
-| Registrations | 10–20 (beta) | 50–100 | 150–300 |
-| Trial → Paid | — | 15–20% | 20–25% |
-| MRR | $0 (free beta) | $300–600 | $1,000–2,500 |
-| 7-day Retention | — | 45%+ | 50%+ |
-| NPS | — | ≥40 | ≥50 |
-| Avg session duration | — | 25+ min | 30+ min |
-| YouTube subscribers | — | 200+ | 500+ |
+| Metric | Month 1 | Month 3 | Month 6 |
+|--------|---------|---------|---------|
+| Registrations | 20–50 | 150–300 | 500–1,000 |
+| Trial → Paid | 10–15% | 15–20% | 20–25% |
+| MRR | $300–600 | $1,500–3,000 | $5,000–10,000 |
+| 7-day Retention | 40% | 50% | 60% |
+| Avg session (min) | 20 | 25 | 30 |
 
 ### Unit Economics
-
 ```
-Cost per AI session (estimate):
-- Claude Sonnet (agent): ~$0.04
-- ElevenLabs TTS (30 min): ~$0.15
-- Deepgram STT (30 min): ~$0.05
-- Pinecone retrieval: ~$0.01
-Total per session: ~$0.25
+Cost per AI session (~25 min):
+  Claude Sonnet (tokens):    ~$0.04
+  ElevenLabs TTS (25 min):  ~$0.12
+  Deepgram STT (25 min):    ~$0.04
+  Pinecone retrieval:        ~$0.01
+  Total per session:         ~$0.21
 
-Pro plan: $99/month
-Estimated sessions per user/month: 20
-Total AI costs per user: $5.00
-Gross margin: ~95%
+Pro plan ($79/month, 20 sessions avg):
+  AI costs:     ~$4.20
+  Gross margin: ~95%
 ```
+
+### Next Priorities
+1. **User acquisition** — Reddit (r/GMAT, r/MBA), Product Hunt launch
+2. **ReClor 700+ questions** — currently `hard:3773` — add subtopic classification
+3. **Mock test engine** — full adaptive CAT simulation
+4. **Score prediction model** — calibrate against real GMAT score distributions
+5. **YouTube channel** — Sam as AI avatar teaching GMAT concepts
 
 ---
 
-*Prepwise Documentation v1.0.0 | March 2026*  
-*Base: Pha6ha007/Confide---Saas | Target: prepwise.app*
+*PrepWISE Documentation v2.0 | March 2026*  
+*prepwise.app | Pha6ha007/PrepWISE*
