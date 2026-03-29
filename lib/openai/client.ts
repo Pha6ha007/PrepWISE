@@ -169,6 +169,19 @@ export function getEmbeddingModel(): string {
   return 'openai/text-embedding-3-small'
 }
 
+/**
+ * Get the model for memory extraction (background, post-session).
+ * Uses MiniMax M2.7 via OpenRouter — 5x cheaper than Claude Sonnet,
+ * comparable quality on structured JSON extraction tasks.
+ * Falls back to the main agent model if OpenRouter is not configured.
+ */
+export function getMemoryModel(): string {
+  if (_agentProvider === 'openrouter') {
+    return process.env.MEMORY_MODEL || 'minimax/minimax-m2.7'
+  }
+  return getAgentModel()
+}
+
 /** @deprecated Use getAgentModel() instead */
 export function getModel(): string {
   return getAgentModel()
@@ -185,5 +198,6 @@ export function getProviderInfo() {
     agent: { provider: _agentProvider, model: getAgentModel() },
     router: { provider: _useGroq ? 'groq' : _agentProvider, model: getRouterModel() },
     embedding: { provider: 'openai', model: getEmbeddingModel() },
+    memory: { provider: _agentProvider === 'openrouter' ? 'openrouter' : _agentProvider, model: getMemoryModel() },
   }
 }

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
-import { agentClient, getAgentModel } from '@/lib/openai/client'
+import { agentClient, getMemoryModel } from '@/lib/openai/client'
 import {
   buildGmatMemoryPrompt,
   mergeGmatProfile,
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
     const memoryPrompt = buildGmatMemoryPrompt(transcript, existingProfile)
 
     const memoryCompletion = await agentClient.chat.completions.create({
-      model: getAgentModel(),
+      model: getMemoryModel(),
       messages: [{ role: 'user', content: memoryPrompt }],
       temperature: 0.3,
       max_tokens: 1500,

@@ -284,7 +284,24 @@ export function mergeGmatProfile(
   const updatedSessionTopics = [...base.sessionTopics, ...extraction.session_topics].slice(-50)
 
   // Merge error patterns
-  const updatedErrorPatterns = [...new Set([...base.commonErrorPatterns, ...extraction.common_error_patterns])]
+  // Normalise: MiniMax M2.7 sometimes returns [{pattern, why}] objects instead of strings.
+  // Flatten either format to "pattern: why" or plain string for consistent storage.
+  const normaliseErrorPatterns = (
+    patterns: Array<string | { pattern?: string; why?: string; [k: string]: unknown }>
+  ): string[] =>
+    patterns.map(p => {
+      if (typeof p === 'string') return p
+      if (p.pattern && p.why) return `${p.pattern}: ${p.why}`
+      if (p.pattern) return p.pattern
+      return JSON.stringify(p)
+    })
+
+  const updatedErrorPatterns = [
+    ...new Set([
+      ...base.commonErrorPatterns,
+      ...normaliseErrorPatterns(extraction.common_error_patterns as any),
+    ]),
+  ]
 
   // Update learning style (latest observation wins, append to existing)
   const updatedLearningStyle = extraction.learning_style
