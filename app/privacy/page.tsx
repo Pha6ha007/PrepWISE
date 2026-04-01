@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — PrepWISE',
-  description: 'How PrepWISE collects, uses, stores, and protects your personal information.',
+  title: 'Privacy Policy — SamiWISE',
+  description: 'How SamiWISE collects, uses, stores, and protects your personal information.',
 }
 
 export default function PrivacyPage() {

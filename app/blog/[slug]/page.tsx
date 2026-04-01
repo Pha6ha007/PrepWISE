@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!article) return {}
 
   return {
-    title: `${article.title} | PrepWISE Blog`,
+    title: `${article.title} | SamiWISE Blog`,
     description: article.description,
     openGraph: {
       title: article.title,

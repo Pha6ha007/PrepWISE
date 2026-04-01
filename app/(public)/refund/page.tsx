@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Refund Policy — PrepWISE',
-  description: 'Fair, transparent, and hassle-free refund policy for PrepWISE subscriptions.',
+  title: 'Refund Policy — SamiWISE',
+  description: 'Fair, transparent, and hassle-free refund policy for SamiWISE subscriptions.',
 }
 
 export default function RefundPage() {

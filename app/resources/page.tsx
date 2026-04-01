@@ -3,8 +3,8 @@ import { ArrowRight, BookOpen, Star, Sparkles, ExternalLink } from 'lucide-react
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Recommended GMAT Resources | PrepWISE',
-  description: 'The best GMAT preparation books and resources, hand-picked by PrepWISE. Official guides, strategy books, and budget-friendly options.',
+  title: 'Recommended GMAT Resources | SamiWISE',
+  description: 'The best GMAT preparation books and resources, hand-picked by SamiWISE. Official guides, strategy books, and budget-friendly options.',
 }
 
 type Badge = 'Essential' | 'Recommended' | 'Optional'

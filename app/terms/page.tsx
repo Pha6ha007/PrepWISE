@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — PrepWISE',
-  description: 'Terms of Service for the PrepWISE AI-powered GMAT preparation platform.',
+  title: 'Terms of Service — SamiWISE',
+  description: 'Terms of Service for the SamiWISE AI-powered GMAT preparation platform.',
 }
 
 export default function TermsPage() {
