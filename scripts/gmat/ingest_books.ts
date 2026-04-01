@@ -1,5 +1,5 @@
 // scripts/gmat/ingest_books.ts
-// Prepwise — GMAT Knowledge Base Indexing Pipeline
+// SamiWISE — GMAT Knowledge Base Indexing Pipeline
 // Reads PDF books from scripts/gmat/data/, chunks them, embeds them,
 // and upserts to Pinecone with GMAT-specific metadata.
 //
@@ -215,7 +215,7 @@ async function generateEmbeddings(
 // ── Main Ingestion Pipeline ────────────────────────────────────
 
 async function ingestGmatBooks() {
-  console.log('🚀 Prepwise GMAT Knowledge Base Ingestion')
+  console.log('🚀 SamiWISE GMAT Knowledge Base Ingestion')
   console.log('=========================================\n')
 
   // Validate environment

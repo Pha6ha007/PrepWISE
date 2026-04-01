@@ -1,5 +1,5 @@
 // agents/server.ts
-// Prepwise — Railway Agent Backend Server
+// SamiWISE — Railway Agent Backend Server
 // Runs on Railway as a persistent container for GMAT AI agents.
 // Handles long-running voice sessions, WebSocket connections, and RAG retrieval.
 
@@ -87,7 +87,7 @@ const server = http.createServer(async (req, res) => {
 })
 
 server.listen(PORT, () => {
-  console.log(`🚀 Prepwise GMAT Agent Server running on port ${PORT}`)
+  console.log(`🚀 SamiWISE GMAT Agent Server running on port ${PORT}`)
   console.log(`   Health: http://localhost:${PORT}/health`)
   console.log(`   Chat:   POST http://localhost:${PORT}/api/chat`)
   console.log('')

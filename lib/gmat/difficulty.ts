@@ -1,5 +1,5 @@
 // lib/gmat/difficulty.ts
-// Prepwise — Adaptive Difficulty Logic
+// SamiWISE — Adaptive Difficulty Logic
 // Adjusts question difficulty based on learner performance in real-time.
 
 export type DifficultyLevel = 'easy' | 'medium' | 'hard' | '700+'

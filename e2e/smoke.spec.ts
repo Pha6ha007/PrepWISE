@@ -25,7 +25,7 @@ function expectNoFatalErrors(errors: string[], label: string) {
 
 test.describe('Public pages load correctly', () => {
   const pages = [
-    { path: '/', name: 'Landing', expect: 'Prepwise' },
+    { path: '/', name: 'Landing', expect: 'SamiWISE' },
     { path: '/login', name: 'Login', expect: 'Sign in' },
     { path: '/register', name: 'Register', expect: 'Create' },
     { path: '/onboarding', name: 'Onboarding', expect: 'Sign in' }, // Redirects to login (requires auth)
@@ -51,11 +51,11 @@ test.describe('Public pages load correctly', () => {
 // ─── LANDING PAGE CONTENT ───────────────────────────────────
 
 test.describe('Landing page content', () => {
-  test('has Prepwise branding, not Confide', async ({ page }) => {
+  test('has SamiWISE branding, not Confide', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' })
 
     const body = await page.textContent('body')
-    expect(body).toContain('Prepwise')
+    expect(body).toContain('SamiWISE')
     expect(body).toContain('GMAT')
     expect(body).toContain('Sam')
     expect(body).not.toContain('Confide')
@@ -143,7 +143,7 @@ test.describe('Onboarding flow', () => {
     await page.goto('/onboarding', { waitUntil: 'networkidle' })
 
     // Step 1: Welcome
-    await expect(page.locator('text=Welcome to Prepwise')).toBeVisible()
+    await expect(page.locator('text=Welcome to SamiWISE')).toBeVisible()
     await expect(page.locator('text=I\'m Sam, your AI GMAT tutor')).toBeVisible()
 
     // Wait for hydration then click

@@ -1,5 +1,5 @@
 // lib/gmat/pre-exam.ts
-// Prepwise — Pre-Exam Mode (7 days before test)
+// SamiWISE — Pre-Exam Mode (7 days before test)
 // Generates a structured 7-day countdown plan when the user's
 // test date is within 7 days. Focuses on review, confidence
 // building, mock tests, and rest — no new material.

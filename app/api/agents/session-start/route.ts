@@ -1,5 +1,5 @@
 // app/api/agents/session-start/route.ts
-// Prepwise — Sam's personalized session opening message.
+// SamiWISE — Sam's personalized session opening message.
 // Called once when the user starts a voice/chat session.
 // Uses the learner profile to generate a warm, specific greeting.
 

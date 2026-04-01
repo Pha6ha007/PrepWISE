@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 /**
- * Prepwise Middleware — route protection via Supabase Auth
+ * SamiWISE Middleware — route protection via Supabase Auth
  *
  * Protected routes:
  * - /dashboard/* — requires authentication + completed onboarding

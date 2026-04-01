@@ -27,7 +27,7 @@ const ChatRequestSchema = z.object({
 })
 
 /**
- * Prepwise GMAT Chat API.
+ * SamiWISE GMAT Chat API.
  * Routes messages through the GMAT orchestrator to specialist agents.
  * Retrieves RAG context from Pinecone and builds agent-specific prompts.
  */

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // scripts/gmat/generate_questions.ts
-// Prepwise — Automated question generation via OpenRouter API
+// SamiWISE — Automated question generation via OpenRouter API
 //
 // Generates missing DI question types + 700+ level questions.
 // Runs in batches to avoid context limits, saves progress after each batch.

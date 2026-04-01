@@ -1,9 +1,9 @@
 // lib/billing/paddle.ts
-// Prepwise — Paddle billing client
+// SamiWISE — Paddle billing client
 // Paddle billing client
 
 /**
- * Paddle product IDs for Prepwise subscription plans.
+ * Paddle product IDs for SamiWISE subscription plans.
  * Configure these in your Paddle Dashboard and set the env vars.
  */
 export const PADDLE_PRODUCTS = {

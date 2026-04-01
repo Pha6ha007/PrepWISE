@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
 
     // Prepare email content
     const emailSubject = type === "partnership" && company
-      ? `[Prepwise Partnership] ${company}`
-      : `[Prepwise Contact] ${name}`;
+      ? `[SamiWISE Partnership] ${company}`
+      : `[SamiWISE Contact] ${name}`;
 
     const htmlContent = `
       <h2>New Contact Form Submission</h2>

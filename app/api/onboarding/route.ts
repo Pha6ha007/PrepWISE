@@ -15,7 +15,7 @@ const OnboardingSchema = z.object({
 })
 
 /**
- * Prepwise Onboarding API
+ * SamiWISE Onboarding API
  * Saves the learner's profile, target score, weak areas, and study timeline.
  */
 export async function POST(request: NextRequest) {

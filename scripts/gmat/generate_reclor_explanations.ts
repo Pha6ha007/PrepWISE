@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // scripts/gmat/generate_reclor_explanations.ts
-// Prepwise — Generate explanations for ReClor CR questions in batches
+// SamiWISE — Generate explanations for ReClor CR questions in batches
 //
 // ReClor has 3748 questions without explanations.
 // This script generates them in batches of 20, saving progress after each.

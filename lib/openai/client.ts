@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 
 /**
- * Prepwise AI Clients
+ * SamiWISE AI Clients
  *
  * Three separate clients for different tasks:
  *

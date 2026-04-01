@@ -1,5 +1,5 @@
 // app/api/agents/sam-reflect/route.ts
-// Prepwise — Sam's progress-anchor reflection after a practice session.
+// SamiWISE — Sam's progress-anchor reflection after a practice session.
 //
 // The key difference from /api/weekly-review:
 // - Called immediately after a session (not weekly)

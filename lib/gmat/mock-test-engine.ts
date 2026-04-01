@@ -1,5 +1,5 @@
 // lib/gmat/mock-test-engine.ts
-// Prepwise — Computer-Adaptive Mock Test Engine (GMAT Focus Edition)
+// SamiWISE — Computer-Adaptive Mock Test Engine (GMAT Focus Edition)
 // Pure logic module: no UI, no API calls, no database. All state in-memory.
 
 import type { GmatQuestion, Section, Difficulty } from './question-types'

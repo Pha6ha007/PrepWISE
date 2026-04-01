@@ -1,5 +1,5 @@
 // lib/gmat/diagnostic.ts
-// Prepwise — Quick GMAT Diagnostic Test
+// SamiWISE — Quick GMAT Diagnostic Test
 // 10 questions (3 quant, 3 verbal, 2 DI, 2 strategy) to assess baseline.
 
 export interface DiagnosticQuestion {

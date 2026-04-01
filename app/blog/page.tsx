@@ -30,7 +30,7 @@ export default function BlogPage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
               <Brain className="w-4.5 h-4.5 text-[#0A0F1E]" />
             </div>
-            <span className="text-lg font-bold tracking-tight">Prepwise</span>
+            <span className="text-lg font-bold tracking-tight">SamiWISE</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/blog" className="text-sm text-cyan-400 font-medium px-3 py-2">

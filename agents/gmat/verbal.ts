@@ -1,5 +1,5 @@
 // agents/gmat/verbal.ts
-// Prepwise — GMAT Verbal Reasoning Specialist Agent
+// SamiWISE — GMAT Verbal Reasoning Specialist Agent
 // Covers: Critical Reasoning (CR), Reading Comprehension (RC)
 
 import { GmatAgentPromptParams } from './quantitative'

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // scripts/gmat/ingest_reclor.ts
-// Prepwise — Extract and index CR question type examples from ReClor paper
+// SamiWISE — Extract and index CR question type examples from ReClor paper
 //
 // The ReClor paper (RECLOR: A Reading Comprehension Dataset Requiring Logical Reasoning)
 // contains 17 Critical Reasoning question types with full examples.
@@ -132,7 +132,7 @@ const CR_QUESTION_TYPES = [
 // ── Main ───────────────────────────────────────────────────
 
 async function main() {
-  console.log('🚀 Prepwise — ReClor CR Question Types Ingestion')
+  console.log('🚀 SamiWISE — ReClor CR Question Types Ingestion')
   console.log('=================================================')
 
   if (!process.env.PINECONE_API_KEY) throw new Error('PINECONE_API_KEY not set')

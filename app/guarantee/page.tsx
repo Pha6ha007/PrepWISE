@@ -83,7 +83,7 @@ export default function GuaranteePage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
               <Brain className="w-4 h-4 text-[#0A0F1E]" />
             </div>
-            <span className="text-lg font-bold tracking-tight">Prepwise</span>
+            <span className="text-lg font-bold tracking-tight">SamiWISE</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
@@ -228,7 +228,7 @@ export default function GuaranteePage() {
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
                 <Brain className="w-3.5 h-3.5 text-[#0A0F1E]" />
               </div>
-              <span className="font-semibold">Prepwise</span>
+              <span className="font-semibold">SamiWISE</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-slate-500">
               <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy</Link>
@@ -237,7 +237,7 @@ export default function GuaranteePage() {
               <Link href="/refund" className="hover:text-slate-300 transition-colors">Refund</Link>
             </div>
             <p className="text-xs text-slate-600">
-              © 2026 Prepwise. AI GMAT Tutor.
+              © 2026 SamiWISE. AI GMAT Tutor.
             </p>
           </div>
         </div>

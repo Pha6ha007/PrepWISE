@@ -1,5 +1,5 @@
 // agents/memory-worker.ts
-// Prepwise — Memory Worker (Railway background service)
+// SamiWISE — Memory Worker (Railway background service)
 // Runs as a worker process that listens for completed sessions
 // and automatically runs the Memory Agent to update learner profiles.
 
@@ -55,7 +55,7 @@ async function processCompletedSessions() {
 }
 
 async function main() {
-  console.log('🧠 Prepwise Memory Worker started')
+  console.log('🧠 SamiWISE Memory Worker started')
   console.log(`   Poll interval: ${POLL_INTERVAL / 1000}s`)
   console.log('   Waiting for completed sessions...\n')
 

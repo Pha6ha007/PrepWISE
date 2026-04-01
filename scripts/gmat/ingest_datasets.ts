@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // scripts/gmat/ingest_datasets.ts
-// Prepwise — Download and index free GMAT datasets from HuggingFace
+// SamiWISE — Download and index free GMAT datasets from HuggingFace
 //
 // Datasets:
 //   1. deepmind/aqua_rat — 97k algebra problems with rationales (Apache 2.0)
@@ -263,7 +263,7 @@ async function ingestMathQa(
 // ── Main ───────────────────────────────────────────────────
 
 async function main() {
-  console.log('🚀 Prepwise — HuggingFace Dataset Ingestion')
+  console.log('🚀 SamiWISE — HuggingFace Dataset Ingestion')
   console.log('============================================')
 
   if (!process.env.PINECONE_API_KEY) throw new Error('PINECONE_API_KEY not set')

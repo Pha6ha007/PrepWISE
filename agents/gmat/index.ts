@@ -1,5 +1,5 @@
 // agents/gmat/index.ts
-// Prepwise — GMAT Agent Prompts Central Export
+// SamiWISE — GMAT Agent Prompts Central Export
 
 // Orchestrator
 export { GMAT_ORCHESTRATOR_PROMPT, routeToGmatAgent } from './orchestrator'

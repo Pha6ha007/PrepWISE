@@ -1,5 +1,5 @@
 // lib/gmat/question-types.ts
-// Prepwise — GMAT Question type definitions for the Practice Mode
+// SamiWISE — GMAT Question type definitions for the Practice Mode
 
 export type QuestionType = 'PS' | 'DS' | 'CR' | 'RC' | 'TPA' | 'MSR' | 'GI' | 'TA'
 export type Section = 'quant' | 'verbal' | 'data-insights'

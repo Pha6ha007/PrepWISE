@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // scripts/gmat/ingest_github.ts
-// Prepwise — Index GMAT question data from GitHub repositories
+// SamiWISE — Index GMAT question data from GitHub repositories
 //
 // Sources:
 //   1. mister-teddy/gmat-database (MIT license) — GMAT questions in JSON
@@ -315,7 +315,7 @@ async function ingestScoreAnalysis(pinecone: Pinecone, openai: OpenAI): Promise<
 // ── Main ───────────────────────────────────────────────────
 
 async function main() {
-  console.log('🚀 Prepwise — GitHub Repository Ingestion')
+  console.log('🚀 SamiWISE — GitHub Repository Ingestion')
   console.log('==========================================')
 
   if (!process.env.PINECONE_API_KEY) throw new Error('PINECONE_API_KEY not set')

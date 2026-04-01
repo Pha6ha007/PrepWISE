@@ -101,7 +101,7 @@ export default function DashboardClient({
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
                 <Brain className="w-4 h-4 text-[#0B1120]" />
               </div>
-              <span className="text-lg font-bold text-white tracking-tight">Prepwise</span>
+              <span className="text-lg font-bold text-white tracking-tight">SamiWISE</span>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
@@ -215,7 +215,7 @@ export default function DashboardClient({
             <div className="w-6 h-6 rounded-md bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
               <Brain className="w-3 h-3 text-[#0B1120]" />
             </div>
-            <span className="font-semibold text-white">Prepwise</span>
+            <span className="font-semibold text-white">SamiWISE</span>
           </div>
           <div className="w-6" />
         </div>

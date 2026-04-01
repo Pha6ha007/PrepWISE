@@ -78,7 +78,7 @@ export interface SessionPreview {
   isActive: boolean
 }
 
-// Agent Types (Prepwise GMAT)
+// Agent Types (SamiWISE GMAT)
 export type AgentType =
   | 'quantitative'
   | 'verbal'

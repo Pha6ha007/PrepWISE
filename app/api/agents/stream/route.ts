@@ -1,5 +1,5 @@
 // app/api/agents/stream/route.ts
-// Prepwise — Streaming GMAT Agent API
+// SamiWISE — Streaming GMAT Agent API
 // Returns Server-Sent Events for real-time agent responses.
 
 import { NextRequest } from 'next/server'

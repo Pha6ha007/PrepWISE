@@ -139,7 +139,7 @@ export default function SettingsClient({ initial }: SettingsClientProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Settings</h1>
-          <p className="text-slate-400 mt-1">Manage your Prepwise account and preferences</p>
+          <p className="text-slate-400 mt-1">Manage your SamiWISE account and preferences</p>
         </div>
         {saved && (
           <span className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">

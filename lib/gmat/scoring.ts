@@ -1,5 +1,5 @@
 // lib/gmat/scoring.ts
-// Prepwise — GMAT Score Calculation Utilities
+// SamiWISE — GMAT Score Calculation Utilities
 
 /**
  * GMAT Focus Edition score range: 205-805 (10-point increments)

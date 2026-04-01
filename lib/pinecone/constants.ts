@@ -1,10 +1,10 @@
 /**
  * Pinecone constants — namespaces and configuration
- * Prepwise GMAT knowledge base namespaces.
+ * SamiWISE GMAT knowledge base namespaces.
  */
 
 export const NAMESPACES = {
-  // Prepwise GMAT namespaces
+  // SamiWISE GMAT namespaces
   GMAT_QUANT: 'gmat-quant',
   GMAT_VERBAL: 'gmat-verbal',
   GMAT_DI: 'gmat-di',

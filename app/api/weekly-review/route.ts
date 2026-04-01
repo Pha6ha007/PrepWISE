@@ -1,5 +1,5 @@
 // app/api/weekly-review/route.ts
-// Prepwise — Sam's Weekly Progress Review
+// SamiWISE — Sam's Weekly Progress Review
 // Generates a personalized weekly review using the student's actual data.
 
 import { NextResponse } from 'next/server'

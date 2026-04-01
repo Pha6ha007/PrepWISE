@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Prepwise",
+    "appName": "SamiWISE",
     "tagline": "Your AI GMAT tutor that remembers, adapts, and helps you score 700+"
   },
   "auth": {
@@ -11,8 +11,8 @@
     "logout": "Log out"
   },
   "onboarding": {
-    "welcome": "Welcome to Prepwise",
-    "disclaimer": "Prepwise is an AI tutoring platform for GMAT preparation. Sam is your AI tutor — not a human instructor.",
+    "welcome": "Welcome to SamiWISE",
+    "disclaimer": "SamiWISE is an AI tutoring platform for GMAT preparation. Sam is your AI tutor — not a human instructor.",
     "chooseVoice": "Choose your tutor's voice"
   },
   "chat": {

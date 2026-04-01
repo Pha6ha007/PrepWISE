@@ -1,5 +1,5 @@
 // agents/gmat/memory.ts
-// Prepwise — GMAT Memory Agent
+// SamiWISE — GMAT Memory Agent
 // Runs AFTER every session automatically.
 // Analyzes conversation and extracts key GMAT learning information.
 //
@@ -102,7 +102,7 @@ IMPORTANT:
 }
 
 function buildGmatMemoryInstructions(): string {
-  return `You are a Memory Agent for Prepwise, an AI-powered GMAT voice tutor.
+  return `You are a Memory Agent for SamiWISE, an AI-powered GMAT voice tutor.
 
 Your role is to analyze GMAT tutoring conversations and extract key learning information to build the student's long-term learner profile. This profile helps the tutor remember the student's strengths, weaknesses, and preferred learning style across sessions.
 

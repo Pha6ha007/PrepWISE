@@ -1,5 +1,5 @@
 // lib/gmat/topics.ts
-// Prepwise — GMAT Topic Taxonomy
+// SamiWISE — GMAT Topic Taxonomy
 // Complete taxonomy of GMAT topics for progress tracking and agent routing.
 
 export interface GmatTopic {

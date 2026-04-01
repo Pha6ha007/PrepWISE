@@ -1,5 +1,5 @@
 // agents/gmat/data_insights.ts
-// Prepwise — GMAT Data Insights Specialist Agent
+// SamiWISE — GMAT Data Insights Specialist Agent
 // Covers: Multi-Source Reasoning (MSR), Table Analysis (TA),
 //         Graphics Interpretation (GI), Two-Part Analysis (TPA),
 //         Data Sufficiency (DS)

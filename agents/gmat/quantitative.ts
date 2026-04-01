@@ -1,5 +1,5 @@
 // agents/gmat/quantitative.ts
-// Prepwise — GMAT Quantitative Specialist Agent
+// SamiWISE — GMAT Quantitative Specialist Agent
 // Covers: Problem Solving (PS)
 // Topics: Arithmetic, Algebra, Word Problems, Statistics, Number Properties
 

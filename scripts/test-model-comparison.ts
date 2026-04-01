@@ -133,7 +133,7 @@ Student: Okay, sounds good.
 // ── The actual memory prompt (from agents/gmat/memory.ts) ──────────────────
 
 function buildPrompt(transcript: string): string {
-  return `You are a Memory Agent for Prepwise, an AI-powered GMAT voice tutor.
+  return `You are a Memory Agent for SamiWISE, an AI-powered GMAT voice tutor.
 
 Your role is to analyze GMAT tutoring conversations and extract key learning information to build the student's long-term learner profile.
 

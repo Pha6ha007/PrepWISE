@@ -1,5 +1,5 @@
 // lib/gmat/analyzer.ts
-// Prepwise — Session Analysis Utilities
+// SamiWISE — Session Analysis Utilities
 // Analyzes completed sessions for patterns, insights, and progress tracking.
 
 import type { GmatAgentType } from '@/types'

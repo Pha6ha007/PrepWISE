@@ -1,5 +1,5 @@
 // lib/gmat/journal-updater.ts
-// Prepwise — Auto-updates the daily study journal after each session.
+// SamiWISE — Auto-updates the daily study journal after each session.
 // Called from the session end handler.
 
 import { prisma } from '@/lib/prisma'

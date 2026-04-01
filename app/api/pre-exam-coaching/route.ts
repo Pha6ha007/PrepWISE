@@ -1,5 +1,5 @@
 // app/api/pre-exam-coaching/route.ts
-// Prepwise — Sam's AI-generated pre-exam coaching message.
+// SamiWISE — Sam's AI-generated pre-exam coaching message.
 // Called when pre-exam mode is active (7 days before test).
 // Returns a personalized Sam message for TODAY based on actual stats.
 

@@ -1,5 +1,5 @@
 // agents/gmat/strategy.ts
-// Prepwise — GMAT Strategy & Exam Psychology Specialist Agent
+// SamiWISE — GMAT Strategy & Exam Psychology Specialist Agent
 // Covers: Time management, guessing strategy, study planning,
 //         test day preparation, test-day mindset, section ordering
 

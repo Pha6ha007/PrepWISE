@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // scripts/gmat/test_retrieval.ts
-// Prepwise — RAG Quality Validation
+// SamiWISE — RAG Quality Validation
 // Tests retrieval quality across all data sources and namespaces.
 // Target: precision@5 ≥ 0.80 per namespace
 //
@@ -85,7 +85,7 @@ const TEST_QUERIES: TestQuery[] = [
 // ── Test runner ────────────────────────────────────────────
 
 async function main() {
-  console.log('🧪 Prepwise — Full RAG Quality Validation')
+  console.log('🧪 SamiWISE — Full RAG Quality Validation')
   console.log('==========================================\n')
 
   if (!process.env.PINECONE_API_KEY || !process.env.OPENAI_API_KEY) {

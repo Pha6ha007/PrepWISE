@@ -1,5 +1,5 @@
 // lib/gmat/spaced-repetition.ts
-// Prepwise — FSRS (Free Spaced Repetition Scheduler) integration for GMAT topics
+// SamiWISE — FSRS (Free Spaced Repetition Scheduler) integration for GMAT topics
 // Uses ts-fsrs to schedule optimal review intervals for each topic/subtopic.
 //
 // Each GMAT topic the user practices becomes an FSRS card.

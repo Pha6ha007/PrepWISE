@@ -14,7 +14,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
               <Brain className="w-4.5 h-4.5 text-[#0A0F1E]" />
             </div>
-            <span className="text-lg font-bold tracking-tight">Prepwise</span>
+            <span className="text-lg font-bold tracking-tight">SamiWISE</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/blog" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
@@ -83,7 +83,7 @@ export default function LandingPage() {
       <section className="max-w-6xl mx-auto px-6 py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Why students choose <span className="gradient-text">Prepwise</span>
+            Why students choose <span className="gradient-text">SamiWISE</span>
           </h2>
           <p className="text-slate-400 text-lg max-w-xl mx-auto">
             The only GMAT tutor that combines voice, memory, and real test content.
@@ -275,7 +275,7 @@ export default function LandingPage() {
               <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
                 <Brain className="w-3.5 h-3.5 text-[#0A0F1E]" />
               </div>
-              <span className="font-semibold">Prepwise</span>
+              <span className="font-semibold">SamiWISE</span>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
               <Link href="/" className="hover:text-slate-300 transition-colors">Home</Link>
