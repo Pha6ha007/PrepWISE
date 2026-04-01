@@ -15,7 +15,7 @@
     "@langchain/openai": "^1.2.11",
     "@langchain/pinecone": "^1.0.1",
     "@paddle/paddle-node-sdk": "^1.6.0",
-    "@pinecone-database/pinecone": "^5.1.2",
+    "@pinecone-database/pinecone": "^7.1.0",
     "@prisma/client": "^6.6.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-select": "^2.2.6",
