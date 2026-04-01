@@ -17,4 +17,4 @@ export const resend = new Proxy({} as Resend, {
   },
 })
 
-export const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'sam@prepwise.app'
+export const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'sam@samiwise.app'

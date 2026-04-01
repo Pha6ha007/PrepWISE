@@ -88,13 +88,13 @@ export default function DashboardClient({
       {/* Sidebar */}
       <div
         className={`
-          fixed lg:relative inset-y-0 left-0 z-50 w-64
+          fixed lg:relative inset-y-0 left-0 z-50 w-64 h-screen
           bg-[#0B1120] border-r border-white/[0.04]
           transform transition-transform duration-300
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full overflow-y-auto">
           {/* Logo */}
           <div className="px-6 py-5 border-b border-white/[0.04] flex items-center justify-between">
             <Link href="/dashboard/session" className="flex items-center gap-2.5">
@@ -112,7 +112,7 @@ export default function DashboardClient({
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-3 py-4 space-y-1">
+          <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {navigation.map((item) => {
               const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
               return (
@@ -220,14 +220,14 @@ export default function DashboardClient({
           <div className="w-6" />
         </div>
 
-        <main className="flex-1 overflow-auto relative">
+        <main className="flex-1 overflow-auto relative bg-[#0B1120]">
           {showPreExamBanner && gmatTestDate && (
             <PreExamBanner
               testDate={gmatTestDate}
               weakTopics={gmatWeakTopics}
             />
           )}
-          <div className="min-h-full">{children}</div>
+          <div className="min-h-full bg-[#0B1120]">{children}</div>
         </main>
       </div>
     </div>

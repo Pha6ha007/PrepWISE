@@ -12,14 +12,15 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Prepwise — AI GMAT Tutor',
+  metadataBase: new URL('https://samiwise.app'),
+  title: 'SamiWISE — AI GMAT Tutor',
   description: 'AI voice tutor for GMAT preparation. Talk to Sam — your personal tutor who remembers your progress, adapts to your weak spots, and helps you score 700+.',
   manifest: '/manifest.json',
   themeColor: '#0A0F1E',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Prepwise',
+    title: 'SamiWISE',
   },
   icons: {
     apple: '/icons/icon-192x192.svg',
@@ -36,7 +37,7 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Prepwise" />
+        <meta name="apple-mobile-web-app-title" content="SamiWISE" />
       </head>
       <body className={`${inter.className} bg-[#0A0F1E]`}>
         {children}

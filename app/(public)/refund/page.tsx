@@ -109,8 +109,8 @@ export default function RefundPage() {
               <ol className="list-decimal list-inside space-y-2 ml-2 text-slate-300">
                 <li>
                   Email us at{' '}
-                  <a href="mailto:hello@prepwise.app" className="text-cyan-400 hover:underline">
-                    hello@prepwise.app
+                  <a href="mailto:hello@samiwise.app" className="text-cyan-400 hover:underline">
+                    hello@samiwise.app
                   </a>{' '}
                   with the subject line &quot;Refund Request&quot;
                 </li>

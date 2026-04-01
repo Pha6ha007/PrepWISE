@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
 
     // Send email via Resend
     await resend.emails.send({
-      from: "Prepwise Contact Form <noreply@prepwise.app>",
-      to: "hello@prepwise.app",
+      from: "SamiWISE Contact Form <noreply@samiwise.app>",
+      to: "hello@samiwise.app",
       replyTo: email,
       subject: emailSubject,
       html: htmlContent,

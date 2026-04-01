@@ -4,8 +4,9 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Clock, Target, BarChart3, Play, BookmarkIcon, ChevronLeft,
-  ChevronRight, AlertCircle, CheckCircle2, Coffee,
+  ChevronRight, AlertCircle, CheckCircle2, Coffee, History,
 } from 'lucide-react'
+import Link from 'next/link'
 import { GMAT_SECTIONS } from '@/lib/gmat/topics'
 import {
   type GmatQuestion,
@@ -315,10 +316,21 @@ export default function MockTestPage() {
     return (
       <div className="min-h-full max-w-4xl mx-auto p-6 lg:p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-white">Mock Test</h1>
-          <p className="text-slate-400 mt-1">
-            Computer-adaptive test — questions adjust to your level in real time
-          </p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-white">Mock Test</h1>
+              <p className="text-slate-400 mt-1">
+                Computer-adaptive test — questions adjust to your level in real time
+              </p>
+            </div>
+            <Link
+              href="/dashboard/mock-test/history"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-slate-400 hover:text-white border border-white/[0.08] hover:border-white/20 rounded-xl transition-colors whitespace-nowrap"
+            >
+              <History className="w-4 h-4" />
+              View History
+            </Link>
+          </div>
         </div>
 
         {/* Mode cards */}

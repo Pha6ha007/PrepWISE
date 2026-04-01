@@ -286,7 +286,7 @@ function SessionPageInner() {
 
   if (!sessionStarted) {
     return (
-      <div className="h-full flex items-center justify-center">
+      <div className="min-h-full bg-[#0B1120] flex items-center justify-center py-16">
         <Suspense fallback={null}><AutoCheckout /></Suspense>
         <div className="text-center max-w-lg px-6">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-400 flex items-center justify-center">
@@ -326,7 +326,7 @@ function SessionPageInner() {
   // ── Active session ─────────────────────────────────────────
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-[#0B1120]">
       {/* Header */}
       <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-white/[0.06] bg-white/[0.02] backdrop-blur-sm">
         <div className="flex items-center gap-3">

@@ -32,7 +32,7 @@ function getAgentClient(): OpenAI {
       apiKey: process.env.OPENROUTER_API_KEY,
       baseURL: 'https://openrouter.ai/api/v1',
       defaultHeaders: {
-        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://prepwise.app',
+        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://samiwise.app',
         'X-Title': 'PrepWISE',
       },
     })
@@ -97,7 +97,7 @@ function getEmbeddingClient(): OpenAI {
       apiKey: process.env.OPENROUTER_API_KEY,
       baseURL: 'https://openrouter.ai/api/v1',
       defaultHeaders: {
-        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://prepwise.app',
+        'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://samiwise.app',
         'X-Title': 'PrepWISE',
       },
     })

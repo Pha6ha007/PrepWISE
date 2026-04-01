@@ -25,7 +25,7 @@ const faqs = [
   },
   {
     q: 'How do I submit my scores?',
-    a: 'Email support@prepwise.ai with a screenshot of your official GMAT score report (before and after). We verify with GMAC\'s score reporting service.',
+    a: 'Email support@samiwise.app with a screenshot of your official GMAT score report (before and after). We verify with GMAC\'s score reporting service.',
   },
   {
     q: 'What if I don\'t take the GMAT within 3 months?',

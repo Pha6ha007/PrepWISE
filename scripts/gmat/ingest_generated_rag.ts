@@ -39,7 +39,7 @@ async function main() {
   const client = new OpenAI(useOpenRouter ? {
     apiKey: process.env.OPENROUTER_API_KEY,
     baseURL: 'https://openrouter.ai/api/v1',
-    defaultHeaders: { 'HTTP-Referer': 'https://prepwise.app', 'X-Title': 'PrepWISE' },
+    defaultHeaders: { 'HTTP-Referer': 'https://samiwise.app', 'X-Title': 'PrepWISE' },
   } : {
     apiKey: process.env.OPENAI_API_KEY,
   })

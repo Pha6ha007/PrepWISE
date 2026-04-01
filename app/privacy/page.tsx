@@ -209,7 +209,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-white mb-3">Children&apos;s Privacy</h2>
             <p className="text-slate-300 leading-relaxed">
               PrepWISE is <strong className="text-white">not intended for users under 18 years old</strong>. We do not knowingly collect data from minors. If you are a parent and believe your child has created an account, please contact us immediately at{' '}
-              <a href="mailto:support@prepwise.app" className="text-cyan-400 hover:underline">support@prepwise.app</a>.
+              <a href="mailto:support@samiwise.app" className="text-cyan-400 hover:underline">support@samiwise.app</a>.
             </p>
           </section>
 
@@ -238,7 +238,7 @@ export default function PrivacyPage() {
             <div className="bg-[#0D1220] border border-white/[0.06] rounded-lg p-6">
               <p className="text-white font-medium mb-1">Privacy Team</p>
               <p className="text-slate-400">
-                Email: <a href="mailto:support@prepwise.app" className="text-cyan-400 hover:underline">support@prepwise.app</a>
+                Email: <a href="mailto:support@samiwise.app" className="text-cyan-400 hover:underline">support@samiwise.app</a>
               </p>
             </div>
           </section>

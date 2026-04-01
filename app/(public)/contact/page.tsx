@@ -308,8 +308,8 @@ export default function ContactPage() {
         {/* Direct email fallback */}
         <p className="text-center text-sm text-slate-600 mt-8">
           Prefer email? Reach us at{' '}
-          <a href="mailto:hello@prepwise.app" className="text-cyan-400 hover:underline">
-            hello@prepwise.app
+          <a href="mailto:hello@samiwise.app" className="text-cyan-400 hover:underline">
+            hello@samiwise.app
           </a>
         </p>
       </main>

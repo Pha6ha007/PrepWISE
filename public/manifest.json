@@ -1,6 +1,6 @@
 {
-  "name": "Prepwise — AI GMAT Tutor",
-  "short_name": "Prepwise",
+  "name": "SamiWISE — AI GMAT Tutor",
+  "short_name": "SamiWISE",
   "description": "AI voice tutor for GMAT preparation. Remembers your progress, adapts to your weak spots.",
   "start_url": "/dashboard/session",
   "display": "standalone",

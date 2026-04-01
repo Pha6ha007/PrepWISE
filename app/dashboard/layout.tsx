@@ -76,7 +76,7 @@ export default async function DashboardLayout({
       throw error // re-throw redirect
     }
     console.warn('Dashboard: Supabase not configured, allowing access in dev mode')
-    user = { id: 'dev-user', email: 'dev@prepwise.app' } as any
+    user = { id: 'dev-user', email: 'dev@samiwise.app' } as any
   }
 
   return (

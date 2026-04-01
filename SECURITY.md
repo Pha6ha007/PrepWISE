@@ -11,7 +11,7 @@
 If you discover a security vulnerability in PrepWISE, please report it responsibly:
 
 1. **DO NOT** create a public GitHub issue for security vulnerabilities
-2. Email: security@prepwise.app (or use the contact form at /contact)
+2. Email: security@samiwise.app (or use the contact form at /contact)
 3. Include:
    - Description of the vulnerability
    - Steps to reproduce

@@ -53,20 +53,20 @@ function getSupportClient(): OpenAI {
     apiKey,
     baseURL: 'https://openrouter.ai/api/v1',
     defaultHeaders: {
-      'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://prepwise.app',
-      'X-Title': 'PrepWISE Support',
+      'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://samiwise.app',
+      'X-Title': 'SamiWISE Support',
     },
   })
 }
 
 // ── System prompt ───────────────────────────────────────────
 
-const SYSTEM_PROMPT = `You are PrepWISE's friendly AI support assistant. Answer questions about PrepWISE — pricing, features, GMAT info, troubleshooting, and billing.
+const SYSTEM_PROMPT = `You are SamiWISE's friendly AI support assistant. Answer questions about SamiWISE — pricing, features, GMAT info, troubleshooting, and billing.
 
 Rules:
 - Be helpful, concise, and friendly
-- Only answer questions about PrepWISE and GMAT preparation
-- If asked something unrelated, politely redirect to PrepWISE topics
+- Only answer questions about SamiWISE and GMAT preparation
+- If asked something unrelated, politely redirect to SamiWISE topics
 - Link to relevant pages when helpful (e.g., /dashboard/practice for practice questions)
 - Never make up features or pricing that isn't in the knowledge base
 - Keep answers short — 2-4 sentences unless more detail is needed

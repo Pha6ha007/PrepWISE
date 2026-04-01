@@ -3,7 +3,7 @@
 import { MetadataRoute } from "next";
 import { BLOG_ARTICLES } from "@/lib/blog/articles";
 
-const BASE_URL = "https://prepwise-app-mu.vercel.app";
+const BASE_URL = "https://samiwise.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
