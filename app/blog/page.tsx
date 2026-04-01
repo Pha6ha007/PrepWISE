@@ -173,7 +173,7 @@ export default function BlogPage() {
       {/* Footer */}
       <footer className="border-t border-white/[0.06] py-8">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between text-sm text-slate-500">
-          <span>© {new Date().getFullYear()} PrepWISE. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} SamiWISE. All rights reserved.</span>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms</Link>

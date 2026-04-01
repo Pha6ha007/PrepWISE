@@ -288,7 +288,7 @@ export default function LandingPage() {
               <Link href="/refund" className="hover:text-slate-300 transition-colors">Refund</Link>
             </div>
             <p className="text-xs text-slate-600">
-              © 2026 PrepWISE. AI-Powered GMAT Tutor.
+              © 2026 SamiWISE. AI-Powered GMAT Tutor.
             </p>
           </div>
         </div>
