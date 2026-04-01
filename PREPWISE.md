@@ -1,4 +1,4 @@
-# PREPWISE — AI-Powered GMAT Voice Tutor
+# SAMIWISE — AI-Powered GMAT Voice Tutor
 > **Version: 2.0** | March 2026  
 > **Status: In active development — deployed on Vercel**  
 > **Stack:** Next.js 14 + TypeScript | Vercel + Railway | Paddle | Pinecone + Supabase + Prisma
@@ -30,7 +30,7 @@
 ## 1. Product Overview
 
 ### Concept
-PrepWISE is a voice AI tutor for GMAT preparation. Students speak with a personalized AI teacher (Sam) through a browser — like a live tutoring session, but the teacher is AI. Sam remembers every session, adapts to weak spots, coaches contextually, and explains material in real time using RAG over official GMAT guides.
+SamiWISE is a voice AI tutor for GMAT preparation. Students speak with a personalized AI teacher (Sam) through a browser — like a live tutoring session, but the teacher is AI. Sam remembers every session, adapts to weak spots, coaches contextually, and explains material in real time using RAG over official GMAT guides.
 
 ### Key Differentiators
 No competitor combines all five:
@@ -53,7 +53,7 @@ No competitor combines all five:
 - GMAT prep market: **$798M projected by 2027** (CAGR 9%)
 - ~85,000 GMAT test-takers annually in the US
 - Average human tutor: $150–200/hr
-- PrepWISE price: $39–149/month (5–10× cheaper)
+- SamiWISE price: $39–149/month (5–10× cheaper)
 
 ---
 
@@ -61,7 +61,7 @@ No competitor combines all five:
 
 ### Feature Comparison
 
-| Feature | PrepWISE | Magoosh | Manhattan Prep | GMAT Club | Target Test Prep | E-GMAT |
+| Feature | SamiWISE | Magoosh | Manhattan Prep | GMAT Club | Target Test Prep | E-GMAT |
 |---------|----------|---------|---------------|-----------|-----------------|--------|
 | **Voice AI tutor** | ✅ Sam — real-time voice | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Long-term memory** | ✅ Full session history | ❌ | ❌ | ❌ | ❌ | ❌ |
@@ -82,28 +82,28 @@ No competitor combines all five:
 
 | Platform | PS/Quant | DS | CR | RC | GI | MSR | TA | TPA | **Total** | All w/ explanations |
 |----------|---------|----|----|----|----|-----|----|-----|-----------|---------------------|
-| **PrepWISE** | **1,500** | **400** | **5,138** | **672** | **140** | **105** | **98** | **126** | **🏆 8,179** | **✅ 8,172 (99.9%)** |
+| **SamiWISE** | **1,500** | **400** | **5,138** | **672** | **140** | **105** | **98** | **126** | **🏆 8,179** | **✅ 8,172 (99.9%)** |
 | Magoosh | ~600 | ~200 | ~600 | ~200 | ~50 | ~50 | ~50 | ~50 | ~1,800 | ✅ |
 | Manhattan Prep | ~1,200 | ~400 | ~800 | ~400 | ~100 | ~100 | ~100 | ~100 | ~3,200 | ✅ |
 | Target Test Prep | ~1,000 | ~300 | ~700 | ~300 | ~100 | ~80 | ~80 | ~80 | ~2,640 | ✅ |
 | GMAT Official Guide | ~700 | ~230 | ~700 | ~140 | ~75 | ~45 | ~45 | ~45 | ~1,980 | ✅ |
 | GMAT Club (free) | ~500 | ~200 | ~2,000 | ~500 | ~100 | ~50 | ~50 | ~50 | ~3,450 | ⚠️ partial |
 
-**PrepWISE has the largest question bank of any GMAT prep platform — and all questions have AI-generated explanations.**
+**SamiWISE has the largest question bank of any GMAT prep platform — and all questions have AI-generated explanations.**
 
 ### Pricing Comparison
 
 | Platform | Price | Questions | Voice AI | Memory |
 |----------|-------|-----------|----------|--------|
-| **PrepWISE Starter** | **$39/mo** | 8,179 | ✅ | ✅ |
-| **PrepWISE Pro** | **$79/mo** | 8,179 | ✅ | ✅ |
-| **PrepWISE Intensive** | **$149/mo** | 8,179 | ✅ | ✅ |
+| **SamiWISE Starter** | **$39/mo** | 8,179 | ✅ | ✅ |
+| **SamiWISE Pro** | **$79/mo** | 8,179 | ✅ | ✅ |
+| **SamiWISE Intensive** | **$149/mo** | 8,179 | ✅ | ✅ |
 | Magoosh | $179 (6-mo) | ~1,800 | ❌ | ❌ |
 | Manhattan Prep | $249 (3-mo) | ~3,200 | ❌ | ❌ |
 | Target Test Prep | $199/mo | ~2,640 | ❌ | ❌ |
 | Human tutor | $150–200/hr | — | Human | Human |
 
-**PrepWISE is 5–10× cheaper than competitors and the only platform with voice AI + memory.**
+**SamiWISE is 5–10× cheaper than competitors and the only platform with voice AI + memory.**
 
 ### What No Competitor Does
 - Sam remembers your error patterns and warns you **before** you repeat them
@@ -546,7 +546,7 @@ NEXT_PUBLIC_POSTHOG_KEY=
 NEXT_PUBLIC_POSTHOG_HOST=
 
 # ── App ────────────────────────────────────────────────────────────────────
-NEXT_PUBLIC_APP_URL=https://prepwise.app
+NEXT_PUBLIC_APP_URL=https://samiwise.app
 
 # ── Infrastructure ─────────────────────────────────────────────────────────
 RAILWAY_AGENT_URL=          # Railway agents backend URL
@@ -626,7 +626,7 @@ See `SECURITY.md` for full architecture.
 ## 16. File Structure
 
 ```
-prepwise/
+samiwise/
 ├── agents/gmat/
 │   ├── index.ts              — exports all agent prompts
 │   ├── orchestrator.ts       — routing logic + GmatRoutingDecision
@@ -798,5 +798,5 @@ Pro plan ($79/month, 20 sessions avg):
 
 ---
 
-*PrepWISE Documentation v2.0 | March 2026*  
-*prepwise.app | Pha6ha007/PrepWISE*
+*SamiWISE Documentation v2.0 | March 2026*  
+*samiwise.app | Pha6ha007/SamiWISE*

@@ -19,7 +19,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     tags: ['GMAT Focus', 'test format', '2026', 'beginners'],
     publishedAt: '2026-01-15',
     readingTime: 10,
-    author: 'PrepWISE Team',
+    author: 'SamiWISE Team',
     content: `The GMAT has undergone its most significant transformation in decades. The GMAT Focus Edition, which fully replaced the classic GMAT, is a shorter, sharper exam that tests the skills business schools actually care about. If you're planning to take the GMAT in 2026, here's everything you need to know.
 
 ## What Changed in the GMAT Focus Edition
@@ -102,7 +102,7 @@ This is the most distinctive section and where many test-takers struggle. It com
 
 ### Resources
 - GMAT Official Practice Exams (the gold standard)
-- AI-powered prep tools like PrepWISE that adapt to your weak areas
+- AI-powered prep tools like SamiWISE that adapt to your weak areas
 - Official GMAT Focus question sets from GMAC
 
 ## Section Order Flexibility
@@ -707,10 +707,10 @@ Critical Reasoning is a learnable skill. The logic is consistent, the patterns r
     title: 'How AI is Changing GMAT Prep in 2026',
     description: 'AI tutors, adaptive learning, and voice-based prep are transforming how students prepare for the GMAT. Here\'s what\'s different in 2026.',
     section: 'general',
-    tags: ['AI', 'technology', 'study tools', '2026', 'PrepWISE'],
+    tags: ['AI', 'technology', 'study tools', '2026', 'SamiWISE'],
     publishedAt: '2026-02-25',
     readingTime: 8,
-    author: 'PrepWISE Team',
+    author: 'SamiWISE Team',
     content: `GMAT preparation has looked roughly the same for two decades: buy a book, watch video lessons, do practice problems, take practice tests. That formula still works. But in 2026, artificial intelligence is adding capabilities that fundamentally change what "effective studying" looks like.
 
 ## The Old Model vs. The New Model
@@ -735,7 +735,7 @@ A human tutor does this intuitively with enough hours of interaction. AI does it
 
 When you get a problem wrong in a traditional prep course, you see the same explanation everyone else sees. Maybe it's great. Maybe it explains the concept using an approach that doesn't match how you think.
 
-AI tutors like PrepWISE's Sam can explain the same concept multiple ways. If the algebraic approach didn't click, it tries a visual one. If the formal explanation is confusing, it uses an analogy. It can also ask you questions to identify exactly where your understanding breaks down — something a pre-recorded video can never do.
+AI tutors like SamiWISE's Sam can explain the same concept multiple ways. If the algebraic approach didn't click, it tries a visual one. If the formal explanation is confusing, it uses an analogy. It can also ask you questions to identify exactly where your understanding breaks down — something a pre-recorded video can never do.
 
 ### 3. Memory Across Sessions
 
@@ -754,7 +754,7 @@ This matters for several reasons:
 - **It catches flawed reasoning in real time.** When you talk through your approach, the AI can identify exactly where your logic goes wrong — not just that you got the wrong answer.
 - **It's accessible anywhere.** Commuting, exercising, doing chores — voice-based prep turns dead time into study time.
 
-PrepWISE built its entire platform around this concept: you talk to Sam, your AI tutor, who responds with voice, adapts to your level, and remembers your progress. It's the closest thing to having a private GMAT tutor available 24/7.
+SamiWISE built its entire platform around this concept: you talk to Sam, your AI tutor, who responds with voice, adapts to your level, and remembers your progress. It's the closest thing to having a private GMAT tutor available 24/7.
 
 ## What AI Does NOT Replace
 
@@ -1016,7 +1016,7 @@ The 8-week plan works because it balances skill building with practice, and inte
     tags: ['GMAT vs GRE', 'business school', 'test choice', 'comparison'],
     publishedAt: '2026-03-08',
     readingTime: 9,
-    author: 'PrepWISE Team',
+    author: 'SamiWISE Team',
     content: `Most top business schools accept both the GMAT and the GRE. That's great for flexibility, but it means you need to make a choice. Here's a clear-eyed comparison to help you decide.
 
 ## The Basic Differences

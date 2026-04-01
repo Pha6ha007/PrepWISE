@@ -376,13 +376,13 @@ async function main() {
     baseURL: 'https://openrouter.ai/api/v1',
     defaultHeaders: {
       'HTTP-Referer': 'https://samiwise.app',
-      'X-Title': 'PrepWISE Model Test',
+      'X-Title': 'SamiWISE Model Test',
     },
   })
 
   const prompt = buildPrompt(SAMPLE_TRANSCRIPT)
   console.log(`\n${'═'.repeat(60)}`)
-  console.log('  PrepWISE — Memory Extraction Model Comparison')
+  console.log('  SamiWISE — Memory Extraction Model Comparison')
   console.log(`${'═'.repeat(60)}`)
   console.log(`Prompt tokens (est.): ~${Math.round(prompt.length / 4)}`)
   console.log(`Running ${MODELS.length} models sequentially...\n`)

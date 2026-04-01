@@ -115,7 +115,7 @@ export const SAMPLE_QUESTIONS: GmatQuestion[] = [
     ],
     correctAnswer: 'C',
     explanation: 'From 3x + 7 = 22, we get 3x = 15, so x = 5. Therefore 6x + 3 = 6(5) + 3 = 33.',
-    source: 'PrepWISE',
+    source: 'SamiWISE',
   },
   {
     id: 'ps-002',
@@ -134,7 +134,7 @@ export const SAMPLE_QUESTIONS: GmatQuestion[] = [
     ],
     correctAnswer: 'B',
     explanation: '72 = 8 × 9 = 2³ × 3². For n² to be divisible by 2³ × 3², n must be divisible by 2² × 3 = 12 (since n² needs at least 2³, n needs at least 2², and since n² needs at least 3², n needs at least 3¹). So n = 12.',
-    source: 'PrepWISE',
+    source: 'SamiWISE',
   },
   {
     id: 'ds-001',
@@ -148,7 +148,7 @@ export const SAMPLE_QUESTIONS: GmatQuestion[] = [
     statement2: 'x³ > 0',
     correctAnswer: 'B',
     explanation: 'Statement 1: x² > 0 means x ≠ 0, but x could be positive or negative. INSUFFICIENT.\nStatement 2: x³ > 0 means x > 0 (cubing preserves sign). SUFFICIENT.\nAnswer: B — Statement (2) ALONE is sufficient.',
-    source: 'PrepWISE',
+    source: 'SamiWISE',
   },
   {
     id: 'ds-002',
@@ -162,7 +162,7 @@ export const SAMPLE_QUESTIONS: GmatQuestion[] = [
     statement2: 'When n is divided by 3, the remainder is 2.',
     correctAnswer: 'A',
     explanation: 'Statement 1: n = 12k + 5 for some non-negative integer k. When divided by 6: 12k + 5 = 6(2k) + 5, so remainder is always 5. SUFFICIENT.\nStatement 2: n = 3m + 2. Could be 2 (rem 2 when ÷6), 5 (rem 5), 8 (rem 2), 11 (rem 5)... remainder could be 2 or 5. INSUFFICIENT.\nAnswer: A.',
-    source: 'PrepWISE',
+    source: 'SamiWISE',
   },
   {
     id: 'cr-001',
@@ -182,7 +182,7 @@ export const SAMPLE_QUESTIONS: GmatQuestion[] = [
     ],
     correctAnswer: 'B',
     explanation: 'Choice B identifies an alternative explanation — a confounding variable. If coffee drinkers also exercised more and ate healthier, the reduced diabetes risk could be due to lifestyle factors, not coffee itself. This directly weakens the causal conclusion.',
-    source: 'PrepWISE',
+    source: 'SamiWISE',
   },
   {
     id: 'cr-002',
@@ -202,7 +202,7 @@ export const SAMPLE_QUESTIONS: GmatQuestion[] = [
     ],
     correctAnswer: 'A',
     explanation: 'For the conclusion that remote work caused the productivity increase, we must assume no other factors changed simultaneously. If new tools, processes, or incentives were also introduced, the productivity gain might not be due to remote work alone. This is a necessary assumption.',
-    source: 'PrepWISE',
+    source: 'SamiWISE',
   },
   {
     id: 'ps-003',
@@ -221,7 +221,7 @@ export const SAMPLE_QUESTIONS: GmatQuestion[] = [
     ],
     correctAnswer: 'C',
     explanation: 'Percent decrease = (original − new) / original × 100 = (80 − 60) / 80 × 100 = 20/80 × 100 = 25%.',
-    source: 'PrepWISE',
+    source: 'SamiWISE',
   },
   {
     id: 'ps-004',
@@ -240,6 +240,6 @@ export const SAMPLE_QUESTIONS: GmatQuestion[] = [
     ],
     correctAnswer: 'C',
     explanation: 'At least 2 women means: 2W+3M, 3W+2M, or 4W+1M.\n2W3M: C(4,2)×C(6,3) = 6×20 = 120\n3W2M: C(4,3)×C(6,2) = 4×15 = 60\n4W1M: C(4,4)×C(6,1) = 1×6 = 6\nTotal = 120 + 60 + 6 = 186.',
-    source: 'PrepWISE',
+    source: 'SamiWISE',
   },
 ]

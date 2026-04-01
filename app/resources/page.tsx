@@ -141,7 +141,7 @@ export default function ResourcesPage() {
       {/* Header */}
       <header className="border-b border-white/[0.06]">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-white">🧠 PrepWISE</Link>
+          <Link href="/" className="text-xl font-bold text-white">🧠 SamiWISE</Link>
           <div className="flex items-center gap-4">
             <Link href="/blog" className="text-sm text-slate-400 hover:text-white transition-colors">Blog</Link>
             <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors">Sign in</Link>
@@ -160,7 +160,7 @@ export default function ResourcesPage() {
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5 text-cyan-400 text-sm font-medium mb-6">
             <BookOpen className="w-3.5 h-3.5" />
-            Curated by PrepWISE
+            Curated by SamiWISE
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Recommended GMAT Resources
@@ -209,12 +209,12 @@ export default function ResourcesPage() {
           </div>
         </section>
 
-        {/* Why PrepWISE + Books */}
+        {/* Why SamiWISE + Books */}
         <section className="bg-gradient-to-br from-cyan-500/10 to-violet-500/5 border border-cyan-500/10 rounded-2xl p-8 md:p-10 mb-14">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Why PrepWISE + Books?</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">Why SamiWISE + Books?</h2>
             <p className="text-slate-300 text-lg leading-relaxed mb-6">
-              Books give you the content. PrepWISE gives you the tutor. Use both for the fastest score improvement.
+              Books give you the content. SamiWISE gives you the tutor. Use both for the fastest score improvement.
             </p>
             <p className="text-sm text-slate-500">
               Study the theory from official guides, then practice with Sam — your AI tutor who remembers your weak spots and adapts every session.

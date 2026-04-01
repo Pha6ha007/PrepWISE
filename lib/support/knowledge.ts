@@ -1,11 +1,11 @@
-// PrepWISE — Support Knowledge Base
+// SamiWISE — Support Knowledge Base
 // Used as system context for the AI support assistant
 
 export const SUPPORT_KNOWLEDGE = `
-# PrepWISE — Product Knowledge Base
+# SamiWISE — Product Knowledge Base
 
-## What is PrepWISE?
-PrepWISE is an AI-powered GMAT tutor that uses voice interaction. Your AI tutor Sam remembers every session, adapts to your weak spots, and helps you score 700+.
+## What is SamiWISE?
+SamiWISE is an AI-powered GMAT tutor that uses voice interaction. Your AI tutor Sam remembers every session, adapts to your weak spots, and helps you score 700+.
 
 ## Pricing
 - Starter: $39/month — 20 voice sessions, Quant + Verbal, progress tracking

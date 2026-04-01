@@ -33,7 +33,7 @@ function getAgentClient(): OpenAI {
       baseURL: 'https://openrouter.ai/api/v1',
       defaultHeaders: {
         'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://samiwise.app',
-        'X-Title': 'PrepWISE',
+        'X-Title': 'SamiWISE',
       },
     })
   } else if (process.env.ANTHROPIC_API_KEY) {
@@ -98,7 +98,7 @@ function getEmbeddingClient(): OpenAI {
       baseURL: 'https://openrouter.ai/api/v1',
       defaultHeaders: {
         'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://samiwise.app',
-        'X-Title': 'PrepWISE',
+        'X-Title': 'SamiWISE',
       },
     })
   } else {

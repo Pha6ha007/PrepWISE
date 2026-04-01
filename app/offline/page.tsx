@@ -12,7 +12,7 @@ export default function OfflinePage() {
           You&apos;re offline
         </h1>
         <p className="text-slate-400 mb-6 max-w-md">
-          PrepWISE needs an internet connection to work with Sam.
+          SamiWISE needs an internet connection to work with Sam.
           Check your connection and try again.
         </p>
 

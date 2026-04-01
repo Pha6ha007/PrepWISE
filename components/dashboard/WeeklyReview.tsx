@@ -17,7 +17,7 @@ interface WeeklyReviewData {
   generatedAt: string
 }
 
-const DISMISS_KEY = 'prepwise-weekly-review-dismissed'
+const DISMISS_KEY = 'samiwise-weekly-review-dismissed'
 
 function getDismissKey(): string {
   // Key includes the ISO week so it resets each week

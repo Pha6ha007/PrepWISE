@@ -39,7 +39,7 @@ async function main() {
   const client = new OpenAI(useOpenRouter ? {
     apiKey: process.env.OPENROUTER_API_KEY,
     baseURL: 'https://openrouter.ai/api/v1',
-    defaultHeaders: { 'HTTP-Referer': 'https://samiwise.app', 'X-Title': 'PrepWISE' },
+    defaultHeaders: { 'HTTP-Referer': 'https://samiwise.app', 'X-Title': 'SamiWISE' },
   } : {
     apiKey: process.env.OPENAI_API_KEY,
   })
@@ -107,7 +107,7 @@ async function main() {
               topic: chunk.topic,
               section: chunk.section,
               namespace: namespace,
-              source: 'PrepWISE AI Generated (Claude)',
+              source: 'SamiWISE AI Generated (Claude)',
               generated: new Date().toISOString(),
             },
           }))

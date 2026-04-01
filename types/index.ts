@@ -159,7 +159,7 @@ export interface RateLimit {
 }
 
 // ============================================
-// PREPWISE — GMAT Types
+// SAMIWISE — GMAT Types
 // ============================================
 
 export type GmatAgentType =

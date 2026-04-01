@@ -63,22 +63,22 @@ export default function OnboardingPage() {
       })
 
       if (response.ok) {
-        localStorage.setItem('prepwise_onboarding_complete', 'true')
+        localStorage.setItem('samiwise_onboarding_complete', 'true')
         router.push('/dashboard/session')
         return
       }
 
       // API failed (no Supabase etc.) — still navigate, save to localStorage
       console.warn('Onboarding API returned', response.status, '— saving locally')
-      localStorage.setItem('prepwise_onboarding_complete', 'true')
-      localStorage.setItem('prepwise_preferred_name', preferredName.trim())
-      localStorage.setItem('prepwise_target_score', targetScore || '')
+      localStorage.setItem('samiwise_onboarding_complete', 'true')
+      localStorage.setItem('samiwise_preferred_name', preferredName.trim())
+      localStorage.setItem('samiwise_target_score', targetScore || '')
       window.location.href = '/dashboard/session'
     } catch (error) {
       console.error('Onboarding error:', error)
       // Even on network error — let user proceed
-      localStorage.setItem('prepwise_onboarding_complete', 'true')
-      localStorage.setItem('prepwise_preferred_name', preferredName.trim())
+      localStorage.setItem('samiwise_onboarding_complete', 'true')
+      localStorage.setItem('samiwise_preferred_name', preferredName.trim())
       window.location.href = '/dashboard/session'
     } finally {
       setIsSubmitting(false)

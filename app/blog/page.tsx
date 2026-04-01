@@ -165,7 +165,7 @@ export default function BlogPage() {
             Talk to Sam — your AI GMAT tutor who adapts to your level, remembers your weak spots, and helps you score 700+.
           </p>
           <Link href="/register" className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-[#0A0F1E] font-semibold px-6 py-3 rounded-lg transition-all">
-            Try PrepWISE Free <ArrowRight className="w-4 h-4" />
+            Try SamiWISE Free <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

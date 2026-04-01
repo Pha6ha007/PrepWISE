@@ -12,7 +12,7 @@ export default function TermsPage() {
       {/* Header */}
       <header className="border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-white">🧠 PrepWISE</Link>
+          <Link href="/" className="text-xl font-bold text-white">🧠 SamiWISE</Link>
           <Link href="/" className="text-sm text-slate-400 hover:text-white transition-colors">← Back to home</Link>
         </div>
       </header>
@@ -28,10 +28,10 @@ export default function TermsPage() {
           {/* Introduction */}
           <section>
             <p className="text-slate-300 leading-relaxed mb-3">
-              Welcome to <span className="font-semibold text-white">PrepWISE</span>. By accessing or using our platform, you agree to be bound by these Terms of Service (&quot;Terms&quot;). Please read them carefully.
+              Welcome to <span className="font-semibold text-white">SamiWISE</span>. By accessing or using our platform, you agree to be bound by these Terms of Service (&quot;Terms&quot;). Please read them carefully.
             </p>
             <p className="text-slate-300 leading-relaxed">
-              If you do not agree to these Terms, you may not use PrepWISE.
+              If you do not agree to these Terms, you may not use SamiWISE.
             </p>
           </section>
 
@@ -43,13 +43,13 @@ export default function TermsPage() {
               </h2>
               <div className="space-y-3 text-slate-300">
                 <p className="leading-relaxed">
-                  <strong className="text-white">PrepWISE is an AI-powered GMAT preparation platform. Sam is an AI tutor — not a human instructor, not a licensed educator, and not a substitute for professional test preparation courses.</strong>
+                  <strong className="text-white">SamiWISE is an AI-powered GMAT preparation platform. Sam is an AI tutor — not a human instructor, not a licensed educator, and not a substitute for professional test preparation courses.</strong>
                 </p>
                 <p className="leading-relaxed">
                   Sam is an AI-powered GMAT tutoring agent designed to help you prepare for the GMAT Focus Edition exam. Sam is not a human tutor and cannot guarantee specific score improvements.
                 </p>
                 <p className="leading-relaxed font-semibold text-white">
-                  PrepWISE does NOT:
+                  SamiWISE does NOT:
                 </p>
                 <ul className="space-y-1.5 ml-4 text-slate-300">
                   <li className="flex items-start">
@@ -84,13 +84,13 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">1. Nature of Service</h2>
             <p className="text-slate-300 leading-relaxed mb-3">
-              PrepWISE is a <strong className="text-white">software-as-a-service (SaaS) product</strong> that provides AI-powered GMAT preparation tools including practice questions, adaptive learning, voice tutoring sessions, and progress tracking.
+              SamiWISE is a <strong className="text-white">software-as-a-service (SaaS) product</strong> that provides AI-powered GMAT preparation tools including practice questions, adaptive learning, voice tutoring sessions, and progress tracking.
             </p>
             <p className="text-slate-300 leading-relaxed mb-3">
               The service falls under the category of <strong className="text-white">educational technology and test preparation software</strong>. It uses artificial intelligence to facilitate practice questions, topic review, adaptive difficulty, spaced repetition, and AI-guided explanations.
             </p>
             <p className="text-slate-300 leading-relaxed">
-              PrepWISE is comparable to products such as Magoosh, Manhattan Prep, and Target Test Prep. It is an educational software product, not a substitute for professional academic advising.
+              SamiWISE is comparable to products such as Magoosh, Manhattan Prep, and Target Test Prep. It is an educational software product, not a substitute for professional academic advising.
             </p>
           </section>
 
@@ -98,7 +98,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">2. Eligibility</h2>
             <p className="text-slate-300 leading-relaxed mb-3">
-              You must be <strong className="text-white">at least 18 years old</strong> to use PrepWISE.
+              You must be <strong className="text-white">at least 18 years old</strong> to use SamiWISE.
             </p>
             <p className="text-slate-300 leading-relaxed">
               By creating an account, you represent that you are 18 or older and have the legal capacity to enter into these Terms.
@@ -132,7 +132,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">4. Acceptable Use</h2>
             <p className="text-slate-300 leading-relaxed mb-3">
-              You agree <strong className="text-white">NOT</strong> to use PrepWISE to:
+              You agree <strong className="text-white">NOT</strong> to use SamiWISE to:
             </p>
             <ul className="space-y-1.5 text-slate-300 ml-2">
               {[
@@ -159,7 +159,7 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-medium text-white mb-2">Plans</h3>
                 <p className="text-slate-300 leading-relaxed mb-2">
-                  PrepWISE offers three paid plans, each with a 7-day free trial:
+                  SamiWISE offers three paid plans, each with a 7-day free trial:
                 </p>
                 <ul className="space-y-1.5 text-slate-300 ml-2">
                   <li className="flex items-start">
@@ -219,10 +219,10 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">6. Intellectual Property</h2>
             <p className="text-slate-300 leading-relaxed mb-3">
-              <strong className="text-white">Your Content:</strong> You retain ownership of your conversations and personal data. By using PrepWISE, you grant us a limited license to process your content to provide the service (e.g., AI responses, analytics).
+              <strong className="text-white">Your Content:</strong> You retain ownership of your conversations and personal data. By using SamiWISE, you grant us a limited license to process your content to provide the service (e.g., AI responses, analytics).
             </p>
             <p className="text-slate-300 leading-relaxed">
-              <strong className="text-white">Our Content:</strong> All text, graphics, logos, software, and AI models on PrepWISE are owned by us or our licensors. You may not copy, reproduce, or distribute our content without permission.
+              <strong className="text-white">Our Content:</strong> All text, graphics, logos, software, and AI models on SamiWISE are owned by us or our licensors. You may not copy, reproduce, or distribute our content without permission.
             </p>
           </section>
 
@@ -232,7 +232,7 @@ export default function TermsPage() {
             <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-6">
               <p className="text-xs uppercase font-semibold text-slate-400 mb-3">Important Legal Notice</p>
               <p className="text-slate-300 leading-relaxed mb-3">
-                PrepWISE is provided <strong className="text-white">&quot;AS IS&quot;</strong> and <strong className="text-white">&quot;AS AVAILABLE&quot;</strong> without warranties of any kind, either express or implied, including but not limited to:
+                SamiWISE is provided <strong className="text-white">&quot;AS IS&quot;</strong> and <strong className="text-white">&quot;AS AVAILABLE&quot;</strong> without warranties of any kind, either express or implied, including but not limited to:
               </p>
               <ul className="space-y-1.5 text-slate-300 ml-2">
                 <li className="flex items-start">
@@ -258,7 +258,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">8. Limitation of Liability</h2>
             <p className="text-slate-300 leading-relaxed mb-3">
-              To the maximum extent permitted by law, <strong className="text-white">PrepWISE and its affiliates shall not be liable</strong> for:
+              To the maximum extent permitted by law, <strong className="text-white">SamiWISE and its affiliates shall not be liable</strong> for:
             </p>
             <ul className="space-y-1.5 text-slate-300 ml-2">
               <li className="flex items-start">
@@ -287,7 +287,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">9. Indemnification</h2>
             <p className="text-slate-300 leading-relaxed mb-3">
-              You agree to indemnify and hold harmless PrepWISE from any claims, damages, or expenses (including legal fees) arising from:
+              You agree to indemnify and hold harmless SamiWISE from any claims, damages, or expenses (including legal fees) arising from:
             </p>
             <ul className="space-y-1.5 text-slate-300 ml-2">
               <li className="flex items-start">
@@ -328,7 +328,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">12. Changes to These Terms</h2>
             <p className="text-slate-300 leading-relaxed">
-              We may update these Terms from time to time. Significant changes will be communicated via email or in-app notification. Continued use of PrepWISE after changes constitutes acceptance of the updated Terms.
+              We may update these Terms from time to time. Significant changes will be communicated via email or in-app notification. Continued use of SamiWISE after changes constitutes acceptance of the updated Terms.
             </p>
           </section>
 
@@ -350,7 +350,7 @@ export default function TermsPage() {
           <section>
             <div className="bg-[#0D1220] border border-cyan-500/20 rounded-xl p-6">
               <p className="text-slate-300 leading-relaxed">
-                By using PrepWISE, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our{' '}
+                By using SamiWISE, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our{' '}
                 <Link href="/privacy" className="text-cyan-400 hover:underline">Privacy Policy</Link>.
               </p>
             </div>

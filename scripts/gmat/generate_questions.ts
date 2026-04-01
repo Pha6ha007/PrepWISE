@@ -28,7 +28,7 @@ const client = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
   defaultHeaders: {
     'HTTP-Referer': 'https://samiwise.app',
-    'X-Title': 'PrepWISE',
+    'X-Title': 'SamiWISE',
   },
 })
 
@@ -125,7 +125,7 @@ Each question MUST have:
 - "options": exactly 5 choices [{"id":"A","text":"..."},{"id":"B","text":"..."},{"id":"C","text":"..."},{"id":"D","text":"..."},{"id":"E","text":"..."}]
 - "correctAnswer": one of "A"-"E"
 - "explanation": step-by-step solution. Name the specific trap: "Choice B is tempting because..."
-- "source": "PrepWISE Generated"
+- "source": "SamiWISE Generated"
 
 Hard/700+ questions should test:
 - Compound conditions (rows satisfying multiple criteria simultaneously)
@@ -157,7 +157,7 @@ Each question MUST have:
 - "options": exactly 5 choices (the dropdown options)
 - "correctAnswer": one of "A"-"E"
 - "explanation": step-by-step calculation referencing specific values from the passage
-- "source": "PrepWISE Generated"
+- "source": "SamiWISE Generated"
 
 700+ questions should test:
 - Rate of change between non-adjacent points
@@ -189,7 +189,7 @@ Each question MUST have:
 - "options": exactly 5 choices
 - "correctAnswer": one of "A"-"E"
 - "explanation": cite which source(s) provide the key information and how they combine
-- "source": "PrepWISE Generated"
+- "source": "SamiWISE Generated"
 
 700+ questions require:
 - Information from ALL sources to answer correctly
@@ -240,7 +240,7 @@ Output format — ONLY valid JSON array of passage objects:
     "topic": "reading-comprehension",
     "passageTitle": "Descriptive Title Here",
     "passage": "Full passage text here (250-350 words)...",
-    "source": "PrepWISE Generated",
+    "source": "SamiWISE Generated",
     "questions": [
       {
         "id": "gen-rc-XXXX-q1",
@@ -287,7 +287,7 @@ Each question MUST have:
 - "options": 5-6 choices (SAME options list used for both columns)
 - "correctAnswer": "A,C" format — Column 1 answer, comma, Column 2 answer
 - "explanation": explain Column 1 selection, then Column 2 selection, why the pair works
-- "source": "PrepWISE Generated"
+- "source": "SamiWISE Generated"
 
 700+ algebraic TPA: use systems with non-obvious constraints (optimization, "must be true" across cases)
 700+ verbal TPA: multi-step argument chains where roles are ambiguous

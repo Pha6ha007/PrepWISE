@@ -17,11 +17,11 @@ import {
 const faqs = [
   {
     q: 'What counts as a practice session?',
-    a: 'Any session where you complete at least 10 practice questions in a single sitting. Sessions are automatically tracked in your PrepWISE dashboard.',
+    a: 'Any session where you complete at least 10 practice questions in a single sitting. Sessions are automatically tracked in your SamiWISE dashboard.',
   },
   {
     q: 'What if I already scored high?',
-    a: 'The guarantee is based on improvement from your initial PrepWISE diagnostic score. If your diagnostic is above 735, the guarantee becomes +30 points (since there\'s less room to improve at the top).',
+    a: 'The guarantee is based on improvement from your initial SamiWISE diagnostic score. If your diagnostic is above 735, the guarantee becomes +30 points (since there\'s less room to improve at the top).',
   },
   {
     q: 'How do I submit my scores?',
@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: 'What if I don\'t take the GMAT within 3 months?',
-    a: 'The guarantee requires taking the official GMAT within 3 months of your PrepWISE start date. If you need more time, contact us — we evaluate extensions on a case-by-case basis.',
+    a: 'The guarantee requires taking the official GMAT within 3 months of your SamiWISE start date. If you need more time, contact us — we evaluate extensions on a case-by-case basis.',
   },
   {
     q: 'Does the guarantee apply to all plans?',
@@ -67,7 +67,7 @@ const conditions = [
   { icon: BookOpen, text: 'Complete 20+ practice sessions (minimum 200 questions)' },
   { icon: FileText, text: 'Take 3+ full mock tests' },
   { icon: Clock, text: 'Study for at least 30 hours total' },
-  { icon: Target, text: 'Take the official GMAT within 3 months of starting PrepWISE' },
+  { icon: Target, text: 'Take the official GMAT within 3 months of starting SamiWISE' },
   { icon: FileText, text: 'Share your before/after official GMAT scores' },
 ]
 
@@ -117,7 +117,7 @@ export default function GuaranteePage() {
           </h1>
 
           <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-            We&apos;re so confident in PrepWISE that we guarantee your GMAT score improves
+            We&apos;re so confident in SamiWISE that we guarantee your GMAT score improves
             by at least 70 points — or we refund your subscription in full.
           </p>
 
@@ -169,7 +169,7 @@ export default function GuaranteePage() {
           <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 sm:p-10 text-center">
             <Shield className="w-10 h-10 text-emerald-400 mx-auto mb-4" />
             <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">
-              The PrepWISE Promise
+              The SamiWISE Promise
             </h3>
             <p className="text-slate-300 leading-relaxed max-w-xl mx-auto mb-6">
               If your GMAT score doesn&apos;t improve by at least 70 points after completing

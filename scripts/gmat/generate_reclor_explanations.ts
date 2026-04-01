@@ -26,7 +26,7 @@ const client = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
   defaultHeaders: {
     'HTTP-Referer': 'https://samiwise.app',
-    'X-Title': 'PrepWISE',
+    'X-Title': 'SamiWISE',
   },
 })
 

@@ -12,7 +12,7 @@ export default function PrivacyPage() {
       {/* Header */}
       <header className="border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-white">🧠 PrepWISE</Link>
+          <Link href="/" className="text-xl font-bold text-white">🧠 SamiWISE</Link>
           <Link href="/" className="text-sm text-slate-400 hover:text-white transition-colors">← Back to home</Link>
         </div>
       </header>
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">Introduction</h2>
             <p className="text-slate-300 leading-relaxed mb-3">
-              <span className="font-semibold text-white">PrepWISE</span> is an AI-powered GMAT preparation platform. Sam is an AI tutor — not a human instructor. We take your privacy seriously and are committed to protecting your personal information.
+              <span className="font-semibold text-white">SamiWISE</span> is an AI-powered GMAT preparation platform. Sam is an AI tutor — not a human instructor. We take your privacy seriously and are committed to protecting your personal information.
             </p>
             <p className="text-slate-300 leading-relaxed">
               This Privacy Policy explains how we collect, use, store, and protect your data when you use our platform.
@@ -208,7 +208,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">Children&apos;s Privacy</h2>
             <p className="text-slate-300 leading-relaxed">
-              PrepWISE is <strong className="text-white">not intended for users under 18 years old</strong>. We do not knowingly collect data from minors. If you are a parent and believe your child has created an account, please contact us immediately at{' '}
+              SamiWISE is <strong className="text-white">not intended for users under 18 years old</strong>. We do not knowingly collect data from minors. If you are a parent and believe your child has created an account, please contact us immediately at{' '}
               <a href="mailto:support@samiwise.app" className="text-cyan-400 hover:underline">support@samiwise.app</a>.
             </p>
           </section>
@@ -217,7 +217,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">International Users</h2>
             <p className="text-slate-300 leading-relaxed">
-              PrepWISE is available globally. Your data is stored on secure servers in the United States and European Union (Supabase regions). By using our platform, you consent to this data transfer. We comply with GDPR (EU), CCPA (California), and other international privacy laws.
+              SamiWISE is available globally. Your data is stored on secure servers in the United States and European Union (Supabase regions). By using our platform, you consent to this data transfer. We comply with GDPR (EU), CCPA (California), and other international privacy laws.
             </p>
           </section>
 
@@ -225,7 +225,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">Changes to This Policy</h2>
             <p className="text-slate-300 leading-relaxed">
-              We may update this Privacy Policy from time to time. Significant changes will be communicated via email. Continued use of PrepWISE after changes constitutes acceptance of the updated policy.
+              We may update this Privacy Policy from time to time. Significant changes will be communicated via email. Continued use of SamiWISE after changes constitutes acceptance of the updated policy.
             </p>
           </section>
 

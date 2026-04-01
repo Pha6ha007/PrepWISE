@@ -24,7 +24,7 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({
       status: 'healthy',
-      service: 'prepwise-gmat-agents',
+      service: 'samiwise-gmat-agents',
       timestamp: new Date().toISOString(),
       agents: ['quantitative', 'verbal', 'data_insights', 'strategy', 'memory'],
     }))

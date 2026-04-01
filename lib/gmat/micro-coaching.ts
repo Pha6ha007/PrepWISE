@@ -152,7 +152,7 @@ export function getMicroCoachingTip(
 
 // ── LocalStorage helpers for tip tracking ──────────────────
 
-const SHOWN_TIPS_KEY = 'prepwise:shown-tips'
+const SHOWN_TIPS_KEY = 'samiwise:shown-tips'
 const MAX_TIP_SHOWS = 3 // don't show same tip more than 3 times
 
 interface ShownTipRecord {
@@ -201,7 +201,7 @@ export function shouldShowTip(tipId: string): boolean {
 
 // ── Error history from localStorage ────────────────────────
 
-const ERROR_HISTORY_KEY = 'prepwise:error-history'
+const ERROR_HISTORY_KEY = 'samiwise:error-history'
 
 export function getErrorHistory(): ErrorHistoryEntry[] {
   if (typeof window === 'undefined') return []
@@ -250,7 +250,7 @@ export function recordError(
 
 // ── Self-reported error tracking (for Socratic debrief) ────
 
-const SELF_REPORT_KEY = 'prepwise:self-reported-errors'
+const SELF_REPORT_KEY = 'samiwise:self-reported-errors'
 
 export interface SelfReportedError {
   questionType: string

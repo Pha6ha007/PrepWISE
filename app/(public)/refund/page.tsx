@@ -12,7 +12,7 @@ export default function RefundPage() {
       {/* Header */}
       <header className="border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-white">🧠 PrepWISE</Link>
+          <Link href="/" className="text-xl font-bold text-white">🧠 SamiWISE</Link>
           <Link href="/" className="text-sm text-slate-400 hover:text-white transition-colors">← Back to home</Link>
         </div>
       </header>
@@ -28,7 +28,7 @@ export default function RefundPage() {
         {/* Intro */}
         <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-6 md:p-8 mb-8">
           <p className="text-slate-300 leading-relaxed">
-            We want you to feel confident trying PrepWISE. All paid plans include a <strong className="text-white">7-day free trial</strong>, so you can explore the full experience before being charged. Beyond that, we offer a straightforward 14-day money-back guarantee on your first payment. If PrepWISE isn&apos;t right for you, we&apos;ll make it right — no questions asked.
+            We want you to feel confident trying SamiWISE. All paid plans include a <strong className="text-white">7-day free trial</strong>, so you can explore the full experience before being charged. Beyond that, we offer a straightforward 14-day money-back guarantee on your first payment. If SamiWISE isn&apos;t right for you, we&apos;ll make it right — no questions asked.
           </p>
         </div>
 
@@ -37,7 +37,7 @@ export default function RefundPage() {
           <div className="bg-[#0D1220] border border-white/[0.06] rounded-xl p-5">
             <h3 className="font-semibold text-white mb-2">14-Day Money-Back Guarantee</h3>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Try any paid PrepWISE plan risk-free for 14 days after your first charge. If you&apos;re not satisfied for any reason, we&apos;ll issue a full refund.
+              Try any paid SamiWISE plan risk-free for 14 days after your first charge. If you&apos;re not satisfied for any reason, we&apos;ll issue a full refund.
             </p>
           </div>
 

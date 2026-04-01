@@ -29,7 +29,7 @@ Each question MUST have:
 - "options": 5 choices [{"id":"A","text":"..."}, ...]
 - "correctAnswer": "A"-"E"
 - "explanation": step-by-step solution referencing specific rows/values
-- "source": "PrepWISE Generated"
+- "source": "SamiWISE Generated"
 
 Example passage format:
 "The following table shows quarterly sales data for five retail chains in 2024.\n\n| Company | Q1 ($M) | Q2 ($M) | Q3 ($M) | Q4 ($M) | Employees |\n|---------|---------|---------|---------|---------|----------|\n| AlphaRetail | 12.4 | 15.1 | 14.8 | 18.2 | 3,400 |\n..."
@@ -65,7 +65,7 @@ Each question MUST have:
 - "options": 5 choices [{"id":"A","text":"..."}, ...]
 - "correctAnswer": "A"-"E"
 - "explanation": step-by-step calculation referencing the graph data
-- "source": "PrepWISE Generated"
+- "source": "SamiWISE Generated"
 
 Example passage:
 "A bar chart shows the annual revenue (in millions of dollars) for Company X from 2019 to 2024. The bars show the following values: 2019: $45M, 2020: $38M, 2021: $52M, 2022: $61M, 2023: $58M, 2024: $72M. The y-axis ranges from $0 to $80M in increments of $10M."
@@ -101,7 +101,7 @@ Each question MUST have:
 - "options": 5 choices [{"id":"A","text":"..."}, ...]
 - "correctAnswer": "A"-"E"
 - "explanation": step-by-step showing which source provides which information
-- "source": "PrepWISE Generated"
+- "source": "SamiWISE Generated"
 
 Output ONLY a valid JSON array. Start with [ and end with ].
 ```
@@ -135,7 +135,7 @@ Each question MUST have:
 - "options": 6-8 choices [{"id":"A","text":"..."}, ...] — same options for both columns
 - "correctAnswer": "A,C" format — two letters separated by comma (first letter = Column 1, second = Column 2)
 - "explanation": step-by-step showing why each selection satisfies its column's requirement
-- "source": "PrepWISE Generated"
+- "source": "SamiWISE Generated"
 
 Output ONLY a valid JSON array. Start with [ and end with ].
 ```

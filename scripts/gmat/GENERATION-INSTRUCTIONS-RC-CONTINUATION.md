@@ -94,7 +94,7 @@ Output format — ONLY valid JSON array, same structure as below. Each question 
       },
       ...2-3 more questions
     ],
-    "source": "PrepWISE Generated"
+    "source": "SamiWISE Generated"
   },
   ...
 ]

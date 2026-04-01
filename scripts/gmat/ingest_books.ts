@@ -242,7 +242,7 @@ async function ingestGmatBooks() {
       baseURL: 'https://openrouter.ai/api/v1',
       defaultHeaders: {
         'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://samiwise.app',
-        'X-Title': 'PrepWISE',
+        'X-Title': 'SamiWISE',
       },
     })
     embeddingModel = 'openai/' + EMBEDDING_MODEL

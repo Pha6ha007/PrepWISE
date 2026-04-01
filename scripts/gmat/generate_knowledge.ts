@@ -225,7 +225,7 @@ async function generateEmbeddings(
 // ── Main ────────────────────────────────────────────────────
 
 async function main() {
-  console.log('🚀 PrepWISE Knowledge Base Generator')
+  console.log('🚀 SamiWISE Knowledge Base Generator')
   console.log('====================================\n')
 
   if (!process.env.OPENROUTER_API_KEY) {
@@ -240,7 +240,7 @@ async function main() {
     baseURL: 'https://openrouter.ai/api/v1',
     defaultHeaders: {
       'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL || 'https://samiwise.app',
-      'X-Title': 'PrepWISE',
+      'X-Title': 'SamiWISE',
     },
   })
 
@@ -297,7 +297,7 @@ async function main() {
             text: chunk.text,
             topic: chunk.topic,
             namespace: plan.namespace,
-            source: 'PrepWISE AI Generated',
+            source: 'SamiWISE AI Generated',
             generated: new Date().toISOString(),
           },
         }))

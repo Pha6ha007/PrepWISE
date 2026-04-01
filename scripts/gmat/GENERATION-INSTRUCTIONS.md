@@ -49,7 +49,7 @@ Output format — ONLY valid JSON array, no markdown, no commentary:
     ],
     "correctAnswer": "C",
     "explanation": "Discount = 25% of $80 = $20. Sale price = $80 - $20 = $60. Choice A ($20) is the discount amount, not the sale price — a common trap.",
-    "source": "PrepWISE Generated"
+    "source": "SamiWISE Generated"
   },
   ...
 ]
@@ -107,7 +107,7 @@ Output format — ONLY valid JSON array:
     "statement2": "x > -4",
     "correctAnswer": "C",
     "explanation": "Statement 1: x² > 9 means x > 3 or x < -3. Not sufficient (x could be 4 or -4). Statement 2: x > -4 means x could be -3, 0, 1, 5, etc. Not sufficient. Together: x > -4 AND (x > 3 or x < -3). If x < -3 and x > -4, then -4 < x < -3, so x is negative. If x > 3, x is positive. Still not sufficient — x could be -3.5 (negative) or 4 (positive). Wait — actually x² > 9 means x > 3 OR x < -3. Combined with x > -4: x could be in (-4, -3) where x < -3 is false, or x > 3. So x > 3, which means x > 0. SUFFICIENT. Answer: C.",
-    "source": "PrepWISE Generated"
+    "source": "SamiWISE Generated"
   },
   ...
 ]
@@ -169,7 +169,7 @@ Output format — ONLY valid JSON array:
     ],
     "correctAnswer": "B",
     "explanation": "Premise: Break-takers are 30% more productive. Conclusion: Mandatory breaks will increase productivity. Gap: Assumes the breaks CAUSED the productivity (not that productive people happen to take breaks). Choice B introduces a selection bias — motivated workers chose breaks AND were productive. The breaks may not be the cause. This directly weakens the causal conclusion.",
-    "source": "PrepWISE Generated"
+    "source": "SamiWISE Generated"
   },
   ...
 ]
@@ -233,7 +233,7 @@ Output format — ONLY valid JSON array:
         "explanation": "..."
       }
     ],
-    "source": "PrepWISE Generated"
+    "source": "SamiWISE Generated"
   },
   ...
 ]

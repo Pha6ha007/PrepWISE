@@ -1,5 +1,5 @@
 /**
- * Free Trial utilities for PrepWISE
+ * Free Trial utilities for SamiWISE
  *
  * 7-day trial, no credit card required.
  * Trial is independent of the Paddle subscription system —

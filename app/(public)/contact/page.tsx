@@ -88,7 +88,7 @@ export default function ContactPage() {
       {/* Header */}
       <header className="border-b border-white/[0.06]">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-white">🧠 PrepWISE</Link>
+          <Link href="/" className="text-xl font-bold text-white">🧠 SamiWISE</Link>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors">Sign in</Link>
             <Link
@@ -109,7 +109,7 @@ export default function ContactPage() {
             Get in Touch
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            Interested in investing or partnering with PrepWISE? We&apos;d love to hear from you.
+            Interested in investing or partnering with SamiWISE? We&apos;d love to hear from you.
           </p>
         </div>
 

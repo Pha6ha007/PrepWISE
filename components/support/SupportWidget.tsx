@@ -14,7 +14,7 @@ interface Message {
 
 // ── Constants ───────────────────────────────────────────────
 
-const STORAGE_KEY = 'prepwise-support-chat'
+const STORAGE_KEY = 'samiwise-support-chat'
 
 const QUICK_QUESTIONS = [
   'How does pricing work?',
@@ -177,10 +177,10 @@ export default function SupportWidget() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-white">
-                    PrepWISE Support
+                    SamiWISE Support
                   </h3>
                   <p className="text-[11px] text-slate-400">
-                    Ask anything about PrepWISE
+                    Ask anything about SamiWISE
                   </p>
                 </div>
               </div>
@@ -198,7 +198,7 @@ export default function SupportWidget() {
               {/* Welcome message */}
               {messages.length === 0 && (
                 <div className="rounded-xl bg-slate-800/60 px-3 py-2.5 text-sm text-slate-300">
-                  👋 Hi! I&apos;m PrepWISE&apos;s support assistant. Ask me
+                  👋 Hi! I&apos;m SamiWISE&apos;s support assistant. Ask me
                   anything about features, pricing, GMAT prep, or
                   troubleshooting.
                 </div>
