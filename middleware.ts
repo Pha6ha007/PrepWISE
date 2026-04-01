@@ -98,7 +98,8 @@ export async function middleware(request: NextRequest) {
 
   // Add security headers to all responses
   const response = supabaseResponse
-  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Frame-Options', 'ALLOWALL')
+  response.headers.set('Content-Security-Policy', "frame-ancestors *")
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
   response.headers.set('X-XSS-Protection', '1; mode=block')
