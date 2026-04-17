@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "echo 'Run npx prisma generate manually'",
+    "postinstall": "prisma generate",
     "test:e2e": "playwright test"
   },
   "dependencies": {
