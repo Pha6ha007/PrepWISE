@@ -23,6 +23,9 @@ export default function LandingPage() {
             <Link href="/resources" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
               Resources
             </Link>
+            <Link href="/#pricing" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
+              Pricing
+            </Link>
             <Link href="/login" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">
               Log in
             </Link>
