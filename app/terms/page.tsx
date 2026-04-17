@@ -342,6 +342,8 @@ export default function TermsPage() {
             <div className="bg-[#0D1220] border border-white/[0.06] rounded-lg p-6">
               <p className="text-white font-medium mb-1">Pavel Haivaronski</p>
               <p className="text-slate-400 mb-1">SamiWISE</p>
+              <p className="text-slate-400 mb-1">SamiWISE is operated by Pavel Haivaronski.</p>
+
               <p className="text-slate-400">
                 Email: <a href="mailto:support@samiwise.app" className="text-cyan-400 hover:underline">support@samiwise.app</a>
               </p>

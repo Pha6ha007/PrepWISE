@@ -31,12 +31,15 @@ export default function RefundPage() {
             <p className="text-slate-300 leading-relaxed mb-4">
               If you are not satisfied with your SamiWISE subscription for any reason, you may request a full refund within <strong className="text-white">30 days of your purchase</strong>. No questions asked.
             </p>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-slate-300 leading-relaxed mb-4">
               To request a refund, email us at{' '}
               <a href="mailto:hello@samiwise.app" className="text-cyan-400 hover:underline">
                 hello@samiwise.app
               </a>{' '}
               with the subject line &quot;Refund Request&quot; and include your account email address. We will process your request promptly.
+            </p>
+            <p className="text-slate-300 leading-relaxed">
+              Our refund policy is processed by Paddle, our Merchant of Record, in accordance with Paddle&apos;s refund policy.
             </p>
           </div>
 
