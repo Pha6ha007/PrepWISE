@@ -44,7 +44,7 @@ export default function PrivacyPage() {
                 { title: 'Account Information', desc: 'Your email address and account preferences' },
                 { title: 'Conversation Data', desc: 'All your conversations with Sam (AI tutor), including text and voice recordings' },
                 { title: 'Usage Analytics', desc: 'Practice scores, session frequency, and interaction patterns to improve your experience' },
-                { title: 'Payment Information', desc: 'Processed securely by Dodo Payments (our payment processor) — we never store your credit card details' },
+                { title: 'Payment Information', desc: 'Processed securely by Paddle (our payment processor) — we never store your credit card details' },
               ].map((item) => (
                 <div key={item.title} className="bg-[#0D1220] border border-white/[0.06] rounded-lg p-4">
                   <h3 className="font-medium text-white mb-1">{item.title}</h3>
@@ -112,7 +112,7 @@ export default function PrivacyPage() {
                 { name: 'OpenAI', desc: 'Powers Sam (AI tutor). Your conversations are processed but not stored or used for training by OpenAI per our agreement.' },
                 { name: 'ElevenLabs', desc: 'Generates voice responses. Audio is processed transiently and not stored by ElevenLabs.' },
                 { name: 'PostHog', desc: 'Anonymous usage analytics (page views, clicks) to improve the platform — no conversation content.' },
-                { name: 'Dodo Payments', desc: 'Payment processing. They handle billing, taxes, and subscriptions securely as our Merchant of Record.' },
+                { name: 'Paddle', desc: 'Payment processing. They handle billing, taxes, and subscriptions securely as our Merchant of Record.' },
               ].map((item) => (
                 <div key={item.name} className="bg-[#0D1220] border border-white/[0.06] rounded-lg p-4">
                   <h3 className="font-medium text-white mb-1">{item.name}</h3>

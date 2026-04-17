@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description: 'Terms of Service for the SamiWISE AI-powered GMAT preparation platform.',
 }
 
+
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-[#0A0F1C]">
@@ -21,14 +22,14 @@ export default function TermsPage() {
       <main className="max-w-4xl mx-auto px-6 py-12">
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-white mb-2">Terms of Service</h1>
-          <p className="text-sm text-slate-500">Last updated: March 4, 2026</p>
+          <p className="text-sm text-slate-500">Last updated: April 17, 2026</p>
         </div>
 
         <div className="space-y-10">
           {/* Introduction */}
           <section>
             <p className="text-slate-300 leading-relaxed mb-3">
-              Welcome to <span className="font-semibold text-white">SamiWISE</span>. By accessing or using our platform, you agree to be bound by these Terms of Service (&quot;Terms&quot;). Please read them carefully.
+              Welcome to <span className="font-semibold text-white">SamiWISE</span>, operated by <span className="font-semibold text-white">Pavel Haivaronski</span> (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;). By accessing or using our platform, you agree to be bound by these Terms of Service (&quot;Terms&quot;). Please read them carefully.
             </p>
             <p className="text-slate-300 leading-relaxed">
               If you do not agree to these Terms, you may not use SamiWISE.
@@ -180,7 +181,7 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-medium text-white mb-2">Billing</h3>
                 <p className="text-slate-300 leading-relaxed">
-                  All payments are processed securely by <strong className="text-white">Dodo Payments</strong> (our Merchant of Record). Subscriptions renew automatically unless canceled. You will be billed at the start of each billing cycle (monthly or annually).
+                  All payments are processed securely by <strong className="text-white">Paddle</strong> (our Merchant of Record). Subscriptions renew automatically unless canceled. You will be billed at the start of each billing cycle (monthly or annually).
                 </p>
               </div>
 
@@ -339,7 +340,8 @@ export default function TermsPage() {
               Questions about these Terms? Contact us:
             </p>
             <div className="bg-[#0D1220] border border-white/[0.06] rounded-lg p-6">
-              <p className="text-white font-medium mb-1">Legal Team</p>
+              <p className="text-white font-medium mb-1">Pavel Haivaronski</p>
+              <p className="text-slate-400 mb-1">SamiWISE</p>
               <p className="text-slate-400">
                 Email: <a href="mailto:support@samiwise.app" className="text-cyan-400 hover:underline">support@samiwise.app</a>
               </p>
