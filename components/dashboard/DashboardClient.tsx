@@ -111,8 +111,8 @@ export default function DashboardClient({
             </button>
           </div>
 
-          {/* Navigation — fixed, all items always visible */}
-          <nav className="flex-shrink-0 px-3 py-4 space-y-1">
+          {/* Navigation — scrollable if needed, takes available space */}
+          <nav className="flex-1 overflow-y-auto min-h-0 px-3 py-4 space-y-1">
             {navigation.map((item) => {
               const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
               return (
@@ -136,16 +136,11 @@ export default function DashboardClient({
             })}
           </nav>
 
-          {/* Scrollable bottom area — streak, question of the day, trial, sign out */}
-          <div className="flex-1 overflow-y-auto min-h-0 border-t border-white/[0.04]">
+          {/* Bottom widgets — constrained height, scrollable if needed */}
+          <div className="flex-shrink-0 max-h-[40%] overflow-y-auto border-t border-white/[0.04]">
             {/* Streak Ring */}
             <div className="px-3 py-3">
               <StreakRing streak={streakData} size={100} />
-            </div>
-
-            {/* Question of the Day — compact sidebar widget */}
-            <div className="px-3 pb-2 hidden lg:block">
-              <QuestionOfTheDay />
             </div>
 
             {/* Trial banner */}
