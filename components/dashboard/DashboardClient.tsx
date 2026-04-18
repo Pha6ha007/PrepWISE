@@ -94,9 +94,9 @@ export default function DashboardClient({
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
-        <div className="flex flex-col h-full overflow-y-auto">
-          {/* Logo */}
-          <div className="px-6 py-5 border-b border-white/[0.04] flex items-center justify-between">
+        <div className="flex flex-col h-full">
+          {/* Logo — fixed, never scrolls away */}
+          <div className="flex-shrink-0 px-6 py-5 border-b border-white/[0.04] flex items-center justify-between">
             <Link href="/dashboard/session" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
                 <Brain className="w-4 h-4 text-[#0B1120]" />
@@ -111,8 +111,8 @@ export default function DashboardClient({
             </button>
           </div>
 
-          {/* Navigation */}
-          <nav className="px-3 py-4 space-y-1">
+          {/* Navigation — fixed, all items always visible */}
+          <nav className="flex-shrink-0 px-3 py-4 space-y-1">
             {navigation.map((item) => {
               const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
               return (
@@ -121,7 +121,7 @@ export default function DashboardClient({
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium
+                    flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
                     transition-all duration-200
                     ${isActive
                       ? 'bg-cyan-500/10 text-cyan-400'
@@ -136,70 +136,73 @@ export default function DashboardClient({
             })}
           </nav>
 
-          {/* Streak Ring */}
-          <div className="px-3 py-3">
-            <StreakRing streak={streakData} size={100} />
-          </div>
+          {/* Scrollable bottom area — streak, question of the day, trial, sign out */}
+          <div className="flex-1 overflow-y-auto min-h-0 border-t border-white/[0.04]">
+            {/* Streak Ring */}
+            <div className="px-3 py-3">
+              <StreakRing streak={streakData} size={100} />
+            </div>
 
-          {/* Question of the Day — compact sidebar widget */}
-          <div className="px-3 pb-2 hidden lg:block">
-            <QuestionOfTheDay />
-          </div>
+            {/* Question of the Day — compact sidebar widget */}
+            <div className="px-3 pb-2 hidden lg:block">
+              <QuestionOfTheDay />
+            </div>
 
-          {/* Trial banner */}
-          <TrialBanner
-            trialStartDate={trialStartDate}
-            trialEndDate={trialEndDate}
-            plan={userPlan}
-          />
+            {/* Trial banner */}
+            <TrialBanner
+              trialStartDate={trialStartDate}
+              trialEndDate={trialEndDate}
+              plan={userPlan}
+            />
 
-          {/* Plan badge + sign out */}
-          <div className="px-3 py-4 border-t border-white/[0.04] space-y-3">
-            <div className="px-3 py-2 rounded-xl bg-white/[0.03]">
-              <div className="flex items-center gap-2 text-sm">
-                <Crown className="w-4 h-4 text-amber-400" />
-                <span className="text-slate-300 capitalize">
-                  {(() => {
-                    const status = getTrialStatus({
-                      trialStartDate: trialStartDate ? new Date(trialStartDate) : null,
-                      trialEndDate: trialEndDate ? new Date(trialEndDate) : null,
-                      plan: userPlan,
-                    })
-                    if (status === 'active') {
-                      const days = getTrialDaysRemaining({ trialEndDate: trialEndDate ? new Date(trialEndDate) : null })
-                      return `Trial · ${days}d left`
-                    }
-                    return `${userPlan} plan`
-                  })()}
-                </span>
+            {/* Plan badge + sign out */}
+            <div className="px-3 py-4 space-y-3">
+              <div className="px-3 py-2 rounded-xl bg-white/[0.03]">
+                <div className="flex items-center gap-2 text-sm">
+                  <Crown className="w-4 h-4 text-amber-400" />
+                  <span className="text-slate-300 capitalize">
+                    {(() => {
+                      const status = getTrialStatus({
+                        trialStartDate: trialStartDate ? new Date(trialStartDate) : null,
+                        trialEndDate: trialEndDate ? new Date(trialEndDate) : null,
+                        plan: userPlan,
+                      })
+                      if (status === 'active') {
+                        const days = getTrialDaysRemaining({ trialEndDate: trialEndDate ? new Date(trialEndDate) : null })
+                        return `Trial · ${days}d left`
+                      }
+                      return `${userPlan} plan`
+                    })()}
+                  </span>
+                </div>
+                {userPlan === 'free' && (
+                  <Link
+                    href="/#pricing"
+                    className="text-xs text-cyan-400 hover:text-cyan-300 mt-1 block"
+                  >
+                    Upgrade for unlimited sessions →
+                  </Link>
+                )}
               </div>
-              {userPlan === 'free' && (
-                <Link
-                  href="/#pricing"
-                  className="text-xs text-cyan-400 hover:text-cyan-300 mt-1 block"
-                >
-                  Upgrade for unlimited sessions →
+              {/* Help & Links */}
+              <div className="flex items-center gap-3 px-3">
+                <Link href="/contact" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+                  Contact
                 </Link>
-              )}
+                <Link href="/resources" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+                  Resources
+                </Link>
+              </div>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-slate-300 transition-colors w-full"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign out
+                </button>
+              </form>
             </div>
-            {/* Help & Links */}
-            <div className="flex items-center gap-3 px-3">
-              <Link href="/contact" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
-                Contact
-              </Link>
-              <Link href="/resources" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
-                Resources
-              </Link>
-            </div>
-            <form action={signOut}>
-              <button
-                type="submit"
-                className="flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-slate-300 transition-colors w-full"
-              >
-                <LogOut className="w-4 h-4" />
-                Sign out
-              </button>
-            </form>
           </div>
         </div>
       </div>
