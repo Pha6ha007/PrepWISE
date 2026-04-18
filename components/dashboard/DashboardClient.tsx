@@ -111,95 +111,92 @@ export default function DashboardClient({
             </button>
           </div>
 
-          {/* Single scrollable column: nav + widgets */}
-          <div className="flex-1 overflow-y-auto min-h-0">
-            {/* Navigation — all 9 items */}
-            <nav className="px-3 py-4 space-y-1">
-              {navigation.map((item) => {
-                const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-                      transition-all duration-200
-                      ${isActive
-                        ? 'bg-cyan-500/10 text-cyan-400'
-                        : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+          {/* Navigation — scrollable if needed, takes all available space */}
+          <nav className="flex-1 overflow-y-auto min-h-0 px-3 py-4 space-y-1">
+            {navigation.map((item) => {
+              const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`
+                    flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                    transition-all duration-200
+                    ${isActive
+                      ? 'bg-cyan-500/10 text-cyan-400'
+                      : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
+                    }
+                  `}
+                >
+                  <item.icon className="w-5 h-5" />
+                  {item.name}
+                </Link>
+              )
+            })}
+          </nav>
+
+          {/* Bottom widgets — always visible, pinned to bottom */}
+          <div className="flex-shrink-0 border-t border-white/[0.04]">
+            {/* Streak Ring */}
+            <div className="px-3 py-2">
+              <StreakRing streak={streakData} size={80} />
+            </div>
+
+            {/* Trial banner */}
+            <TrialBanner
+              trialStartDate={trialStartDate}
+              trialEndDate={trialEndDate}
+              plan={userPlan}
+            />
+
+            {/* Plan badge + sign out */}
+            <div className="px-3 py-3 space-y-2">
+              <div className="px-3 py-2 rounded-xl bg-white/[0.03]">
+                <div className="flex items-center gap-2 text-sm">
+                  <Crown className="w-4 h-4 text-amber-400" />
+                  <span className="text-slate-300 capitalize">
+                    {(() => {
+                      const status = getTrialStatus({
+                        trialStartDate: trialStartDate ? new Date(trialStartDate) : null,
+                        trialEndDate: trialEndDate ? new Date(trialEndDate) : null,
+                        plan: userPlan,
+                      })
+                      if (status === 'active') {
+                        const days = getTrialDaysRemaining({ trialEndDate: trialEndDate ? new Date(trialEndDate) : null })
+                        return `Trial · ${days}d left`
                       }
-                    `}
-                  >
-                    <item.icon className="w-5 h-5" />
-                    {item.name}
-                  </Link>
-                )
-              })}
-            </nav>
-
-            {/* Bottom widgets — scroll into view below nav */}
-            <div className="border-t border-white/[0.04]">
-              {/* Streak Ring */}
-              <div className="px-3 py-3">
-                <StreakRing streak={streakData} size={100} />
-              </div>
-
-              {/* Trial banner */}
-              <TrialBanner
-                trialStartDate={trialStartDate}
-                trialEndDate={trialEndDate}
-                plan={userPlan}
-              />
-
-              {/* Plan badge + sign out */}
-              <div className="px-3 py-4 space-y-3">
-                <div className="px-3 py-2 rounded-xl bg-white/[0.03]">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Crown className="w-4 h-4 text-amber-400" />
-                    <span className="text-slate-300 capitalize">
-                      {(() => {
-                        const status = getTrialStatus({
-                          trialStartDate: trialStartDate ? new Date(trialStartDate) : null,
-                          trialEndDate: trialEndDate ? new Date(trialEndDate) : null,
-                          plan: userPlan,
-                        })
-                        if (status === 'active') {
-                          const days = getTrialDaysRemaining({ trialEndDate: trialEndDate ? new Date(trialEndDate) : null })
-                          return `Trial · ${days}d left`
-                        }
-                        return `${userPlan} plan`
-                      })()}
-                    </span>
-                  </div>
-                  {userPlan === 'free' && (
-                    <Link
-                      href="/#pricing"
-                      className="text-xs text-cyan-400 hover:text-cyan-300 mt-1 block"
-                    >
-                      Upgrade for unlimited sessions →
-                    </Link>
-                  )}
+                      return `${userPlan} plan`
+                    })()}
+                  </span>
                 </div>
-                {/* Help & Links */}
-                <div className="flex items-center gap-3 px-3">
-                  <Link href="/contact" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
-                    Contact
-                  </Link>
-                  <Link href="/resources" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
-                    Resources
-                  </Link>
-                </div>
-                <form action={signOut}>
-                  <button
-                    type="submit"
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-slate-300 transition-colors w-full"
+                {userPlan === 'free' && (
+                  <Link
+                    href="/#pricing"
+                    className="text-xs text-cyan-400 hover:text-cyan-300 mt-1 block"
                   >
-                    <LogOut className="w-4 h-4" />
-                    Sign out
-                  </button>
-                </form>
+                    Upgrade for unlimited sessions →
+                  </Link>
+                )}
               </div>
+              {/* Help & Links */}
+              <div className="flex items-center gap-3 px-3">
+                <Link href="/contact" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+                  Contact
+                </Link>
+                <Link href="/resources" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
+                  Resources
+                </Link>
+              </div>
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-slate-300 transition-colors w-full"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Sign out
+                </button>
+              </form>
             </div>
           </div>
         </div>
